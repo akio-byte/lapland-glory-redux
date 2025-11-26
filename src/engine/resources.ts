@@ -1,7 +1,7 @@
 import { GameState } from '../types.js';
 
 // Keep core resources within sane gameplay bounds so random events cannot softlock the state.
-export const clampResources = (state: GameState) => {
+export const clampResources = (state: GameState): GameState => {
   const clamp = (value: number, min: number, max?: number) => {
     const upperBound = max ?? Number.POSITIVE_INFINITY;
     return Math.min(upperBound, Math.max(min, value));
@@ -12,4 +12,6 @@ export const clampResources = (state: GameState) => {
   state.resources.energy = clamp(state.resources.energy, 0, 100);
   state.resources.heat = clamp(state.resources.heat, 0, 100);
   state.resources.anomaly = clamp(state.resources.anomaly, 0, 100);
+
+  return state; // Return the mutated state to simplify chaining when desired.
 };
