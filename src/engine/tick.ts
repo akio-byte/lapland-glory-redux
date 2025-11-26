@@ -1,4 +1,5 @@
 import { GameState } from '../types.js';
+import { clampResources } from './resources.js';
 
 // Minimal base upkeep to mirror the harsh winter: warmth declines over time
 const BASE_HEAT_LOSS = -2;
@@ -28,4 +29,6 @@ export const advancePhase = (state: GameState) => {
       state.time.phase = 'DAY';
       break;
   }
+
+  clampResources(state); // Clamp after upkeep/recovery so drifting values stay in playable bounds.
 };
