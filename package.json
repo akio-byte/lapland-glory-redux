@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/game.ts",
-    "start": "npm run dev"
+    "start": "npm run dev --"
   },
   "dependencies": {
     "tsx": "^4.15.7"

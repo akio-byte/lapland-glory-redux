@@ -21,10 +21,32 @@ const createInitialState = (): GameState => ({
   history: [],
 });
 
+// Support a bounded run via `--days=N` for quick playtesting without changing game logic.
+const parseDayLimit = (): number | null => {
+  const args = process.argv.slice(2);
+  const daysArg = args.find((arg) => arg === '--days' || arg.startsWith('--days='));
+
+  if (!daysArg) return null;
+
+  const value = daysArg.includes('=')
+    ? daysArg.split('=')[1]
+    : args[args.indexOf(daysArg) + 1];
+
+  const parsed = Number.parseInt(value ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const dayLimit = parseDayLimit();
+
 const state = createInitialState();
 
 // Core simulation loop: DAY → NIGHT → SLEEP until an ending is met
 while (true) {
+  if (dayLimit !== null && state.time.day > dayLimit) {
+    console.log(`Reached day limit (${dayLimit}). Ending run.`);
+    break;
+  }
+
   logPhaseHeader(state);
 
   const event = getEventForPhase(state.time.phase);
