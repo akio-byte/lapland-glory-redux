@@ -1,0 +1,62 @@
+[
+  {
+    "id": "paper_kela_line",
+    "family": "paperwar",
+    "title": "Kelan jono",
+    "description": "Virastolla on ruuhkaa ja odotus kuormittaa hermoja.",
+    "choices": [
+      { "text": "Täytät lomakkeen huolella", "effects": { "money": -10, "sanity": 5 } },
+      { "text": "Hoputat virkailijaa", "effects": { "sanity": 8, "energy": -5 } }
+    ]
+  },
+  {
+    "id": "paper_support_delay",
+    "family": "paperwar",
+    "title": "Asumistuki viivästyy",
+    "description": "Posti tuo ilmoituksen, jossa tuet viivästyvät kuukauden.",
+    "choices": [
+      { "text": "Otata pikavippiä", "effects": { "money": 20, "sanity": -6 } },
+      { "text": "Sopeudut tilanteeseen", "effects": { "sanity": 4 } }
+    ]
+  },
+  {
+    "id": "night_cold_streets",
+    "family": "nightlife",
+    "title": "Kylmä yö kaduilla",
+    "description": "Pakkanen puree ja päätät miten pysyt lämpimänä.",
+    "choices": [
+      { "text": "Ostat kuuman juoman baarista", "effects": { "heat": 15, "money": -10, "sanity": 4 } },
+      { "text": "Juokset pysyäksesi lämpimänä", "effects": { "heat": -10, "energy": -8, "sanity": -4 } }
+    ]
+  },
+  {
+    "id": "night_side_job",
+    "family": "nightlife",
+    "title": "Vaarallinen yökeikka",
+    "description": "Epämääräinen työkeikka tarjoaa nopeat rahat.",
+    "choices": [
+      { "text": "Otata työn", "effects": { "money": 35, "sanity": -12, "energy": -6 } },
+      { "text": "Kieltäydyt kohteliaasti", "effects": { "sanity": 6 } }
+    ]
+  },
+  {
+    "id": "survival_dump_shelter",
+    "family": "survival",
+    "title": "Roskalavan suoja",
+    "description": "Löydät pressun, jonka alle mahtuu torkkumaan.",
+    "choices": [
+      { "text": "Pysähdyt lepäämään", "effects": { "energy": 18, "sanity": -6, "heat": 5 } },
+      { "text": "Jatkat vaellusta", "effects": { "energy": -10, "heat": -8 } }
+    ]
+  },
+  {
+    "id": "survival_generator",
+    "family": "survival",
+    "title": "Hylätty generaattori",
+    "description": "Vanha generaattori voisi lämmittää yön yli.",
+    "choices": [
+      { "text": "Tankkaat ja käynnistät", "effects": { "heat": 20, "money": -8, "sanity": 3 } },
+      { "text": "Jätät rauhaan", "effects": { "sanity": -3, "energy": -5 } }
+    ]
+  }
+]
