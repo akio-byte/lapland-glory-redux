@@ -50,7 +50,11 @@
     "title": "Roskalavan suoja",
     "description": "Löydät pressun, jonka alle mahtuu torkkumaan.",
     "choices": [
-      { "text": "Pysähdyt lepäämään", "effects": { "energy": 18, "sanity": -6, "heat": 5 } },
+      {
+        "text": "Pysähdyt lepäämään",
+        "effects": { "energy": 18, "sanity": -6, "heat": 5 },
+        "loot": "item_map"
+      },
       { "text": "Jatkat vaellusta", "effects": { "energy": -10, "heat": -8 } }
     ]
   },

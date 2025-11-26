@@ -31,6 +31,7 @@ export type GameState = {
 export type Choice = {
   text: string;
   effects: Partial<Resources>;
+  loot?: string;
 };
 
 export type Event = {

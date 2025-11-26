@@ -1,7 +1,7 @@
 import events from '../events.json' with { type: 'json' };
 import { Choice, Event, GameState, Phase } from '../types.js';
 import { pickOne, randomInt } from '../utils/rng.js';
-import { clampResources } from './resources.js';
+import { INVENTORY_CAPACITY, addItem, clampResources } from './resources.js';
 
 export const getEventForPhase = (phase: Phase): Event | undefined => {
   const pool = (events as Event[]).filter((evt) => evt.phase === phase);
@@ -31,6 +31,10 @@ export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?:
   }
 
   clampResources(state); // Keep resource updates from choices within expected bounds.
+
+  if (choice.loot) {
+    addItem(state, choice.loot, INVENTORY_CAPACITY);
+  }
 
   state.history.push(event.id);
   return { choiceText: choice.text, choice };
