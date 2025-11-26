@@ -7,7 +7,7 @@ import { EndingOverlay } from './ui/EndingOverlay.js';
 import { EventView } from './ui/EventView.js';
 import { StatsBar } from './ui/StatsBar.js';
 import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
-import { TeletextOverlay } from './ui/teletext/TeletextOverlay.js';
+import { TeletextOverlay } from './ui/TeletextOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 
@@ -16,6 +16,7 @@ const App = () => {
     useGameLoop();
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
+  const teletextDisabled = state.resources.energy <= 0;
 
   const content = useMemo(() => {
     if (currentEnding) {
@@ -69,10 +70,11 @@ const App = () => {
           <button
             className="teletext-toggle"
             onClick={openTeletext}
-            disabled={state.resources.energy <= 0}
+            disabled={teletextDisabled}
             aria-label="Avaa Teksti-TV"
+            title={teletextDisabled ? 'Liian väsynyt' : undefined}
           >
-            📺 TEKSTI-TV
+            {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
           </button>
         </div>
         <StatsBar
