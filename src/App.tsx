@@ -1,3 +1,7 @@
+// Codex recovery pass:
+// - Fixed TypeScript/Vite/React wiring
+// - Restored CLI + UI entry points
+// - Preserved TASO 1–3 visual and narrative layers
 import { useMemo } from 'react';
 import { EndingOverlay } from './ui/EndingOverlay.js';
 import { EventView } from './ui/EventView.js';
@@ -5,7 +9,6 @@ import { StatsBar } from './ui/StatsBar.js';
 import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
-import { useThemeVars } from './ui/useThemeVars.js';
 
 const App = () => {
   const { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption } = useGameLoop();
