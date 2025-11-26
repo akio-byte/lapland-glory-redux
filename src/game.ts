@@ -1,3 +1,4 @@
+// Entry file targeted by the npm dev/start scripts (added to address missing script error)
 import { applyChoiceEffects, getEventForPhase } from './engine/resolveEvent.js';
 import { advancePhase } from './engine/tick.js';
 import { checkEnding } from './engine/checkEnding.js';
