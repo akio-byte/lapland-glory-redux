@@ -3,9 +3,11 @@ import { StatsBar } from './ui/StatsBar.js';
 import { EventView } from './ui/EventView.js';
 import { EndingOverlay } from './ui/EndingOverlay.js';
 import { useGameLoop } from './engine/useGameLoop.js';
+import { useThemeVars } from './ui/useThemeVars.js';
 
 const App = () => {
   const { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption } = useGameLoop();
+  const theme = useThemeVars(state);
 
   const content = useMemo(() => {
     if (currentEnding) {
@@ -24,7 +26,15 @@ const App = () => {
   }, [chooseOption, currentEnding, currentEvent, startNewGame]);
 
   return (
-    <div className="app-shell">
+    <div
+      className="app-shell"
+      data-phase={theme.phase}
+      style={{
+        '--entropy': theme.entropy,
+        '--fatigue': theme.fatigue,
+        '--frost': theme.frost,
+      }}
+    >
       <header className="top-bar">
         <div>
           <div className="eyebrow">Päivä {state.time.day}</div>
