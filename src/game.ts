@@ -43,6 +43,7 @@ const state = createInitialState();
 // Core simulation loop: DAY → NIGHT → SLEEP until an ending is met
 while (true) {
   if (dayLimit !== null && state.time.day > dayLimit) {
+    // Honor the optional day cap for bounded simulations even without an ending.
     console.log(`Reached day limit (${dayLimit}). Ending run.`);
     break;
   }
