@@ -9,6 +9,7 @@ import {
   createInitialState,
   pickEventForPhase,
 } from './gameApi.js';
+import { clampResources } from './resources.js';
 
 export type GameLoopState = {
   state: GameState;
@@ -17,6 +18,7 @@ export type GameLoopState = {
   lastMessage: string;
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
+  spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
 };
 
 const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
@@ -76,9 +78,35 @@ export const useGameLoop = (): GameLoopState => {
     });
   };
 
+  const spendEnergy = (amount: number, note?: string, exhaustedNote?: string) => {
+    let allowed = false;
+    setState((prev) => {
+      if (prev.resources.energy < amount) {
+        return prev;
+      }
+
+      allowed = true;
+      const nextState: GameState = {
+        ...prev,
+        resources: { ...prev.resources, energy: prev.resources.energy - amount },
+      };
+
+      clampResources(nextState);
+      return nextState;
+    });
+
+    if (note && allowed) {
+      setLastMessage(note);
+    } else if (!allowed && exhaustedNote) {
+      setLastMessage(exhaustedNote);
+    }
+
+    return allowed;
+  };
+
   useEffect(() => {
     startNewGame();
   }, []);
 
-  return { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption };
+  return { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption, spendEnergy };
 };

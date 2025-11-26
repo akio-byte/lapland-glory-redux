@@ -8,6 +8,13 @@ export type Resources = {
   anomaly: number;
 };
 
+export type Item = {
+  id: string;
+  name: string;
+  description: string;
+  type: 'consumable' | 'tool';
+};
+
 export type TimeState = {
   day: number;
   phase: Phase;
@@ -18,11 +25,13 @@ export type GameState = {
   time: TimeState;
   flags: Record<string, boolean>;
   history: string[];
+  inventory: string[];
 };
 
 export type Choice = {
   text: string;
   effects: Partial<Resources>;
+  loot?: string;
 };
 
 export type Event = {
