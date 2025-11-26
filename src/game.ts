@@ -1,25 +1,6 @@
-// Entry file targeted by the npm dev/start scripts (added to address missing script error)
-import { applyChoiceEffects, getEventForPhase } from './engine/resolveEvent.js';
-import { advancePhase } from './engine/tick.js';
-import { checkEnding } from './engine/checkEnding.js';
-import { GameState } from './types.js';
+// Entry file targeted by the npm start script
+import { advancePhase, applyEvent, checkEnding, createInitialState, pickEventForPhase } from './engine/gameApi.js';
 import { logEnding, logEvent, logPhaseHeader, logResources } from './utils/log.js';
-
-const createInitialState = (): GameState => ({
-  resources: {
-    money: 80,
-    sanity: 50,
-    energy: 45,
-    heat: 40,
-    anomaly: 0,
-  },
-  time: {
-    day: 1,
-    phase: 'DAY',
-  },
-  flags: {},
-  history: [],
-});
 
 // Support a bounded run via `--days=N` for quick playtesting without changing game logic.
 const parseDayLimit = (): number | null => {
@@ -38,7 +19,7 @@ const parseDayLimit = (): number | null => {
 
 const dayLimit = parseDayLimit();
 
-const state = createInitialState();
+let state = createInitialState();
 
 // Core simulation loop: DAY → NIGHT → SLEEP until an ending is met
 while (true) {
@@ -50,10 +31,11 @@ while (true) {
 
   logPhaseHeader(state);
 
-  const event = getEventForPhase(state.time.phase);
+  const event = pickEventForPhase(state);
   if (event) {
-    const { choiceText } = applyChoiceEffects(state, event);
-    logEvent(event, choiceText);
+    const { nextState, choice } = applyEvent(state, event);
+    state = nextState;
+    logEvent(event, choice?.text ?? 'No choice available');
   } else {
     console.log('No event available for this phase.');
   }
@@ -66,7 +48,7 @@ while (true) {
     break;
   }
 
-  advancePhase(state);
+  state = advancePhase(state);
 
   const endingAfterAdvance = checkEnding(state);
   if (endingAfterAdvance) {
