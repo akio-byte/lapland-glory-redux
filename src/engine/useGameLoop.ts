@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
 import { Choice, Ending, Event, GameState } from '../types.js';
 import {
   advancePhase,
@@ -17,8 +18,16 @@ export type GameLoopState = {
   chooseOption: (optionIndex: number) => void;
 };
 
-const describeChoice = (event: Event, choice: Choice | undefined) =>
-  choice ? `${event.title}: ${choice.text}` : event.title;
+const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
+  const { anomaly } = state.resources;
+  const title = maybeDistortText(event.title, anomaly);
+
+  if (!choice) return title;
+
+  const adaptedChoice = adaptChoiceLabel(choice.text, state);
+  const distortedChoice = maybeDistortText(adaptedChoice, anomaly);
+  return `${title}: ${distortedChoice}`;
+};
 
 export const useGameLoop = (): GameLoopState => {
   const [state, setState] = useState<GameState>(createInitialState);
@@ -45,7 +54,7 @@ export const useGameLoop = (): GameLoopState => {
       if (endingAfterEvent) {
         setCurrentEnding(endingAfterEvent);
         setCurrentEvent(null);
-        setLastMessage(describeChoice(event, choice));
+        setLastMessage(describeChoice(event, choice, nextState));
         return nextState;
       }
 
@@ -55,13 +64,13 @@ export const useGameLoop = (): GameLoopState => {
       if (endingAfterAdvance) {
         setCurrentEnding(endingAfterAdvance);
         setCurrentEvent(null);
-        setLastMessage(describeChoice(event, choice));
+        setLastMessage(describeChoice(event, choice, advancedState));
         return advancedState;
       }
 
       const nextEvent = pickEventForPhase(advancedState) ?? null;
       setCurrentEvent(nextEvent);
-      setLastMessage(describeChoice(event, choice));
+      setLastMessage(describeChoice(event, choice, advancedState));
       return advancedState;
     });
   };

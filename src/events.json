@@ -1,6 +1,7 @@
 [
   {
     "id": "paper_kela_line",
+    "phase": "DAY",
     "family": "paperwar",
     "title": "Kelan jono",
     "description": "Virastolla on ruuhkaa ja odotus kuormittaa hermoja.",
@@ -11,6 +12,7 @@
   },
   {
     "id": "paper_support_delay",
+    "phase": "DAY",
     "family": "paperwar",
     "title": "Asumistuki viivästyy",
     "description": "Posti tuo ilmoituksen, jossa tuet viivästyvät kuukauden.",
@@ -21,6 +23,7 @@
   },
   {
     "id": "night_cold_streets",
+    "phase": "NIGHT",
     "family": "nightlife",
     "title": "Kylmä yö kaduilla",
     "description": "Pakkanen puree ja päätät miten pysyt lämpimänä.",
@@ -31,6 +34,7 @@
   },
   {
     "id": "night_side_job",
+    "phase": "NIGHT",
     "family": "nightlife",
     "title": "Vaarallinen yökeikka",
     "description": "Epämääräinen työkeikka tarjoaa nopeat rahat.",
@@ -41,6 +45,7 @@
   },
   {
     "id": "survival_dump_shelter",
+    "phase": "SLEEP",
     "family": "survival",
     "title": "Roskalavan suoja",
     "description": "Löydät pressun, jonka alle mahtuu torkkumaan.",
@@ -51,6 +56,7 @@
   },
   {
     "id": "survival_generator",
+    "phase": "SLEEP",
     "family": "survival",
     "title": "Hylätty generaattori",
     "description": "Vanha generaattori voisi lämmittää yön yli.",
@@ -58,5 +64,45 @@
       { "text": "Tankkaat ja käynnistät", "effects": { "heat": 20, "money": -8, "sanity": 3 } },
       { "text": "Jätät rauhaan", "effects": { "sanity": -3, "energy": -5 } }
     ]
+  },
+  {
+    "id": "flavor_day_bus_stop",
+    "phase": "DAY",
+    "family": "flavor",
+    "title": "Tyhjä pysäkki",
+    "description": "Seisot pysäkillä. Bussi ei tule. Savu leijailee hiljaa.",
+    "choices": [{ "text": "Odotat hiljaa", "effects": {} }]
+  },
+  {
+    "id": "flavor_day_empty_mall",
+    "phase": "DAY",
+    "family": "flavor",
+    "title": "Hiljainen kauppakeskus",
+    "description": "Käytävät kumisevat tyhjyyttään. Joulukoristeet roikkuvat vinossa.",
+    "choices": [{ "text": "Kävelet läpi", "effects": { "energy": 0 } }]
+  },
+  {
+    "id": "flavor_day_radio_static",
+    "phase": "DAY",
+    "family": "flavor",
+    "title": "Rätisevä radiokanava",
+    "description": "Vanha kelloradio yrittää löytää taajuutta. Et tiedä, onko se uutisia vai kohinaa.",
+    "choices": [{ "text": "Kuuntelet hetken", "effects": {} }]
+  },
+  {
+    "id": "flavor_night_lamp",
+    "phase": "NIGHT",
+    "family": "flavor",
+    "title": "Vilkkuva katulamppu",
+    "description": "Valon välähdykset pysähtyvät hetkeksi, kuin joku katsoisi takaisin.",
+    "choices": [{ "text": "Jäädyt paikoillesi", "effects": {} }]
+  },
+  {
+    "id": "flavor_night_train_whistle",
+    "phase": "NIGHT",
+    "family": "flavor",
+    "title": "Yön junapilli",
+    "description": "Kaukainen vihellys kantautuu sumuisen aseman yli. Raiteet ovat ruosteessa.",
+    "choices": [{ "text": "Lasket askeleesi", "effects": { "sanity": 0 } }]
   }
 ]

@@ -27,7 +27,8 @@ export type Choice = {
 
 export type Event = {
   id: string;
-  family: 'paperwar' | 'nightlife' | 'survival';
+  phase: Phase;
+  family: 'paperwar' | 'nightlife' | 'survival' | 'flavor';
   title: string;
   description: string;
   choices: Choice[];

@@ -13,7 +13,7 @@ const App = () => {
     }
 
     if (currentEvent) {
-      return <EventView event={currentEvent} onChoose={chooseOption} />;
+      return <EventView event={currentEvent} state={state} onChoose={chooseOption} />;
     }
 
     return (
