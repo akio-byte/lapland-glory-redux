@@ -2,7 +2,7 @@ import { GameState } from '../types.js';
 import { clampResources } from './resources.js';
 
 // Minimal base upkeep to mirror the harsh winter: warmth declines over time
-const BASE_HEAT_LOSS = -2;
+export const BASE_HEAT_LOSS = -2;
 const BASE_ENERGY_LOSS = -1;
 const SLEEP_RECOVERY = { energy: 10, heat: 3, sanity: 1 } as const;
 

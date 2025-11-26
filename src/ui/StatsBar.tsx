@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Phase, Resources } from '../types.js';
+import items from '../data/items.json' with { type: 'json' };
+import { INVENTORY_CAPACITY } from '../engine/resources.js';
+import { Item, Phase, Resources } from '../types.js';
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -7,6 +9,7 @@ type Props = {
   resources: Resources;
   phase: Phase;
   anomaly: number;
+  inventory: string[];
 };
 
 const ResourceBar = ({ label, value, danger }: { label: string; value: number; danger?: boolean }) => (
@@ -21,7 +24,7 @@ const ResourceBar = ({ label, value, danger }: { label: string; value: number; d
   </div>
 );
 
-export const StatsBar = ({ resources, phase, anomaly }: Props) => {
+export const StatsBar = ({ resources, phase, anomaly, inventory }: Props) => {
   const [fakeStat, setFakeStat] = useState<{ field: keyof Resources; value: number } | null>(null);
   const prevPhase = useRef<string | null>(null);
 
@@ -46,12 +49,49 @@ export const StatsBar = ({ resources, phase, anomaly }: Props) => {
 
   const pickValue = (field: keyof Resources) => (fakeStat?.field === field ? fakeStat.value : resources[field]);
 
+  const itemLookup = useMemo(
+    () =>
+      (items as Item[]).reduce<Record<string, Item>>((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+      }, {}),
+    []
+  );
+
+  const slots = useMemo(
+    () => Array.from({ length: INVENTORY_CAPACITY }, (_, idx) => inventory[idx] ?? null),
+    [inventory]
+  );
+
   return (
-    <div className="stats">
-      <ResourceBar label="Raha" value={pickValue('money')} danger={resources.money <= 10} />
-      <ResourceBar label="Mieli" value={pickValue('sanity')} danger={resources.sanity <= 20} />
-      <ResourceBar label="Energia" value={resources.energy} danger={resources.energy <= 20} />
-      <ResourceBar label="Lämpö" value={resources.heat} danger={resources.heat <= 20} />
+    <div className="stats-area">
+      <div className="stats">
+        <ResourceBar label="Raha" value={pickValue('money')} danger={resources.money <= 10} />
+        <ResourceBar label="Mieli" value={pickValue('sanity')} danger={resources.sanity <= 20} />
+        <ResourceBar label="Energia" value={resources.energy} danger={resources.energy <= 20} />
+        <ResourceBar label="Lämpö" value={resources.heat} danger={resources.heat <= 20} />
+      </div>
+
+      <div className="inventory">
+        <div className="inventory-label">Varasto</div>
+        <div className="inventory-slots" aria-label="Varaston sisältö">
+          {slots.map((itemId, idx) => {
+            const item = itemId ? itemLookup[itemId] : undefined;
+            return (
+              <div
+                key={`${itemId ?? 'tyhjä'}-${idx}`}
+                className={`inventory-slot ${item ? 'filled' : 'empty'}`}
+                title={item?.description ?? 'Tyhjä paikka'}
+              >
+                <span className="inventory-bracket">[</span>
+                <span className="inventory-slot-text">{item?.name ?? ' '}</span>
+                <span className="inventory-bracket">]</span>
+                <span className="inventory-slot-type">{item ? (item.type === 'tool' ? 'työkalu' : 'kulutus') : ''}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

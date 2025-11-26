@@ -116,6 +116,26 @@ button.primary {
   box-shadow: var(--shadow);
 }
 
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.teletext-toggle {
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.08em;
+  background: #0b0c10;
+  border-color: #1f2f44;
+  color: #7ce0ff;
+  box-shadow: inset 0 -2px 0 rgba(124, 224, 255, 0.3);
+}
+
+.teletext-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
 .eyebrow {
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -155,6 +175,13 @@ button.primary {
   color: var(--muted);
 }
 
+.stats-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -177,6 +204,68 @@ button.primary {
 
 .resource-value {
   color: var(--accent-strong);
+}
+
+.inventory {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inventory-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.inventory-slots {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.inventory-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #0f131b;
+  min-width: 88px;
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.01);
+}
+
+.inventory-slot.empty {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.inventory-bracket {
+  color: var(--muted);
+}
+
+.inventory-slot-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.inventory-slot.filled .inventory-slot-text {
+  color: var(--accent-strong);
+}
+
+.inventory-slot-type {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.08em;
 }
 
 .bar {
@@ -394,5 +483,119 @@ button.primary {
   .top-bar {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+.teletext-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  z-index: 10;
+}
+
+.teletext-panel {
+  width: min(720px, 90vw);
+  background: #000;
+  border: 3px solid #0ff;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3), 0 0 55px rgba(255, 255, 0, 0.18);
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  color: #fff;
+}
+
+.teletext-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #111;
+  border-bottom: 2px solid #0ff;
+}
+
+.teletext-title {
+  color: #ff0;
+  letter-spacing: 0.12em;
+}
+
+.teletext-close {
+  background: #0b0b0b;
+  border: 1px solid #0ff;
+  color: #0ff;
+  padding: 0.25rem 0.5rem;
+}
+
+.teletext-body {
+  padding: 1rem;
+  background: #020202;
+  display: grid;
+  gap: 0.25rem;
+  min-height: 180px;
+}
+
+.teletext-body.glitch {
+  animation: glitchPulse 1.4s infinite;
+}
+
+.teletext-line {
+  display: block;
+  padding: 0.1rem 0;
+}
+
+.teletext-line.highlight {
+  color: #0ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+}
+
+.teletext-nav {
+  padding: 0.75rem 1rem 1rem;
+  background: #080808;
+  border-top: 2px solid #0ff;
+}
+
+.teletext-nav-row {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.teletext-input {
+  background: #010101;
+  color: #fff;
+  border: 1px solid #0ff;
+  padding: 0.4rem 0.6rem;
+  min-width: 80px;
+  letter-spacing: 0.08em;
+}
+
+.teletext-button {
+  background: #0b0b0b;
+  color: #ff0;
+  border: 1px solid #0ff;
+  padding: 0.4rem 0.6rem;
+}
+
+.teletext-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.teletext-status {
+  margin-top: 0.35rem;
+  color: #0ff;
+}
+
+@keyframes glitchPulse {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    filter: hue-rotate(45deg) saturate(1.2);
+  }
+  100% {
+    filter: hue-rotate(0deg);
   }
 }
