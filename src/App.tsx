@@ -47,7 +47,12 @@ const App = () => {
           <div className="eyebrow">Päivä {state.time.day}</div>
           <div className="phase">{state.time.phase}</div>
         </div>
-        <StatsBar resources={state.resources} phase={state.time.phase} anomaly={state.resources.anomaly} />
+        <StatsBar
+          resources={state.resources}
+          phase={state.time.phase}
+          anomaly={state.resources.anomaly}
+          inventory={state.inventory}
+        />
       </header>
 
       <main className="content">{content}</main>
