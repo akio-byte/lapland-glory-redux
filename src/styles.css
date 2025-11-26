@@ -256,6 +256,140 @@ button.primary {
   box-shadow: var(--shadow);
 }
 
+/* Ending visual states (TASO 3, presentation only) */
+.ending-overlay[data-ending='FREEZE'] {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.7)),
+    linear-gradient(180deg, rgba(220, 233, 241, 0.6), rgba(244, 247, 250, 0.92));
+  color: rgba(10, 13, 20, 0.7);
+  filter: contrast(0.8) saturate(0.65);
+}
+
+.ending-overlay[data-ending='FREEZE'] .ending-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), inset 0 0 28px rgba(255, 255, 255, 0.4);
+}
+
+.ending-overlay[data-ending='BANKRUPT'] {
+  background: radial-gradient(circle at 50% 45%, rgba(20, 26, 35, 0.8), rgba(0, 0, 0, 0.92)), #000;
+  color: #d6e2ff;
+}
+
+.ending-overlay[data-ending='BANKRUPT'] .ending-card {
+  background: linear-gradient(180deg, rgba(15, 21, 33, 0.9), rgba(6, 10, 18, 0.95));
+  animation: crtCollapse 1.3s ease-in forwards;
+  transform-origin: center;
+  border-color: #0d1320;
+}
+
+.ending-overlay[data-ending='BANKRUPT'] .crt-cursor {
+  display: block;
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.95rem;
+  color: #6cf1ff;
+  opacity: 0;
+  animation: crtBlink 1.1s steps(2, end) infinite;
+  animation-delay: 0.8s;
+}
+
+.ending-overlay[data-ending='BREAKDOWN'] {
+  background: radial-gradient(circle at 40% 15%, rgba(255, 255, 255, 0.08), transparent 35%),
+    linear-gradient(180deg, rgba(5, 7, 10, 0.96), rgba(10, 12, 16, 0.94));
+  filter: invert(0.92) saturate(0.8);
+}
+
+.ending-overlay[data-ending='BREAKDOWN'] .ending-card {
+  transform: rotate(-1deg);
+  animation: driftDown 6s ease-in forwards;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.7));
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+
+.ending-overlay[data-ending='SPRING'] {
+  background: linear-gradient(185deg, #ffefc8 0%, #ffc4d9 55%, #0a0e14 100%);
+  color: #1c1c1c;
+}
+
+.ending-overlay[data-ending='SPRING'] .ending-card {
+  background: rgba(255, 255, 255, 0.82);
+  color: #1c1c1c;
+  box-shadow: 0 18px 30px rgba(255, 196, 186, 0.35);
+  text-shadow: none;
+}
+
+.crt-cursor {
+  display: none;
+}
+
+@keyframes crtCollapse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scaleX(0.9) scaleY(0.7);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scaleX(0.95) scaleY(0.02);
+    opacity: 0;
+    filter: blur(1px);
+  }
+}
+
+@keyframes crtBlink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes driftDown {
+  0% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  100% {
+    transform: translateY(22px) rotate(-2deg);
+    opacity: 0.75;
+  }
+}
+
+/* Subliminal anomaly whisper lives behind content; intentionally faint and brief. */
+.subliminal {
+  position: fixed;
+  bottom: 12%;
+  left: 6%;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  opacity: 0.06;
+  color: #d1e6ff;
+  pointer-events: none;
+  animation: subliminalFade 1s ease-in forwards;
+  mix-blend-mode: screen;
+}
+
+@keyframes subliminalFade {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .top-bar {
     flex-direction: column;

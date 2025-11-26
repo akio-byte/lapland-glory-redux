@@ -1,4 +1,5 @@
-import { Choice, Ending, Event, GameState, Phase } from '../types.js';
+import { Choice, Event, GameState, Phase } from '../types.js';
+import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, getEventForPhase } from './resolveEvent.js';
 import { advancePhase as advancePhaseInternal } from './tick.js';
@@ -28,8 +29,7 @@ export const createInitialState = (): GameState => ({
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;
 
-export const pickEventForPhase = (state: GameState): Event | undefined =>
-  getEventForPhase(getCurrentPhase(state));
+export const pickEventForPhase = (state: GameState): Event | undefined => getEventForPhase(getCurrentPhase(state));
 
 export const applyEvent = (
   state: GameState,
@@ -46,4 +46,4 @@ export const advancePhase = (state: GameState): GameState => {
   return advancePhaseInternal(nextState);
 };
 
-export const checkEnding = (state: GameState): Ending | null => checkEndingInternal(state);
+export const checkEnding = (state: GameState): EndingMeta | null => checkEndingInternal(state);

@@ -33,11 +33,3 @@ export type Event = {
   description: string;
   choices: Choice[];
 };
-
-export type EndingId = 'freeze' | 'bankrupt' | 'breakdown' | 'spring';
-
-export type Ending = {
-  id: EndingId;
-  title: string;
-  description: string;
-};

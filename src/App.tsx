@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
-import { StatsBar } from './ui/StatsBar.js';
-import { EventView } from './ui/EventView.js';
 import { EndingOverlay } from './ui/EndingOverlay.js';
+import { EventView } from './ui/EventView.js';
+import { StatsBar } from './ui/StatsBar.js';
+import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
+import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 
@@ -23,7 +25,7 @@ const App = () => {
         <p className="muted">Ei tapahtumia tässä vaiheessa. Odota seuraavaa hetkeä.</p>
       </div>
     );
-  }, [chooseOption, currentEnding, currentEvent, startNewGame]);
+  }, [chooseOption, currentEnding, currentEvent, startNewGame, state]);
 
   return (
     <div
@@ -50,6 +52,8 @@ const App = () => {
       <footer className="footer">
         <span className="muted">{lastMessage}</span>
       </footer>
+
+      <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
     </div>
   );
 };
