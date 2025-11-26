@@ -1,3 +1,4 @@
+import { decorateEventDescription, adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
 import { Event, GameState } from '../types.js';
 
 export const logPhaseHeader = (state: GameState) => {
@@ -5,10 +6,17 @@ export const logPhaseHeader = (state: GameState) => {
   console.log(`\n=== Day ${day} :: ${phase} ===`);
 };
 
-export const logEvent = (event: Event, choiceText: string) => {
-  console.log(`Event: ${event.title} (${event.family})`);
-  console.log(`- ${event.description}`);
-  console.log(`Choice: ${choiceText}`);
+export const logEvent = (state: GameState, event: Event, choiceText: string) => {
+  const { anomaly } = state.resources;
+  const decoratedDescription = decorateEventDescription(event.description, state);
+  const distortedDescription = maybeDistortText(decoratedDescription, anomaly);
+  const distortedTitle = maybeDistortText(event.title, anomaly);
+  const adaptedChoice = adaptChoiceLabel(choiceText, state);
+  const distortedChoice = maybeDistortText(adaptedChoice, anomaly);
+
+  console.log(`Event: ${distortedTitle} (${event.family})`);
+  console.log(`- ${distortedDescription}`);
+  console.log(`Choice: ${distortedChoice}`);
 };
 
 export const logResources = (state: GameState) => {
