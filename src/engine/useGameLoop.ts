@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { EndingMeta } from '../ending/endingMeta.js';
 import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
-import { Choice, Ending, Event, GameState } from '../types.js';
+import { Choice, Event, GameState } from '../types.js';
 import {
   advancePhase,
   applyEvent,
@@ -12,7 +13,7 @@ import {
 export type GameLoopState = {
   state: GameState;
   currentEvent: Event | null;
-  currentEnding: Ending | null;
+  currentEnding: EndingMeta | null;
   lastMessage: string;
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
@@ -32,7 +33,7 @@ const describeChoice = (event: Event, choice: Choice | undefined, state: GameSta
 export const useGameLoop = (): GameLoopState => {
   const [state, setState] = useState<GameState>(createInitialState);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-  const [currentEnding, setCurrentEnding] = useState<Ending | null>(null);
+  const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
 
   const startNewGame = () => {

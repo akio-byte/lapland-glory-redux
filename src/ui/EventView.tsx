@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { adaptChoiceLabel, decorateEventDescription, maybeDistortText } from '../narrative/narrativeUtils.js';
 import { Event, GameState } from '../types.js';
+import { TypewriterText } from './TypewriterText.js';
 
 type Props = {
   event: Event;
@@ -11,13 +13,16 @@ export const EventView = ({ event, state, onChoose }: Props) => {
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
   const description = maybeDistortText(decorateEventDescription(event.description, state), anomaly);
+  const slipperyBias = useMemo(() => anomaly / 100 > 0.5 && Math.random() < 0.35, [anomaly]);
 
   return (
     <div className="panel event">
       <div className="eyebrow">{event.family}</div>
       <h2>{title}</h2>
-      {/* Invisible progression is applied to descriptions before any anomaly distortion. */}
-      <p className="muted">{description}</p>
+      {/* Energy influences how quickly the description is surfaced to the player. */}
+      <p className="muted">
+        <TypewriterText text={description} energy={state.resources.energy} />
+      </p>
 
       <div className="choices">
         {event.choices.map((choice, idx) => {
@@ -25,7 +30,11 @@ export const EventView = ({ event, state, onChoose }: Props) => {
           const effects = Object.entries(choice.effects);
 
           return (
-            <button key={choice.text} className="choice" onClick={() => onChoose(idx)}>
+            <button
+              key={choice.text}
+              className={`choice ${slipperyBias ? 'slippery' : ''}`}
+              onClick={() => onChoose(idx)}
+            >
               <div className="choice-title">{adapted}</div>
               <div className="choice-effects">
                 {effects.map(([resource, delta]) => {

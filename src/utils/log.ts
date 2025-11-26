@@ -1,5 +1,6 @@
 import { decorateEventDescription, adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
 import { Event, GameState } from '../types.js';
+import { EndingMeta } from '../ending/endingMeta.js';
 
 export const logPhaseHeader = (state: GameState) => {
   const { day, phase } = state.time;
@@ -26,7 +27,7 @@ export const logResources = (state: GameState) => {
   );
 };
 
-export const logEnding = (ending: { id: string; title: string; description: string }) => {
+export const logEnding = (ending: EndingMeta) => {
   console.log(`\n*** ${ending.title} (${ending.id}) ***`);
   console.log(ending.description);
 };
