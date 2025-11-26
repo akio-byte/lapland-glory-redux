@@ -1,5 +1,7 @@
 import { GameState } from '../types.js';
 
+export const INVENTORY_CAPACITY = 4;
+
 // Keep core resources within sane gameplay bounds so random events cannot softlock the state.
 export const clampResources = (state: GameState): GameState => {
   const clamp = (value: number, min: number, max?: number) => {
@@ -14,4 +16,21 @@ export const clampResources = (state: GameState): GameState => {
   state.resources.anomaly = clamp(state.resources.anomaly, 0, 100);
 
   return state; // Return the mutated state to simplify chaining when desired.
+};
+
+export const addItem = (state: GameState, itemId: string, capacity = INVENTORY_CAPACITY): GameState => {
+  if (state.inventory.length >= capacity) {
+    return state;
+  }
+
+  state.inventory = [...state.inventory, itemId];
+  return state;
+};
+
+export const removeItem = (state: GameState, itemId: string): GameState => {
+  const index = state.inventory.indexOf(itemId);
+  if (index === -1) return state;
+
+  state.inventory = [...state.inventory.slice(0, index), ...state.inventory.slice(index + 1)];
+  return state;
 };

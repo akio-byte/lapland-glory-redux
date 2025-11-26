@@ -3,12 +3,14 @@ import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, getEventForPhase } from './resolveEvent.js';
 import { advancePhase as advancePhaseInternal } from './tick.js';
+import { INVENTORY_CAPACITY, addItem as addItemInternal, removeItem as removeItemInternal } from './resources.js';
 
 const cloneState = (state: GameState): GameState => ({
   resources: { ...state.resources },
   time: { ...state.time },
   flags: { ...state.flags },
   history: [...state.history],
+  inventory: [...state.inventory],
 });
 
 export const createInitialState = (): GameState => ({
@@ -25,6 +27,7 @@ export const createInitialState = (): GameState => ({
   },
   flags: {},
   history: [],
+  inventory: [],
 });
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;
@@ -47,3 +50,9 @@ export const advancePhase = (state: GameState): GameState => {
 };
 
 export const checkEnding = (state: GameState): EndingMeta | null => checkEndingInternal(state);
+
+export const addItem = (state: GameState, itemId: string): GameState =>
+  addItemInternal(state, itemId, INVENTORY_CAPACITY);
+
+export const removeItem = (state: GameState, itemId: string): GameState =>
+  removeItemInternal(state, itemId);

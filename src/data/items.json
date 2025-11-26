@@ -1,0 +1,32 @@
+[
+  {
+    "id": "item_nokia",
+    "name": "Nokia 2110",
+    "description": "Connecting people. Akku vähissä.",
+    "type": "tool"
+  },
+  {
+    "id": "item_booze",
+    "name": "Taskumatti",
+    "description": "Lämmin, polttava, unohtava.",
+    "type": "consumable"
+  },
+  {
+    "id": "item_ticket",
+    "name": "Seutulippu",
+    "description": "Leimattu. Vielä voimassa.",
+    "type": "tool"
+  },
+  {
+    "id": "item_coffee",
+    "name": "Termospullo",
+    "description": "Haaleaa sumppia.",
+    "type": "consumable"
+  },
+  {
+    "id": "item_map",
+    "name": "Kelkkareittikartta",
+    "description": "Suksien mukana taiteltu, vuodelta -95.",
+    "type": "tool"
+  }
+]
