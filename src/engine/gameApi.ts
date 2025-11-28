@@ -40,7 +40,8 @@ export const createInitialState = (): GameState => ({
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;
 
-export const pickEventForPhase = (state: GameState): Event | undefined => getEventForPhase(getCurrentPhase(state));
+export const pickEventForPhase = (state: GameState): Event | undefined =>
+  getEventForPhase(state, getCurrentPhase(state));
 
 export const applyEvent = (
   state: GameState,

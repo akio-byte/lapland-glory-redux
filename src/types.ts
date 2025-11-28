@@ -43,4 +43,10 @@ export type Event = {
   title: string;
   description: string;
   choices: Choice[];
+  requirements?: {
+    minAnomaly?: number;
+    maxSanity?: number;
+    requiredFlag?: string;
+    requiredPath?: { path: string; minLevel: number };
+  };
 };
