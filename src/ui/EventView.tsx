@@ -19,8 +19,9 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney }: Props) => {
   const isSlotsGame = event.minigame === 'slots';
 
   return (
-    <div className="panel event">
+    <div className="panel event fade-in">
       <div className="eyebrow">{event.family}</div>
+      {event.visual && <pre className="ascii-art">{event.visual}</pre>}
       <h2>{title}</h2>
       {isSlotsGame ? (
         <SlotsGame
