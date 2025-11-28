@@ -11,6 +11,7 @@ const cloneState = (state: GameState): GameState => ({
   flags: { ...state.flags },
   history: [...state.history],
   inventory: [...state.inventory],
+  paths: { ...state.paths },
 });
 
 export const createInitialState = (): GameState => ({
@@ -28,6 +29,13 @@ export const createInitialState = (): GameState => ({
   flags: {},
   history: [],
   inventory: [],
+  paths: {
+    bureaucrat: 0,
+    hustler: 0,
+    shaman: 0,
+    tech: 0,
+    drifter: 0,
+  },
 });
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;

@@ -30,6 +30,11 @@ export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?:
     state.resources[key] += delta ?? 0;
   }
 
+  for (const [path, xp] of Object.entries(choice.xp ?? {})) {
+    const key = path as keyof GameState['paths'];
+    state.paths[key] += xp ?? 0;
+  }
+
   clampResources(state); // Keep resource updates from choices within expected bounds.
 
   if (choice.loot) {

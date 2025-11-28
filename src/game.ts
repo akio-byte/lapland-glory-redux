@@ -35,7 +35,7 @@ while (true) {
   if (event) {
     const { nextState, choice } = applyEvent(state, event);
     state = nextState;
-    logEvent(state, event, choice?.text ?? 'No choice available');
+    logEvent(state, event, choice);
   } else {
     console.log('No event available for this phase.');
   }
