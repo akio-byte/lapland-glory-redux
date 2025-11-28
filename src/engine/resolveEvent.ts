@@ -3,8 +3,37 @@ import { Choice, Event, GameState, Phase } from '../types.js';
 import { pickOne, randomInt } from '../utils/rng.js';
 import { INVENTORY_CAPACITY, addItem, clampResources } from './resources.js';
 
-export const getEventForPhase = (phase: Phase): Event | undefined => {
-  const pool = (events as Event[]).filter((evt) => evt.phase === phase);
+const meetsRequirements = (event: Event, state: GameState): boolean => {
+  const reqs = event.requirements;
+  if (!reqs) return true;
+
+  if (reqs.minAnomaly !== undefined && state.resources.anomaly < reqs.minAnomaly) {
+    return false;
+  }
+
+  if (reqs.maxSanity !== undefined && state.resources.sanity > reqs.maxSanity) {
+    return false;
+  }
+
+  if (reqs.requiredFlag && state.flags[reqs.requiredFlag] !== true) {
+    return false;
+  }
+
+  if (reqs.requiredPath) {
+    const { path, minLevel } = reqs.requiredPath;
+    const currentLevel = state.paths[path as keyof GameState['paths']];
+    if (currentLevel === undefined || currentLevel < minLevel) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const getEventForPhase = (state: GameState, phase: Phase): Event | undefined => {
+  const pool = (events as Event[]).filter(
+    (evt) => evt.phase === phase && meetsRequirements(evt, state)
+  );
   const flavorPool = pool.filter((evt) => evt.family === 'flavor');
   const mainPool = pool.filter((evt) => evt.family !== 'flavor');
 
