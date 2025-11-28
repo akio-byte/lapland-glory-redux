@@ -28,6 +28,7 @@ export const EventView = ({ event, state, onChoose }: Props) => {
         {event.choices.map((choice, idx) => {
           const adapted = maybeDistortText(adaptChoiceLabel(choice.text, state), anomaly);
           const effects = Object.entries(choice.effects);
+          const xpGains = Object.entries(choice.xp ?? {});
 
           return (
             <button
@@ -43,6 +44,17 @@ export const EventView = ({ event, state, onChoose }: Props) => {
                     <span key={resource}>
                       {resource}: {amount > 0 ? '+' : ''}
                       {amount}
+                    </span>
+                  );
+                })}
+                {xpGains.map(([path, xp]) => {
+                  const amount = xp ?? 0;
+                  if (amount === 0) return null;
+                  const formattedPath = `${path.charAt(0).toUpperCase()}${path.slice(1)}`;
+                  return (
+                    <span key={`xp-${path}`} className="xp-gain">
+                      {formattedPath}: {amount > 0 ? '+' : ''}
+                      {amount} XP
                     </span>
                   );
                 })}

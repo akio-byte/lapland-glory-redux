@@ -6,7 +6,7 @@ export const BASE_HEAT_LOSS = -2;
 const BASE_ENERGY_LOSS = -1;
 const SLEEP_RECOVERY = { energy: 10, heat: 3, sanity: 1 } as const;
 
-const getHeatLoss = (state: GameState) => (state.flags.forecast_read ? BASE_HEAT_LOSS + 1 : BASE_HEAT_LOSS);
+const getHeatLoss = (state: GameState) => (state.flags['forecast_read'] ? BASE_HEAT_LOSS + 1 : BASE_HEAT_LOSS);
 
 export const advancePhase = (state: GameState): GameState => {
   const nextState: GameState = {
@@ -39,7 +39,7 @@ export const advancePhase = (state: GameState): GameState => {
       nextState.resources.energy += SLEEP_RECOVERY.energy;
       nextState.resources.heat += SLEEP_RECOVERY.heat;
       nextState.resources.sanity += SLEEP_RECOVERY.sanity;
-      nextState.flags.forecast_read = false;
+      nextState.flags['forecast_read'] = false;
       clampResources(nextState); // Clamp after nightly recovery to keep refreshed values in range.
       nextState.time.day += 1;
       nextState.time.phase = 'DAY';
