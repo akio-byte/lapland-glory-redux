@@ -1,4 +1,5 @@
 export type Phase = 'DAY' | 'NIGHT' | 'SLEEP';
+export type WeatherType = 'CLEAR' | 'SNOWSTORM' | 'FOG' | 'MILD';
 
 export type Resources = {
   money: number;
@@ -25,6 +26,7 @@ export type Item = {
 export type TimeState = {
   day: number;
   phase: Phase;
+  weather: WeatherType;
 };
 
 export type GameState = {

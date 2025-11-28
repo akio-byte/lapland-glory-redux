@@ -12,6 +12,14 @@ import { ShopOverlay } from './ui/ShopOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
+import { WeatherType } from './types.js';
+
+const WEATHER_LABELS: Record<WeatherType, string> = {
+  CLEAR: 'Kirkas',
+  SNOWSTORM: 'Lumimyrsky',
+  FOG: 'Sumu',
+  MILD: 'Leuto',
+};
 
 const App = () => {
   const {
@@ -32,6 +40,7 @@ const App = () => {
   const [shopOpen, setShopOpen] = useState(false);
   const teletextDisabled = state.resources.energy <= 0;
   const shopDisabled = state.time.phase !== 'DAY';
+  const weatherLabel = WEATHER_LABELS[state.time.weather] ?? state.time.weather;
 
   useEffect(() => {
     if (shopDisabled && shopOpen) {
@@ -84,7 +93,7 @@ const App = () => {
     >
       <header className="top-bar">
         <div>
-          <div className="eyebrow">Päivä {state.time.day}</div>
+          <div className="eyebrow">Päivä {state.time.day} ({weatherLabel})</div>
           <div className="phase">{state.time.phase}</div>
         </div>
         <div className="top-bar-actions">

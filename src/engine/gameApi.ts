@@ -31,6 +31,7 @@ export const createInitialState = (): GameState => ({
   time: {
     day: 1,
     phase: 'DAY',
+    weather: 'CLEAR',
   },
   flags: {},
   history: [],
