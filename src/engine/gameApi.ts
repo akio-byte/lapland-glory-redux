@@ -72,6 +72,35 @@ export const addItem = (state: GameState, itemId: string): GameState =>
 export const removeItem = (state: GameState, itemId: string): GameState =>
   removeItemInternal(state, itemId);
 
+export const buyItem = (
+  state: GameState,
+  itemId: string
+): { nextState: GameState; success: boolean; message: string } => {
+  const item = (items as Item[]).find((entry) => entry.id === itemId);
+  if (!item) {
+    return { nextState: state, success: false, message: 'Kioski hämmentyy: tuntematon esine.' };
+  }
+
+  if (state.resources.money < item.price) {
+    return { nextState: state, success: false, message: 'Ei varaa tähän ostokseen.' };
+  }
+
+  if (state.inventory.length >= INVENTORY_CAPACITY) {
+    return { nextState: state, success: false, message: 'Reppu on täynnä.' };
+  }
+
+  const nextState = cloneState(state);
+  nextState.resources.money -= item.price;
+  addItemInternal(nextState, itemId, INVENTORY_CAPACITY);
+  clampResources(nextState);
+
+  return {
+    nextState,
+    success: true,
+    message: `Ostit esineen: ${item.name}.`,
+  };
+};
+
 export const setFlag = (state: GameState, key: string, value: boolean): GameState => {
   if (state.flags[key] === value) return state;
 

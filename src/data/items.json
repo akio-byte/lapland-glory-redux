@@ -4,6 +4,7 @@
     "name": "Nokia 2110",
     "description": "Connecting people. Akku vähissä.",
     "type": "tool",
+    "price": 500,
     "onUse": {
       "effects": { "energy": -2 },
       "flags": { "signal_checked": true },
@@ -16,6 +17,7 @@
     "name": "Taskumatti",
     "description": "Lämmin, polttava, unohtava.",
     "type": "consumable",
+    "price": 40,
     "onUse": {
       "effects": { "heat": 20, "sanity": -5 },
       "consume": true
@@ -25,13 +27,15 @@
     "id": "item_ticket",
     "name": "Seutulippu",
     "description": "Leimattu. Vielä voimassa.",
-    "type": "tool"
+    "type": "tool",
+    "price": 25
   },
   {
     "id": "item_coffee",
     "name": "Termospullo",
     "description": "Haaleaa sumppia.",
     "type": "consumable",
+    "price": 15,
     "onUse": {
       "effects": { "energy": 20, "heat": 5 },
       "consume": true
@@ -41,6 +45,7 @@
     "id": "item_map",
     "name": "Kelkkareittikartta",
     "description": "Suksien mukana taiteltu, vuodelta -95.",
-    "type": "tool"
+    "type": "tool",
+    "price": 10
   }
 ]

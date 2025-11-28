@@ -13,6 +13,7 @@ export type Item = {
   name: string;
   description: string;
   type: 'consumable' | 'tool';
+  price: number;
   onUse?: {
     effects?: Partial<Resources>;
     consume?: boolean;

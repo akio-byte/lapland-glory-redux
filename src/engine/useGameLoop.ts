@@ -5,6 +5,7 @@ import { Choice, Event, GameState } from '../types.js';
 import {
   advancePhase,
   applyEvent,
+  buyItem as buyItemInternal,
   checkEnding,
   createInitialState,
   pickEventForPhase,
@@ -23,6 +24,7 @@ export type GameLoopState = {
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
   setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
+  buyItem: (itemId: string) => void;
   debug: {
     addMoney: () => void;
     restoreSanity: () => void;
@@ -191,6 +193,13 @@ export const useGameLoop = (): GameLoopState => {
     chooseOption,
     spendEnergy,
     setFlag,
+    buyItem: (itemId: string) => {
+      setState((prev) => {
+        const { nextState, message } = buyItemInternal(prev, itemId);
+        setLastMessage(message);
+        return nextState;
+      });
+    },
     useItem: (itemId: string) => {
       setState((prev) => {
         const { nextState, message } = useItem(prev, itemId);
