@@ -117,6 +117,38 @@
     ]
   },
   {
+    "id": "anomaly_santa_glitch",
+    "phase": "NIGHT",
+    "family": "anomaly",
+    "title": "Joulupukki",
+    "description": "Punainen hahmo ilmestyy lumituiskussa ja kumartuu kuin antennia etsien.",
+    "visual": "   * * *\n  /_/\\/\\\\\n (  o o  )\n  |  v  |\n  | [ ] |\n   \\___/",
+    "choices": [
+      {
+        "text": "Kysyt lahjaa",
+        "effects": { "money": 12, "sanity": -4 },
+        "xp": { "hustler": 8 }
+      },
+      {
+        "text": "Seisot hiljaa hänen vierellään",
+        "effects": { "sanity": 6, "anomaly": 6 },
+        "xp": { "shaman": 10 }
+      }
+    ]
+  },
+  {
+    "id": "flavor_forest_whispers",
+    "phase": "NIGHT",
+    "family": "flavor",
+    "title": "Metsän äänet",
+    "description": "Hiljainen metsä humisee kuin modeemi, ja puut ritisevät rytmissä.",
+    "visual": "   /\\   /\\\n  /  \\ /  \\\n / /\\ V /\\ \\\n/ /  \\ /  \\ \\\n  ||   ||\n  ||   ||",
+    "choices": [
+      { "text": "Kuuntelet hetken", "effects": { "sanity": 4 } },
+      { "text": "Nopeat askeleet pois", "effects": { "energy": -4, "anomaly": 2 } }
+    ]
+  },
+  {
     "id": "flavor_day_bus_stop",
     "phase": "DAY",
     "family": "flavor",
