@@ -8,11 +8,23 @@
     "choices": [
       {
         "text": "Täytät lomakkeen huolella",
-        "effects": { "money": -10, "sanity": 5 },
-        "xp": { "bureaucrat": 10 }
+        "effects": {
+          "money": -10,
+          "sanity": 5
+        },
+        "xp": {
+          "bureaucrat": 10
+        }
       },
-      { "text": "Hoputat virkailijaa", "effects": { "sanity": 8, "energy": -5 } }
-    ]
+      {
+        "text": "Hoputat virkailijaa",
+        "effects": {
+          "sanity": 8,
+          "energy": -5
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "paper_support_delay",
@@ -21,9 +33,21 @@
     "title": "Asumistuki viivästyy",
     "description": "Posti tuo ilmoituksen, jossa tuet viivästyvät kuukauden.",
     "choices": [
-      { "text": "Otata pikavippiä", "effects": { "money": 20, "sanity": -6 } },
-      { "text": "Sopeudut tilanteeseen", "effects": { "sanity": 4 } }
-    ]
+      {
+        "text": "Otata pikavippiä",
+        "effects": {
+          "money": 20,
+          "sanity": -6
+        }
+      },
+      {
+        "text": "Sopeudut tilanteeseen",
+        "effects": {
+          "sanity": 4
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "night_cold_streets",
@@ -32,9 +56,24 @@
     "title": "Kylmä yö kaduilla",
     "description": "Pakkanen puree ja päätät miten pysyt lämpimänä.",
     "choices": [
-      { "text": "Ostat kuuman juoman baarista", "effects": { "heat": 15, "money": -10, "sanity": 4 } },
-      { "text": "Juokset pysyäksesi lämpimänä", "effects": { "heat": -10, "energy": -8, "sanity": -4 } }
-    ]
+      {
+        "text": "Ostat kuuman juoman baarista",
+        "effects": {
+          "heat": 15,
+          "money": -10,
+          "sanity": 4
+        }
+      },
+      {
+        "text": "Juokset pysyäksesi lämpimänä",
+        "effects": {
+          "heat": -10,
+          "energy": -8,
+          "sanity": -4
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "night_side_job",
@@ -45,11 +84,23 @@
     "choices": [
       {
         "text": "Otata työn",
-        "effects": { "money": 35, "sanity": -12, "energy": -6 },
-        "xp": { "hustler": 15 }
+        "effects": {
+          "money": 35,
+          "sanity": -12,
+          "energy": -6
+        },
+        "xp": {
+          "hustler": 15
+        }
       },
-      { "text": "Kieltäydyt kohteliaasti", "effects": { "sanity": 6 } }
-    ]
+      {
+        "text": "Kieltäydyt kohteliaasti",
+        "effects": {
+          "sanity": 6
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "night_vip_entry",
@@ -57,10 +108,21 @@
     "family": "nightlife",
     "title": "VIP-sisäänpääsy",
     "description": "Portsari nyökkää sinulle. 'Moro, pitkästä aikaa.' Pääset jonon ohi.",
-    "requirements": { "requiredPath": { "path": "hustler", "minLevel": 10 } },
+    "requirements": {
+      "requiredPath": {
+        "path": "hustler",
+        "minLevel": 10
+      }
+    },
     "choices": [
-      { "text": "Astut sisään VIP-ovesta", "effects": { "sanity": 10 } }
-    ]
+      {
+        "text": "Astut sisään VIP-ovesta",
+        "effects": {
+          "sanity": 10
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "night_corner_slots",
@@ -69,7 +131,13 @@
     "minigame": "slots",
     "title": "Baarin nurkkapöytä",
     "description": "Pajatso kilisee kutsuvasti. Kokeiletko onneasi?",
-    "choices": [{ "text": "Jätät automaatin rauhaan", "effects": {} }]
+    "choices": [
+      {
+        "text": "Jätät automaatin rauhaan",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "survival_dump_shelter",
@@ -80,12 +148,25 @@
     "choices": [
       {
         "text": "Pysähdyt lepäämään",
-        "effects": { "energy": 18, "sanity": -6, "heat": 5 },
-        "xp": { "drifter": 10 },
+        "effects": {
+          "energy": 18,
+          "sanity": -6,
+          "heat": 5
+        },
+        "xp": {
+          "drifter": 10
+        },
         "loot": "item_map"
       },
-      { "text": "Jatkat vaellusta", "effects": { "energy": -10, "heat": -8 } }
-    ]
+      {
+        "text": "Jatkat vaellusta",
+        "effects": {
+          "energy": -10,
+          "heat": -8
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "survival_generator",
@@ -94,9 +175,23 @@
     "title": "Hylätty generaattori",
     "description": "Vanha generaattori voisi lämmittää yön yli.",
     "choices": [
-      { "text": "Tankkaat ja käynnistät", "effects": { "heat": 20, "money": -8, "sanity": 3 } },
-      { "text": "Jätät rauhaan", "effects": { "sanity": -3, "energy": -5 } }
-    ]
+      {
+        "text": "Tankkaat ja käynnistät",
+        "effects": {
+          "heat": 20,
+          "money": -8,
+          "sanity": 3
+        }
+      },
+      {
+        "text": "Jätät rauhaan",
+        "effects": {
+          "sanity": -3,
+          "energy": -5
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "forest_signal",
@@ -104,17 +199,26 @@
     "family": "anomaly",
     "title": "Kummallinen kuuluvuus",
     "description": "Puhelimeen yritettiin soittaa äsken, vaikka kenttää ei ollut.",
-    "requirements": { "requiredFlag": "signal_checked" },
+    "requirements": {
+      "requiredFlag": "signal_checked"
+    },
     "choices": [
       {
         "text": "Kuuntelet viestin loppuun",
-        "effects": { "sanity": -2, "anomaly": 4 }
+        "effects": {
+          "sanity": -2,
+          "anomaly": 4
+        }
       },
       {
         "text": "Katkaiset puhelun",
-        "effects": { "sanity": 2, "energy": -2 }
+        "effects": {
+          "sanity": 2,
+          "energy": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "anomaly_santa_glitch",
@@ -126,15 +230,26 @@
     "choices": [
       {
         "text": "Kysyt lahjaa",
-        "effects": { "money": 12, "sanity": -4 },
-        "xp": { "hustler": 8 }
+        "effects": {
+          "money": 12,
+          "sanity": -4
+        },
+        "xp": {
+          "hustler": 8
+        }
       },
       {
         "text": "Seisot hiljaa hänen vierellään",
-        "effects": { "sanity": 6, "anomaly": 6 },
-        "xp": { "shaman": 10 }
+        "effects": {
+          "sanity": 6,
+          "anomaly": 6
+        },
+        "xp": {
+          "shaman": 10
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "flavor_forest_whispers",
@@ -144,9 +259,21 @@
     "description": "Hiljainen metsä humisee kuin modeemi, ja puut ritisevät rytmissä.",
     "visual": "   /\\   /\\\n  /  \\ /  \\\n / /\\ V /\\ \\\n/ /  \\ /  \\ \\\n  ||   ||\n  ||   ||",
     "choices": [
-      { "text": "Kuuntelet hetken", "effects": { "sanity": 4 } },
-      { "text": "Nopeat askeleet pois", "effects": { "energy": -4, "anomaly": 2 } }
-    ]
+      {
+        "text": "Kuuntelet hetken",
+        "effects": {
+          "sanity": 4
+        }
+      },
+      {
+        "text": "Nopeat askeleet pois",
+        "effects": {
+          "energy": -4,
+          "anomaly": 2
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "flavor_day_bus_stop",
@@ -154,7 +281,13 @@
     "family": "flavor",
     "title": "Tyhjä pysäkki",
     "description": "Seisot pysäkillä. Bussi ei tule. Savu leijailee hiljaa.",
-    "choices": [{ "text": "Odotat hiljaa", "effects": {} }]
+    "choices": [
+      {
+        "text": "Odotat hiljaa",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "flavor_day_empty_mall",
@@ -162,7 +295,15 @@
     "family": "flavor",
     "title": "Hiljainen kauppakeskus",
     "description": "Käytävät kumisevat tyhjyyttään. Joulukoristeet roikkuvat vinossa.",
-    "choices": [{ "text": "Kävelet läpi", "effects": { "energy": 0 } }]
+    "choices": [
+      {
+        "text": "Kävelet läpi",
+        "effects": {
+          "energy": 0
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "flavor_day_radio_static",
@@ -170,7 +311,13 @@
     "family": "flavor",
     "title": "Rätisevä radiokanava",
     "description": "Vanha kelloradio yrittää löytää taajuutta. Et tiedä, onko se uutisia vai kohinaa.",
-    "choices": [{ "text": "Kuuntelet hetken", "effects": {} }]
+    "choices": [
+      {
+        "text": "Kuuntelet hetken",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "flavor_night_lamp",
@@ -178,7 +325,13 @@
     "family": "flavor",
     "title": "Vilkkuva katulamppu",
     "description": "Valon välähdykset pysähtyvät hetkeksi, kuin joku katsoisi takaisin.",
-    "choices": [{ "text": "Jäädyt paikoillesi", "effects": {} }]
+    "choices": [
+      {
+        "text": "Jäädyt paikoillesi",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "flavor_night_train_whistle",
@@ -186,7 +339,15 @@
     "family": "flavor",
     "title": "Yön junapilli",
     "description": "Kaukainen vihellys kantautuu sumuisen aseman yli. Raiteet ovat ruosteessa.",
-    "choices": [{ "text": "Lasket askeleesi", "effects": { "sanity": 0 } }]
+    "choices": [
+      {
+        "text": "Lasket askeleesi",
+        "effects": {
+          "sanity": 0
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "snowstorm_lost_tracks",
@@ -194,18 +355,31 @@
     "family": "survival",
     "title": "Lumimyrskyeksyminen",
     "description": "Reittipaalut katoavat valkoiseen seinään ja tuuli painaa sinut poluille, joita et tunne.",
-    "requirements": { "weather": "SNOWSTORM" },
+    "requirements": {
+      "weather": "SNOWSTORM"
+    },
     "choices": [
       {
         "text": "Seuraat kelkkajälkiä sokkona",
-        "effects": { "energy": -12, "sanity": -6, "heat": -10 },
-        "xp": { "drifter": 12 }
+        "effects": {
+          "energy": -12,
+          "sanity": -6,
+          "heat": -10
+        },
+        "xp": {
+          "drifter": 12
+        }
       },
       {
         "text": "Kaivat lumen alle kuopan suojaksi",
-        "effects": { "energy": -6, "heat": -4, "sanity": 4 }
+        "effects": {
+          "energy": -6,
+          "heat": -4,
+          "sanity": 4
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "snowstorm_train_shelter",
@@ -213,18 +387,32 @@
     "family": "survival",
     "title": "Hylätty tavaravaunu",
     "description": "Löydät lumen hautaaman junavaunun. Sisällä on lämmön haju ja vanha nuotion hiillos.",
-    "requirements": { "weather": "SNOWSTORM", "requiredItem": "item_ticket" },
+    "requirements": {
+      "weather": "SNOWSTORM",
+      "requiredItem": "item_ticket"
+    },
     "choices": [
       {
         "text": "Näytät lipun lipuntarkastajan henkeä kunnioittaen ja nukut rauhassa",
-        "effects": { "energy": 16, "heat": 18, "sanity": 6 },
-        "xp": { "drifter": 8 }
+        "effects": {
+          "energy": 16,
+          "heat": 18,
+          "sanity": 6
+        },
+        "xp": {
+          "drifter": 8
+        }
       },
       {
         "text": "Pelkäät tarkastajaa ja jatkat",
-        "effects": { "energy": -8, "heat": -12, "sanity": -3 }
+        "effects": {
+          "energy": -8,
+          "heat": -12,
+          "sanity": -3
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "fog_reindeer_spirit",
@@ -232,18 +420,33 @@
     "family": "anomaly",
     "title": "Sumun porohenki",
     "description": "Sumusta astuu poro, jonka sarvissa roikkuu ledejä ja vanhoja radiopiirejä.",
-    "requirements": { "weather": "FOG", "requiredPath": { "path": "shaman", "minLevel": 15 } },
+    "requirements": {
+      "weather": "FOG",
+      "requiredPath": {
+        "path": "shaman",
+        "minLevel": 15
+      }
+    },
     "choices": [
       {
         "text": "Kosketat sarvia",
-        "effects": { "anomaly": 8, "sanity": -6 },
-        "xp": { "shaman": 12 }
+        "effects": {
+          "anomaly": 8,
+          "sanity": -6
+        },
+        "xp": {
+          "shaman": 12
+        }
       },
       {
         "text": "Nostat hattua ja peräännyt",
-        "effects": { "sanity": 4, "energy": -4 }
+        "effects": {
+          "sanity": 4,
+          "energy": -4
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "mild_slush_street",
@@ -251,18 +454,29 @@
     "family": "survival",
     "title": "Loskakatu",
     "description": "Loska imeytyy sukkien läpi ja kengät painavat tonnin.",
-    "requirements": { "weather": "MILD" },
+    "requirements": {
+      "weather": "MILD"
+    },
     "choices": [
       {
         "text": "Hyppäät lätäköiden yli",
-        "effects": { "energy": -5, "sanity": 3 },
-        "xp": { "drifter": 6 }
+        "effects": {
+          "energy": -5,
+          "sanity": 3
+        },
+        "xp": {
+          "drifter": 6
+        }
       },
       {
         "text": "Kävelet välinpitämättömänä",
-        "effects": { "heat": -6, "sanity": -2 }
+        "effects": {
+          "heat": -6,
+          "sanity": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "clear_aurora_bet",
@@ -270,18 +484,29 @@
     "family": "nightlife",
     "title": "Revontulivedonlyönti",
     "description": "Baari järjestää vedonlyönnin siitä, kuinka pitkälle revontulet tänä yönä leviävät.",
-    "requirements": { "weather": "CLEAR" },
+    "requirements": {
+      "weather": "CLEAR"
+    },
     "choices": [
       {
         "text": "Lyöt rohkean vedon",
-        "effects": { "money": 25, "sanity": 5 },
-        "xp": { "hustler": 12 }
+        "effects": {
+          "money": 25,
+          "sanity": 5
+        },
+        "xp": {
+          "hustler": 12
+        }
       },
       {
         "text": "Pidät rahat taskussa",
-        "effects": { "sanity": 3, "money": 0 }
+        "effects": {
+          "sanity": 3,
+          "money": 0
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "hustler_boardroom_push",
@@ -289,18 +514,32 @@
     "family": "paperwar",
     "title": "Bisnesneuvottelu",
     "description": "Nokia-huumassa sijoittajat kuuntelevat sinua varovasti.",
-    "requirements": { "requiredPath": { "path": "hustler", "minLevel": 20 } },
+    "requirements": {
+      "requiredPath": {
+        "path": "hustler",
+        "minLevel": 20
+      }
+    },
     "choices": [
       {
         "text": "Piirrät myyntikäyrät servetille",
-        "effects": { "money": 60, "sanity": -4, "energy": -6 },
-        "xp": { "hustler": 12 }
+        "effects": {
+          "money": 60,
+          "sanity": -4,
+          "energy": -6
+        },
+        "xp": {
+          "hustler": 12
+        }
       },
       {
         "text": "Kieltäydyt myymästä vielä",
-        "effects": { "sanity": 8 }
+        "effects": {
+          "sanity": 8
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "shaman_dream_guide",
@@ -308,19 +547,36 @@
     "family": "anomaly",
     "title": "Shamaanin uni",
     "description": "Kaamoksen sininen välke muuttuu ketuksi, joka johdattaa sinut halki unen.",
-    "requirements": { "requiredPath": { "path": "shaman", "minLevel": 15 } },
+    "requirements": {
+      "requiredPath": {
+        "path": "shaman",
+        "minLevel": 15
+      }
+    },
     "choices": [
       {
         "text": "Seuraat kettua syvemmälle",
-        "effects": { "sanity": -4, "anomaly": 6, "energy": 10 },
-        "xp": { "shaman": 14 }
+        "effects": {
+          "sanity": -4,
+          "anomaly": 6,
+          "energy": 10
+        },
+        "xp": {
+          "shaman": 14
+        }
       },
       {
         "text": "Heräät ja kirjoitat kaiken ylös",
-        "effects": { "sanity": 6, "energy": 6 },
-        "xp": { "tech": 6 }
+        "effects": {
+          "sanity": 6,
+          "energy": 6
+        },
+        "xp": {
+          "tech": 6
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "tech_found_floppy",
@@ -331,14 +587,23 @@
     "choices": [
       {
         "text": "Takataskuun heti",
-        "effects": { "energy": -2, "sanity": 2 },
-        "flags": { "found_disk": true }
+        "effects": {
+          "energy": -2,
+          "sanity": 2
+        },
+        "flags": {
+          "found_disk": true
+        }
       },
       {
         "text": "Rikot levyn kahteen osaan",
-        "effects": { "sanity": 4, "anomaly": -2 }
+        "effects": {
+          "sanity": 4,
+          "anomaly": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/nokia_2110.jpg"
   },
   {
     "id": "tech_modem_hacking",
@@ -346,19 +611,33 @@
     "family": "anomaly",
     "title": "Tietokonepurkki",
     "description": "Kellarissa hurisee 14.4k modeemi. Floppy heiluu kelmeässä valossa.",
-    "requirements": { "requiredFlag": "found_disk" },
+    "requirements": {
+      "requiredFlag": "found_disk"
+    },
     "choices": [
       {
         "text": "Syötät disketin ja muodostat yhteyden",
-        "effects": { "sanity": -4, "anomaly": 10, "energy": -6 },
-        "xp": { "tech": 18 }
+        "effects": {
+          "sanity": -4,
+          "anomaly": 10,
+          "energy": -6
+        },
+        "xp": {
+          "tech": 18
+        }
       },
       {
         "text": "Kirjoitat levystä muistiin",
-        "effects": { "sanity": 6, "energy": 4 },
-        "xp": { "bureaucrat": 8 }
+        "effects": {
+          "sanity": 6,
+          "energy": 4
+        },
+        "xp": {
+          "bureaucrat": 8
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/nokia_2110.jpg"
   },
   {
     "id": "nokia_rooftop_signal",
@@ -366,19 +645,36 @@
     "family": "flavor",
     "title": "Katon signaalipiikki",
     "description": "Kiipeät katolle ja Nokia 2110 löytää hetkeksi täydet palkit.",
-    "requirements": { "requiredItem": "item_nokia", "weather": ["CLEAR", "MILD"] },
+    "requirements": {
+      "requiredItem": "item_nokia",
+      "weather": [
+        "CLEAR",
+        "MILD"
+      ]
+    },
     "choices": [
       {
         "text": "Soitat kaverille Etelä-Suomeen",
-        "effects": { "sanity": 6, "energy": -4 },
-        "xp": { "drifter": 4 }
+        "effects": {
+          "sanity": 6,
+          "energy": -4
+        },
+        "xp": {
+          "drifter": 4
+        }
       },
       {
         "text": "Skannaat taajuudet",
-        "effects": { "anomaly": 4, "energy": -2 },
-        "xp": { "tech": 10 }
+        "effects": {
+          "anomaly": 4,
+          "energy": -2
+        },
+        "xp": {
+          "tech": 10
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/nokia_2110.jpg"
   },
   {
     "id": "booze_alley_confession",
@@ -386,19 +682,32 @@
     "family": "nightlife",
     "title": "Taskumatti ja tunnustus",
     "description": "Spurgu huomaa taskumattisi ja haluaa kertoa salaisuuden Vastuksen tehtaasta.",
-    "requirements": { "requiredItem": "item_booze" },
+    "requirements": {
+      "requiredItem": "item_booze"
+    },
     "choices": [
       {
         "text": "Jaetaan lämmikettä",
-        "effects": { "sanity": 4, "heat": 6 },
-        "xp": { "drifter": 6 },
-        "flags": { "alley_confidant": true }
+        "effects": {
+          "sanity": 4,
+          "heat": 6
+        },
+        "xp": {
+          "drifter": 6
+        },
+        "flags": {
+          "alley_confidant": true
+        }
       },
       {
         "text": "Piilotat pullon",
-        "effects": { "sanity": -3, "heat": -4 }
+        "effects": {
+          "sanity": -3,
+          "heat": -4
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "ticket_bus_inspection",
@@ -406,18 +715,29 @@
     "family": "paperwar",
     "title": "Bussitarkastus",
     "description": "Lipuntarkastaja nousee pakkasessa tärisevään bussiin.",
-    "requirements": { "requiredItem": "item_ticket" },
+    "requirements": {
+      "requiredItem": "item_ticket"
+    },
     "choices": [
       {
         "text": "Näytät leimatun seutulipun",
-        "effects": { "sanity": 5, "energy": -2 }
+        "effects": {
+          "sanity": 5,
+          "energy": -2
+        }
       },
       {
         "text": "Keskustelet tarkastajan kanssa työpaikoista",
-        "effects": { "sanity": 4, "money": -5 },
-        "xp": { "bureaucrat": 8 }
+        "effects": {
+          "sanity": 4,
+          "money": -5
+        },
+        "xp": {
+          "bureaucrat": 8
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "map_frozen_shortcut",
@@ -425,18 +745,31 @@
     "family": "survival",
     "title": "Karttamerkitty oikopolku",
     "description": "Kelkkareittikartta näyttää lyhyemmän reitin lumihankien läpi.",
-    "requirements": { "requiredItem": "item_map", "weather": "SNOWSTORM" },
+    "requirements": {
+      "requiredItem": "item_map",
+      "weather": "SNOWSTORM"
+    },
     "choices": [
       {
         "text": "Uskallat oikaista",
-        "effects": { "energy": -8, "heat": -4, "sanity": 5 },
-        "xp": { "drifter": 10 }
+        "effects": {
+          "energy": -8,
+          "heat": -4,
+          "sanity": 5
+        },
+        "xp": {
+          "drifter": 10
+        }
       },
       {
         "text": "Pysyt päätien varrella",
-        "effects": { "energy": -2, "sanity": -2 }
+        "effects": {
+          "energy": -2,
+          "sanity": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "coffee_night_coding",
@@ -444,19 +777,34 @@
     "family": "anomaly",
     "title": "Kaamoskoodaus",
     "description": "Termospullon kahvi pitää sinut hereillä, kun naputat koodia Y2K-bugeja vastaan.",
-    "requirements": { "requiredItem": "item_coffee" },
+    "requirements": {
+      "requiredItem": "item_coffee"
+    },
     "choices": [
       {
         "text": "Kirjoitat yö läpeensä",
-        "effects": { "energy": -10, "sanity": -4 },
-        "xp": { "tech": 16 }
+        "effects": {
+          "energy": -10,
+          "sanity": -4
+        },
+        "xp": {
+          "tech": 16
+        }
       },
       {
         "text": "Lähetät patchin BBS:ään",
-        "effects": { "anomaly": 4, "energy": -4, "sanity": 6 },
-        "xp": { "tech": 8, "hustler": 6 }
+        "effects": {
+          "anomaly": 4,
+          "energy": -4,
+          "sanity": 6
+        },
+        "xp": {
+          "tech": 8,
+          "hustler": 6
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/nokia_2110.jpg"
   },
   {
     "id": "paper_bank_refusal",
@@ -467,14 +815,22 @@
     "choices": [
       {
         "text": "Vedät esiin Excel-projeksion",
-        "effects": { "sanity": -4, "money": 15 },
-        "xp": { "bureaucrat": 10 }
+        "effects": {
+          "sanity": -4,
+          "money": 15
+        },
+        "xp": {
+          "bureaucrat": 10
+        }
       },
       {
         "text": "Hyväksyt päätöksen",
-        "effects": { "sanity": 6 }
+        "effects": {
+          "sanity": 6
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "paper_training_course",
@@ -482,18 +838,32 @@
     "family": "paperwar",
     "title": "Koulutustuki",
     "description": "Työvoimatoimisto tarjoaa atk-kurssia, jos jaksat täyttää lomakkeet.",
-    "requirements": { "requiredPath": { "path": "bureaucrat", "minLevel": 10 } },
+    "requirements": {
+      "requiredPath": {
+        "path": "bureaucrat",
+        "minLevel": 10
+      }
+    },
     "choices": [
       {
         "text": "Täytät jokaisen kohdan",
-        "effects": { "energy": -6, "sanity": 3 },
-        "xp": { "tech": 10, "bureaucrat": 8 }
+        "effects": {
+          "energy": -6,
+          "sanity": 3
+        },
+        "xp": {
+          "tech": 10,
+          "bureaucrat": 8
+        }
       },
       {
         "text": "Pyydät lisäaikaa",
-        "effects": { "sanity": 4 }
+        "effects": {
+          "sanity": 4
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "nightlife_rave_bunker",
@@ -501,19 +871,32 @@
     "family": "nightlife",
     "title": "Sumubunkkeri",
     "description": "Vanhan tehdashallin kellariin on järjestetty rave. Savukone ja sumu piilottavat kasvot.",
-    "requirements": { "weather": "FOG" },
+    "requirements": {
+      "weather": "FOG"
+    },
     "choices": [
       {
         "text": "Sukellat tanssilattialle",
-        "effects": { "energy": -8, "sanity": 10 },
-        "xp": { "drifter": 8 }
+        "effects": {
+          "energy": -8,
+          "sanity": 10
+        },
+        "xp": {
+          "drifter": 8
+        }
       },
       {
         "text": "Myyt itse poltettuja C-kasetteja",
-        "effects": { "money": 25, "sanity": -2 },
-        "xp": { "hustler": 14 }
+        "effects": {
+          "money": 25,
+          "sanity": -2
+        },
+        "xp": {
+          "hustler": 14
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "survival_ice_fishing",
@@ -521,19 +904,36 @@
     "family": "survival",
     "title": "Jääpylkky",
     "description": "Iso kala vilahtaa avannossa, mutta jää on ohutta ja tuuli kova.",
-    "requirements": { "weather": ["CLEAR", "MILD"] },
+    "requirements": {
+      "weather": [
+        "CLEAR",
+        "MILD"
+      ]
+    },
     "choices": [
       {
         "text": "Porat reiän ja pilkit",
-        "effects": { "energy": -10, "heat": -6, "sanity": 6 },
-        "xp": { "drifter": 12 }
+        "effects": {
+          "energy": -10,
+          "heat": -6,
+          "sanity": 6
+        },
+        "xp": {
+          "drifter": 12
+        }
       },
       {
         "text": "Myyt kalat torille heti",
-        "effects": { "money": 18, "sanity": 2 },
-        "xp": { "hustler": 10 }
+        "effects": {
+          "money": 18,
+          "sanity": 2
+        },
+        "xp": {
+          "hustler": 10
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "survival_cabin_shelter",
@@ -541,18 +941,31 @@
     "family": "survival",
     "title": "Hylätty mökki",
     "description": "Vanhassa mökissä on vielä sauna lämmin, mutta kiuas on halkeillut.",
-    "requirements": { "weather": "CLEAR" },
+    "requirements": {
+      "weather": "CLEAR"
+    },
     "choices": [
       {
         "text": "Hakkaat lisää puita ja saunot",
-        "effects": { "heat": 20, "energy": 12, "sanity": 10 },
-        "xp": { "shaman": 6 }
+        "effects": {
+          "heat": 20,
+          "energy": 12,
+          "sanity": 10
+        },
+        "xp": {
+          "shaman": 6
+        }
       },
       {
         "text": "Nukut lattialla ilman tulta",
-        "effects": { "energy": 8, "heat": -6, "sanity": -2 }
+        "effects": {
+          "energy": 8,
+          "heat": -6,
+          "sanity": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "anomaly_static_tv",
@@ -560,18 +973,29 @@
     "family": "anomaly",
     "title": "Hiljainen televisio",
     "description": "Vanha putkitelkkari käynnistyy itsestään. Kuvassa näkyy tyhjä Rovaniemen tori.",
-    "requirements": { "maxSanity": 40 },
+    "requirements": {
+      "maxSanity": 40
+    },
     "choices": [
       {
         "text": "Tuijotat lähetystä",
-        "effects": { "sanity": -6, "anomaly": 6 },
-        "xp": { "shaman": 6 }
+        "effects": {
+          "sanity": -6,
+          "anomaly": 6
+        },
+        "xp": {
+          "shaman": 6
+        }
       },
       {
         "text": "Käännät virran pois seinästä",
-        "effects": { "sanity": 4, "energy": -2 }
+        "effects": {
+          "sanity": 4,
+          "energy": -2
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "anomaly_aurora_chant",
@@ -579,19 +1003,36 @@
     "family": "anomaly",
     "title": "Kaamosmantra",
     "description": "Revontulet aaltoilevat ja kuulet vanhan joikon, joka soi suoraan selkäytimeen.",
-    "requirements": { "weather": "CLEAR", "requiredPath": { "path": "shaman", "minLevel": 10 } },
+    "requirements": {
+      "weather": "CLEAR",
+      "requiredPath": {
+        "path": "shaman",
+        "minLevel": 10
+      }
+    },
     "choices": [
       {
         "text": "Vastaat joikuun",
-        "effects": { "anomaly": 10, "sanity": -4 },
-        "xp": { "shaman": 14 }
+        "effects": {
+          "anomaly": 10,
+          "sanity": -4
+        },
+        "xp": {
+          "shaman": 14
+        }
       },
       {
         "text": "Nauhoitat kasetille",
-        "effects": { "sanity": 6, "energy": -4 },
-        "xp": { "tech": 10 }
+        "effects": {
+          "sanity": 6,
+          "energy": -4
+        },
+        "xp": {
+          "tech": 10
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "flavor_kiosk_coin",
@@ -600,9 +1041,20 @@
     "title": "Kioskikolikko",
     "description": "Löydät lumesta kymmensentin kolikon. 90-luvun Kolikkoautomaatit muistuvat mieleen.",
     "choices": [
-      { "text": "Liukastat kolikon taskuun", "effects": { "money": 1 } },
-      { "text": "Käännät katseen automaatille", "effects": { "sanity": -1 } }
-    ]
+      {
+        "text": "Liukastat kolikon taskuun",
+        "effects": {
+          "money": 1
+        }
+      },
+      {
+        "text": "Käännät katseen automaatille",
+        "effects": {
+          "sanity": -1
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "flavor_snow_radio",
@@ -610,8 +1062,18 @@
     "family": "flavor",
     "title": "Lumis radion ruuhka",
     "description": "Antenni rahisee ja uutislähetys puhuu vain pörssikursseista, joita kukaan ei enää seuraa.",
-    "requirements": { "weather": "SNOWSTORM" },
-    "choices": [{ "text": "Käännät nuppia", "effects": { "sanity": -1 } }]
+    "requirements": {
+      "weather": "SNOWSTORM"
+    },
+    "choices": [
+      {
+        "text": "Käännät nuppia",
+        "effects": {
+          "sanity": -1
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.jpg"
   },
   {
     "id": "hustler_blackmarket_batteries",
@@ -619,19 +1081,37 @@
     "family": "nightlife",
     "title": "Pimeät paristot",
     "description": "Kellarikuppilan takahuoneessa myydään 'ruotsalaisia' paristoja, joiden väitetään kestävän pakkasta.",
-    "requirements": { "requiredPath": { "path": "hustler", "minLevel": 15 }, "requiredItem": "item_nokia" },
+    "requirements": {
+      "requiredPath": {
+        "path": "hustler",
+        "minLevel": 15
+      },
+      "requiredItem": "item_nokia"
+    },
     "choices": [
       {
         "text": "Tiskiin pari seteliä",
-        "effects": { "money": -20, "sanity": 4, "energy": -2 },
-        "xp": { "hustler": 10 }
+        "effects": {
+          "money": -20,
+          "sanity": 4,
+          "energy": -2
+        },
+        "xp": {
+          "hustler": 10
+        }
       },
       {
         "text": "Neuvottelet jälleenmyynnistä",
-        "effects": { "money": 40, "sanity": -4 },
-        "xp": { "hustler": 16 }
+        "effects": {
+          "money": 40,
+          "sanity": -4
+        },
+        "xp": {
+          "hustler": 16
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/r-kioski.jpg"
   },
   {
     "id": "shaman_sauna_ritual",
@@ -639,18 +1119,35 @@
     "family": "anomaly",
     "title": "Saunaloitsu",
     "description": "Mökin kiukaasta nouseva löyly piirtää ilmassa merkkejä, joita vanha isoäiti kuiskasi.",
-    "requirements": { "weather": "MILD", "requiredPath": { "path": "shaman", "minLevel": 12 } },
+    "requirements": {
+      "weather": "MILD",
+      "requiredPath": {
+        "path": "shaman",
+        "minLevel": 12
+      }
+    },
     "choices": [
       {
         "text": "Heität varovasti vettä",
-        "effects": { "sanity": 8, "anomaly": 4, "energy": 6 },
-        "xp": { "shaman": 12 }
+        "effects": {
+          "sanity": 8,
+          "anomaly": 4,
+          "energy": 6
+        },
+        "xp": {
+          "shaman": 12
+        }
       },
       {
         "text": "Antautut löylylle",
-        "effects": { "sanity": -2, "anomaly": 8, "heat": 10 }
+        "effects": {
+          "sanity": -2,
+          "anomaly": 8,
+          "heat": 10
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   },
   {
     "id": "drifter_moose_encounter",
@@ -658,18 +1155,34 @@
     "family": "survival",
     "title": "Hirvi tienposkessa",
     "description": "Hirvi tuijottaa sinua sumuisen tien laidalta, eikä autoja näy missään.",
-    "requirements": { "weather": ["FOG", "CLEAR"] },
+    "requirements": {
+      "weather": [
+        "FOG",
+        "CLEAR"
+      ]
+    },
     "choices": [
       {
         "text": "Kunnioitat välimatkaa",
-        "effects": { "sanity": 4, "energy": -2 },
-        "xp": { "drifter": 6 }
+        "effects": {
+          "sanity": 4,
+          "energy": -2
+        },
+        "xp": {
+          "drifter": 6
+        }
       },
       {
         "text": "Yrität ohittaa hiljaa",
-        "effects": { "energy": -6, "heat": -2 },
-        "xp": { "drifter": 8 }
+        "effects": {
+          "energy": -6,
+          "heat": -2
+        },
+        "xp": {
+          "drifter": 8
+        }
       }
-    ]
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
   }
 ]
