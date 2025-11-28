@@ -12,6 +12,7 @@ import { ShopOverlay } from './ui/ShopOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
+import { BackgroundVideo } from './ui/BackgroundVideo.js';
 import { WeatherType } from './types.js';
 import { useSound } from './hooks/useSound.js';
 
@@ -136,6 +137,7 @@ const App = () => {
         '--anomaly': theme.anomalyLevel,
       }}
     >
+      <BackgroundVideo anomaly={state.resources.anomaly} />
       <header className="top-bar">
         <div>
           <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>

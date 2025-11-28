@@ -52,6 +52,7 @@ export type Event = {
   family: 'paperwar' | 'nightlife' | 'survival' | 'flavor' | 'anomaly';
   title: string;
   description: string;
+  imageSrc?: string;
   visual?: string;
   minigame?: 'slots' | 'hack';
   choices: Choice[];

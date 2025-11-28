@@ -23,6 +23,7 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney }: Props) => {
       <div className="eyebrow">{event.family}</div>
       {event.visual && <pre className="ascii-art">{event.visual}</pre>}
       <h2>{title}</h2>
+      {event.imageSrc && <img className="event-image" src={event.imageSrc} alt={event.title} />}
       {isSlotsGame ? (
         <SlotsGame
           money={state.resources.money}
