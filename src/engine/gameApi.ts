@@ -72,6 +72,14 @@ export const addItem = (state: GameState, itemId: string): GameState =>
 export const removeItem = (state: GameState, itemId: string): GameState =>
   removeItemInternal(state, itemId);
 
+export const setFlag = (state: GameState, key: string, value: boolean): GameState => {
+  if (state.flags[key] === value) return state;
+
+  const nextState = cloneState(state);
+  nextState.flags[key] = value;
+  return nextState;
+};
+
 export const useItem = (state: GameState, itemId: string): { nextState: GameState; message: string } => {
   const itemData = (items as Item[]).find((item) => item.id === itemId);
   if (!itemData) {

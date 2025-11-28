@@ -8,6 +8,7 @@ import {
   checkEnding,
   createInitialState,
   pickEventForPhase,
+  setFlag as setFlagInternal,
   useItem,
 } from './gameApi.js';
 import { clampResources } from './resources.js';
@@ -20,6 +21,7 @@ export type GameLoopState = {
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
+  setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
   debug: {
     addMoney: () => void;
@@ -112,6 +114,10 @@ export const useGameLoop = (): GameLoopState => {
     return allowed;
   };
 
+  const setFlag = (key: string, value: boolean) => {
+    setState((prev) => setFlagInternal(prev, key, value));
+  };
+
   useEffect(() => {
     startNewGame();
   }, []);
@@ -184,6 +190,7 @@ export const useGameLoop = (): GameLoopState => {
     startNewGame,
     chooseOption,
     spendEnergy,
+    setFlag,
     useItem: (itemId: string) => {
       setState((prev) => {
         const { nextState, message } = useItem(prev, itemId);

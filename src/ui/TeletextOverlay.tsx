@@ -13,6 +13,7 @@ type TeletextOverlayProps = {
   energy: number;
   onClose: () => void;
   onNavigateCost: (note?: string, exhaustedNote?: string) => boolean;
+  onSetFlag: (key: string, value: boolean) => void;
 };
 
 const formatDateForPage = (day: number) => {
@@ -95,6 +96,7 @@ export const TeletextOverlay = ({
   energy,
   onClose,
   onNavigateCost,
+  onSetFlag,
 }: TeletextOverlayProps) => {
   const [page, setPage] = useState<number>(100);
   const [pageInput, setPageInput] = useState<string>('100');
@@ -115,6 +117,12 @@ export const TeletextOverlay = ({
     setPage(target);
     setPageInput(String(target));
     setStatus(`SIVU ${target}`);
+
+    if (target === 202) {
+      onSetFlag('forecast_read', true);
+    } else if (target === 333) {
+      onSetFlag('job_market_checked', true);
+    }
   };
 
   const handleSubmit = (ev: FormEvent) => {
