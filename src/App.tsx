@@ -10,9 +10,10 @@ import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
 import { TeletextOverlay } from './ui/TeletextOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
+import { DebugPanel } from './ui/DebugPanel.js';
 
 const App = () => {
-  const { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption, spendEnergy } =
+  const { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption, spendEnergy, debug } =
     useGameLoop();
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
@@ -92,6 +93,7 @@ const App = () => {
       </footer>
 
       <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
+      <DebugPanel state={state} actions={debug} />
       {teletextOpen && (
         <TeletextOverlay
           day={state.time.day}
