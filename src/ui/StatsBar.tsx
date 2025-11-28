@@ -10,6 +10,7 @@ type Props = {
   phase: Phase;
   anomaly: number;
   inventory: string[];
+  onUseItem: (itemId: string) => void;
 };
 
 const ResourceBar = ({ label, value, danger }: { label: string; value: number; danger?: boolean }) => (
@@ -24,7 +25,7 @@ const ResourceBar = ({ label, value, danger }: { label: string; value: number; d
   </div>
 );
 
-export const StatsBar = ({ resources, phase, anomaly, inventory }: Props) => {
+export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Props) => {
   const [fakeStat, setFakeStat] = useState<{ field: keyof Resources; value: number } | null>(null);
   const prevPhase = useRef<string | null>(null);
 
@@ -78,16 +79,20 @@ export const StatsBar = ({ resources, phase, anomaly, inventory }: Props) => {
           {slots.map((itemId, idx) => {
             const item = itemId ? itemLookup[itemId] : undefined;
             return (
-              <div
+              <button
                 key={`${itemId ?? 'tyhjä'}-${idx}`}
                 className={`inventory-slot ${item ? 'filled' : 'empty'}`}
                 title={item?.description ?? 'Tyhjä paikka'}
+                type="button"
+                disabled={!item}
+                onClick={item ? () => onUseItem(item.id) : undefined}
+                aria-label={item ? `${item.name} (${item.type === 'tool' ? 'työkalu' : 'kulutus'})` : 'Tyhjä paikka'}
               >
                 <span className="inventory-bracket">[</span>
                 <span className="inventory-slot-text">{item?.name ?? ' '}</span>
                 <span className="inventory-bracket">]</span>
                 <span className="inventory-slot-type">{item ? (item.type === 'tool' ? 'työkalu' : 'kulutus') : ''}</span>
-              </div>
+              </button>
             );
           })}
         </div>

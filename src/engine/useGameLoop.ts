@@ -8,6 +8,7 @@ import {
   checkEnding,
   createInitialState,
   pickEventForPhase,
+  useItem,
 } from './gameApi.js';
 import { clampResources } from './resources.js';
 
@@ -19,6 +20,7 @@ export type GameLoopState = {
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
+  useItem: (itemId: string) => void;
   debug: {
     addMoney: () => void;
     restoreSanity: () => void;
@@ -182,6 +184,13 @@ export const useGameLoop = (): GameLoopState => {
     startNewGame,
     chooseOption,
     spendEnergy,
+    useItem: (itemId: string) => {
+      setState((prev) => {
+        const { nextState, message } = useItem(prev, itemId);
+        setLastMessage(message);
+        return nextState;
+      });
+    },
     debug: {
       addMoney,
       restoreSanity,
