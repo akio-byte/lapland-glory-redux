@@ -45,7 +45,7 @@ export type Choice = {
 export type Event = {
   id: string;
   phase: Phase;
-  family: 'paperwar' | 'nightlife' | 'survival' | 'flavor';
+  family: 'paperwar' | 'nightlife' | 'survival' | 'flavor' | 'anomaly';
   title: string;
   description: string;
   choices: Choice[];
@@ -53,6 +53,6 @@ export type Event = {
     minAnomaly?: number;
     maxSanity?: number;
     requiredFlag?: string;
-    requiredPath?: { path: string; minLevel: number };
+    requiredPath?: { path: keyof GameState['paths']; minLevel: number };
   };
 };
