@@ -24,7 +24,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "paper_support_delay",
@@ -47,7 +47,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "night_cold_streets",
@@ -73,7 +73,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "night_side_job",
@@ -100,7 +100,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "night_vip_entry",
@@ -122,7 +122,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "night_corner_slots",
@@ -137,7 +137,7 @@
         "effects": {}
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "survival_dump_shelter",
@@ -166,7 +166,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "survival_generator",
@@ -191,7 +191,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "forest_signal",
@@ -287,7 +287,7 @@
         "effects": {}
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "flavor_day_empty_mall",
@@ -303,7 +303,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "flavor_day_radio_static",
@@ -317,7 +317,7 @@
         "effects": {}
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "flavor_night_lamp",
@@ -331,7 +331,7 @@
         "effects": {}
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "flavor_night_train_whistle",
@@ -347,7 +347,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "snowstorm_lost_tracks",
@@ -476,7 +476,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "clear_aurora_bet",
@@ -506,7 +506,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "hustler_boardroom_push",
@@ -539,7 +539,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "shaman_dream_guide",
@@ -707,7 +707,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "ticket_bus_inspection",
@@ -737,7 +737,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "map_frozen_shortcut",
@@ -830,7 +830,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "paper_training_course",
@@ -863,7 +863,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "nightlife_rave_bunker",
@@ -896,7 +896,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "survival_ice_fishing",
@@ -1054,7 +1054,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "flavor_snow_radio",
@@ -1073,7 +1073,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/katunakyma.jpg"
+    "imageSrc": "/assets/images/katunakyma.png"
   },
   {
     "id": "hustler_blackmarket_batteries",
@@ -1111,7 +1111,7 @@
         }
       }
     ],
-    "imageSrc": "/assets/images/r-kioski.jpg"
+    "imageSrc": "/assets/images/r-kioski.png"
   },
   {
     "id": "shaman_sauna_ritual",
