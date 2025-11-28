@@ -26,12 +26,14 @@ export type GameState = {
   flags: Record<string, boolean>;
   history: string[];
   inventory: string[];
+  paths: Record<'bureaucrat' | 'hustler' | 'shaman' | 'tech' | 'drifter', number>;
 };
 
 export type Choice = {
   text: string;
   effects: Partial<Resources>;
   loot?: string;
+  xp?: Partial<Record<keyof GameState['paths'], number>>;
 };
 
 export type Event = {
