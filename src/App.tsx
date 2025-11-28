@@ -15,6 +15,7 @@ import { DebugPanel } from './ui/DebugPanel.js';
 import { BackgroundVideo } from './ui/BackgroundVideo.js';
 import { WeatherType } from './types.js';
 import { useSound } from './hooks/useSound.js';
+import { SoundManager } from './engine/sound.js';
 
 const WEATHER_LABELS: Record<WeatherType, string> = {
   CLEAR: 'Kirkas',
@@ -54,6 +55,17 @@ const App = () => {
   const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
+
+  useEffect(() => {
+    const handleFirstClick = () => {
+      SoundManager.resumeContext();
+      window.removeEventListener('click', handleFirstClick, true);
+    };
+
+    window.addEventListener('click', handleFirstClick, true);
+
+    return () => window.removeEventListener('click', handleFirstClick, true);
+  }, []);
 
   useEffect(() => {
     if (shopDisabled && shopOpen) {

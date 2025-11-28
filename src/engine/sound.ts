@@ -59,6 +59,12 @@ const playNoise = (context: AudioContext, duration: number, volume = 0.02) => {
   noise.start();
 };
 
+export const resumeContext = () => {
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+};
+
 export const setMuted = (muted: boolean) => {
   isMuted = muted;
 };
@@ -97,4 +103,5 @@ export const playSound = (sfx: SoundEffect) => {
 export const SoundManager = {
   playSound,
   setMuted,
+  resumeContext,
 };
