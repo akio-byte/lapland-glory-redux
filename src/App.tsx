@@ -100,6 +100,7 @@ const App = () => {
     if (currentEvent) {
       return (
         <EventView
+          key={currentEvent.id}
           event={currentEvent}
           state={state}
           onChoose={chooseOption}
