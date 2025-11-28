@@ -3,7 +3,13 @@
     "id": "item_nokia",
     "name": "Nokia 2110",
     "description": "Connecting people. Akku vähissä.",
-    "type": "tool"
+    "type": "tool",
+    "onUse": {
+      "effects": { "energy": -2 },
+      "flags": { "signal_checked": true },
+      "consume": false,
+      "message": "Ei kenttää. Tai sitten kukaan ei vain vastaa."
+    }
   },
   {
     "id": "item_booze",
