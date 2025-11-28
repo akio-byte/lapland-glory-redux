@@ -13,6 +13,10 @@ export type Item = {
   name: string;
   description: string;
   type: 'consumable' | 'tool';
+  onUse?: {
+    effects?: Partial<Resources>;
+    consume?: boolean;
+  };
 };
 
 export type TimeState = {

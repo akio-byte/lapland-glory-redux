@@ -13,8 +13,17 @@ import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
 
 const App = () => {
-  const { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption, spendEnergy, debug } =
-    useGameLoop();
+  const {
+    state,
+    currentEvent,
+    currentEnding,
+    lastMessage,
+    startNewGame,
+    chooseOption,
+    spendEnergy,
+    useItem,
+    debug,
+  } = useGameLoop();
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
   const teletextDisabled = state.resources.energy <= 0;
@@ -83,6 +92,7 @@ const App = () => {
           phase={state.time.phase}
           anomaly={state.resources.anomaly}
           inventory={state.inventory}
+          onUseItem={useItem}
         />
       </header>
 

@@ -9,7 +9,11 @@
     "id": "item_booze",
     "name": "Taskumatti",
     "description": "Lämmin, polttava, unohtava.",
-    "type": "consumable"
+    "type": "consumable",
+    "onUse": {
+      "effects": { "heat": 20, "sanity": -5 },
+      "consume": true
+    }
   },
   {
     "id": "item_ticket",
@@ -21,7 +25,11 @@
     "id": "item_coffee",
     "name": "Termospullo",
     "description": "Haaleaa sumppia.",
-    "type": "consumable"
+    "type": "consumable",
+    "onUse": {
+      "effects": { "energy": 20, "heat": 5 },
+      "consume": true
+    }
   },
   {
     "id": "item_map",

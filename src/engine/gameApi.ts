@@ -1,9 +1,15 @@
-import { Choice, Event, GameState, Phase } from '../types.js';
+import items from '../data/items.json' with { type: 'json' };
+import { Choice, Event, GameState, Item, Phase } from '../types.js';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, getEventForPhase } from './resolveEvent.js';
 import { advancePhase as advancePhaseInternal } from './tick.js';
-import { INVENTORY_CAPACITY, addItem as addItemInternal, removeItem as removeItemInternal } from './resources.js';
+import {
+  INVENTORY_CAPACITY,
+  addItem as addItemInternal,
+  clampResources,
+  removeItem as removeItemInternal,
+} from './resources.js';
 
 const cloneState = (state: GameState): GameState => ({
   resources: { ...state.resources },
@@ -65,3 +71,33 @@ export const addItem = (state: GameState, itemId: string): GameState =>
 
 export const removeItem = (state: GameState, itemId: string): GameState =>
   removeItemInternal(state, itemId);
+
+export const useItem = (state: GameState, itemId: string): { nextState: GameState; message: string } => {
+  const itemData = (items as Item[]).find((item) => item.id === itemId);
+  if (!itemData) {
+    return { nextState: state, message: 'Tuntematon esine.' };
+  }
+
+  if (!state.inventory.includes(itemId)) {
+    return { nextState: state, message: `${itemData.name} ei ole mukana.` };
+  }
+
+  if (!itemData.onUse) {
+    return { nextState: state, message: `${itemData.name} ei tee mitään kummempaa.` };
+  }
+
+  const nextState = cloneState(state);
+
+  for (const [resource, delta] of Object.entries(itemData.onUse.effects ?? {})) {
+    const key = resource as keyof GameState['resources'];
+    nextState.resources[key] += delta ?? 0;
+  }
+
+  clampResources(nextState);
+
+  if (itemData.onUse.consume) {
+    removeItemInternal(nextState, itemId);
+  }
+
+  return { nextState, message: `Käytit esinettä: ${itemData.name}.` };
+};
