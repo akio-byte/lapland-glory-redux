@@ -19,6 +19,12 @@ export type GameLoopState = {
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
+  debug: {
+    addMoney: () => void;
+    restoreSanity: () => void;
+    triggerFreezeEnding: () => void;
+    skipDay: () => void;
+  };
 };
 
 const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
@@ -108,5 +114,79 @@ export const useGameLoop = (): GameLoopState => {
     startNewGame();
   }, []);
 
-  return { state, currentEvent, currentEnding, lastMessage, startNewGame, chooseOption, spendEnergy };
+  const addMoney = () => {
+    setState((prev) => {
+      const next: GameState = {
+        ...prev,
+        resources: { ...prev.resources, money: prev.resources.money + 50 },
+      };
+      clampResources(next);
+      return next;
+    });
+    setLastMessage('Debug: Lisätty 50€ kassaan.');
+  };
+
+  const restoreSanity = () => {
+    setState((prev) => {
+      const next: GameState = {
+        ...prev,
+        resources: { ...prev.resources, sanity: 100 },
+      };
+      clampResources(next);
+      return next;
+    });
+    setLastMessage('Debug: Mielenrauha palautettu.');
+  };
+
+  const triggerFreezeEnding = () => {
+    setState((prev) => {
+      const next: GameState = {
+        ...prev,
+        resources: { ...prev.resources, heat: 0 },
+      };
+      clampResources(next);
+      const ending = checkEnding(next);
+      setCurrentEnding(ending);
+      setCurrentEvent(null);
+      return next;
+    });
+    setLastMessage('Debug: Jäätyminen laukaisi lopun.');
+  };
+
+  const skipDay = () => {
+    setState((prev) => {
+      let next = prev;
+      for (let i = 0; i < 3; i += 1) {
+        next = advancePhase(next);
+      }
+
+      const ending = checkEnding(next);
+      if (ending) {
+        setCurrentEnding(ending);
+        setCurrentEvent(null);
+      } else {
+        setCurrentEnding(null);
+        setCurrentEvent(pickEventForPhase(next) ?? null);
+      }
+
+      return next;
+    });
+    setLastMessage('Debug: Hypättiin seuraavaan päivään.');
+  };
+
+  return {
+    state,
+    currentEvent,
+    currentEnding,
+    lastMessage,
+    startNewGame,
+    chooseOption,
+    spendEnergy,
+    debug: {
+      addMoney,
+      restoreSanity,
+      triggerFreezeEnding,
+      skipDay,
+    },
+  };
 };
