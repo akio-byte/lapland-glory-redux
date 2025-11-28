@@ -6,13 +6,16 @@ export const BASE_HEAT_LOSS = -2;
 const BASE_ENERGY_LOSS = -1;
 const SLEEP_RECOVERY = { energy: 10, heat: 3, sanity: 1 } as const;
 
+const WEATHER_PROBABILITIES: { type: WeatherType; threshold: number }[] = [
+  { type: 'MILD', threshold: 0.3 },
+  { type: 'CLEAR', threshold: 0.6 },
+  { type: 'SNOWSTORM', threshold: 0.8 },
+  { type: 'FOG', threshold: 1 },
+];
+
 const rollWeather = (): WeatherType => {
   const roll = Math.random();
-
-  if (roll < 0.3) return 'MILD';
-  if (roll < 0.6) return 'CLEAR';
-  if (roll < 0.8) return 'SNOWSTORM';
-  return 'FOG';
+  return WEATHER_PROBABILITIES.find(({ threshold }) => roll < threshold)?.type ?? 'CLEAR';
 };
 
 const getHeatLoss = (state: GameState) => {
