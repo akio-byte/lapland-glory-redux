@@ -13,6 +13,7 @@ import {
   useItem,
 } from './gameApi.js';
 import { clampResources } from './resources.js';
+import { loadGame, saveGame } from './storage.js';
 
 export type GameLoopState = {
   state: GameState;
@@ -49,6 +50,7 @@ export const useGameLoop = (): GameLoopState => {
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   const startNewGame = () => {
     const initialState = createInitialState();
@@ -56,6 +58,7 @@ export const useGameLoop = (): GameLoopState => {
     setCurrentEvent(pickEventForPhase(initialState) ?? null);
     setCurrentEnding(null);
     setLastMessage('Talvi alkaa. Päätä selviytymisen suunta.');
+    saveGame(initialState);
   };
 
   const chooseOption = (optionIndex: number) => {
@@ -121,8 +124,25 @@ export const useGameLoop = (): GameLoopState => {
   };
 
   useEffect(() => {
+    const savedState = loadGame();
+    if (savedState) {
+      setState(savedState);
+      setCurrentEvent(pickEventForPhase(savedState) ?? null);
+      setCurrentEnding(checkEnding(savedState));
+      setLastMessage('Jatketaan aiempaa peliä.');
+      setHasHydrated(true);
+      return;
+    }
+
     startNewGame();
+    setHasHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    saveGame(state);
+  }, [state, hasHydrated]);
 
   const addMoney = () => {
     setState((prev) => {
