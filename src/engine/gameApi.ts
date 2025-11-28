@@ -94,11 +94,34 @@ export const useItem = (state: GameState, itemId: string): { nextState: GameStat
     return { nextState: state, message: `${itemData.name} ei tee mitään kummempaa.` };
   }
 
+  const effects = itemData.onUse.effects ?? {};
+  const positiveResources = (['energy', 'heat', 'sanity'] as const).filter(
+    (resource) => (effects[resource] ?? 0) > 0
+  );
+
+  if (
+    positiveResources.length > 0 &&
+    positiveResources.every((resource) => state.resources[resource] > 95)
+  ) {
+    const blockerMessages: Record<(typeof positiveResources)[number], string> = {
+      energy: 'Olet jo aivan tärinöissä, et tarvitse tätä.',
+      heat: 'Olet jo lämmin.',
+      sanity: 'Psyyke on jo täysissä, et tarvitse tätä.',
+    };
+
+    const blockedResource = positiveResources[0];
+    return { nextState: state, message: blockerMessages[blockedResource] };
+  }
+
   const nextState = cloneState(state);
 
-  for (const [resource, delta] of Object.entries(itemData.onUse.effects ?? {})) {
+  for (const [resource, delta] of Object.entries(effects)) {
     const key = resource as keyof GameState['resources'];
     nextState.resources[key] += delta ?? 0;
+  }
+
+  for (const [flag, value] of Object.entries(itemData.onUse.flags ?? {})) {
+    nextState.flags[flag] = value;
   }
 
   clampResources(nextState);
@@ -107,5 +130,7 @@ export const useItem = (state: GameState, itemId: string): { nextState: GameStat
     removeItemInternal(nextState, itemId);
   }
 
-  return { nextState, message: `Käytit esinettä: ${itemData.name}.` };
+  const message = itemData.onUse.message ?? `Käytit esinettä: ${itemData.name}.`;
+
+  return { nextState, message };
 };

@@ -16,6 +16,8 @@ export type Item = {
   onUse?: {
     effects?: Partial<Resources>;
     consume?: boolean;
+    flags?: Record<string, boolean>;
+    message?: string;
   };
 };
 
