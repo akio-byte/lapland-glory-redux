@@ -2,12 +2,13 @@
 // - Fixed TypeScript/Vite/React wiring
 // - Restored CLI + UI entry points
 // - Preserved TASO 1–3 visual and narrative layers
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EndingOverlay } from './ui/EndingOverlay.js';
 import { EventView } from './ui/EventView.js';
 import { StatsBar } from './ui/StatsBar.js';
 import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
 import { TeletextOverlay } from './ui/TeletextOverlay.js';
+import { ShopOverlay } from './ui/ShopOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
@@ -22,12 +23,21 @@ const App = () => {
     chooseOption,
     spendEnergy,
     setFlag,
+    buyItem,
     useItem,
     debug,
   } = useGameLoop();
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
   const teletextDisabled = state.resources.energy <= 0;
+  const shopDisabled = state.time.phase !== 'DAY';
+
+  useEffect(() => {
+    if (shopDisabled && shopOpen) {
+      setShopOpen(false);
+    }
+  }, [shopDisabled, shopOpen]);
 
   const content = useMemo(() => {
     if (currentEnding) {
@@ -80,6 +90,15 @@ const App = () => {
         <div className="top-bar-actions">
           <button
             className="teletext-toggle"
+            onClick={() => setShopOpen(true)}
+            disabled={shopDisabled}
+            aria-label="Avaa kioski"
+            title={shopDisabled ? 'Kioski kiinni' : undefined}
+          >
+            {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
+          </button>
+          <button
+            className="teletext-toggle"
             onClick={openTeletext}
             disabled={teletextDisabled}
             aria-label="Avaa Teksti-TV"
@@ -114,6 +133,14 @@ const App = () => {
           onClose={() => setTeletextOpen(false)}
           onNavigateCost={navigateTeletext}
           onSetFlag={setFlag}
+        />
+      )}
+      {shopOpen && (
+        <ShopOverlay
+          money={state.resources.money}
+          inventory={state.inventory}
+          onBuy={(itemId) => buyItem(itemId)}
+          onClose={() => setShopOpen(false)}
         />
       )}
     </div>
