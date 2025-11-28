@@ -43,6 +43,7 @@ export type Choice = {
   effects: Partial<Resources>;
   loot?: string;
   xp?: Partial<Record<keyof GameState['paths'], number>>;
+  flags?: Record<string, boolean>;
 };
 
 export type Event = {
@@ -57,5 +58,7 @@ export type Event = {
     maxSanity?: number;
     requiredFlag?: string;
     requiredPath?: { path: keyof GameState['paths']; minLevel: number };
+    requiredItem?: string;
+    weather?: WeatherType | WeatherType[];
   };
 };

@@ -27,6 +27,21 @@ const meetsRequirements = (event: Event, state: GameState): boolean => {
     }
   }
 
+  if (reqs.requiredItem && !state.inventory.includes(reqs.requiredItem)) {
+    return false;
+  }
+
+  if (reqs.weather) {
+    const currentWeather = state.time.weather;
+    if (Array.isArray(reqs.weather)) {
+      if (!reqs.weather.includes(currentWeather)) {
+        return false;
+      }
+    } else if (reqs.weather !== currentWeather) {
+      return false;
+    }
+  }
+
   return true;
 };
 
@@ -62,6 +77,10 @@ export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?:
   for (const [path, xp] of Object.entries(choice.xp ?? {})) {
     const key = path as keyof GameState['paths'];
     state.paths[key] += xp ?? 0;
+  }
+
+  for (const [flag, value] of Object.entries(choice.flags ?? {})) {
+    state.flags[flag] = value;
   }
 
   clampResources(state); // Keep resource updates from choices within expected bounds.
