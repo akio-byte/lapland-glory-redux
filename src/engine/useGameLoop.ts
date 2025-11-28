@@ -10,6 +10,7 @@ import {
   createInitialState,
   pickEventForPhase,
   setFlag as setFlagInternal,
+  updateMoney,
   useItem,
 } from './gameApi.js';
 import { clampResources } from './resources.js';
@@ -23,6 +24,7 @@ export type GameLoopState = {
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
+  adjustMoney: (delta: number, note?: string) => void;
   setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
   buyItem: (itemId: string) => boolean;
@@ -117,6 +119,13 @@ export const useGameLoop = (): GameLoopState => {
     }
 
     return allowed;
+  };
+
+  const adjustMoney = (delta: number, note?: string) => {
+    setState((prev) => updateMoney(prev, delta));
+    if (note) {
+      setLastMessage(note);
+    }
   };
 
   const setFlag = (key: string, value: boolean) => {
@@ -217,6 +226,7 @@ export const useGameLoop = (): GameLoopState => {
     startNewGame,
     chooseOption,
     spendEnergy,
+    adjustMoney,
     setFlag,
     buyItem: (itemId: string) => {
       let purchaseSuccess = false;

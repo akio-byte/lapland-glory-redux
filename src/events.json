@@ -63,6 +63,15 @@
     ]
   },
   {
+    "id": "night_corner_slots",
+    "phase": "NIGHT",
+    "family": "nightlife",
+    "minigame": "slots",
+    "title": "Baarin nurkkapöytä",
+    "description": "Pajatso kilisee kutsuvasti. Kokeiletko onneasi?",
+    "choices": [{ "text": "Jätät automaatin rauhaan", "effects": {} }]
+  },
+  {
     "id": "survival_dump_shelter",
     "phase": "SLEEP",
     "family": "survival",

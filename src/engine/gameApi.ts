@@ -104,6 +104,13 @@ export const buyItem = (
   };
 };
 
+export const updateMoney = (state: GameState, delta: number): GameState => {
+  const nextState = cloneState(state);
+  nextState.resources.money += delta;
+  clampResources(nextState);
+  return nextState;
+};
+
 export const setFlag = (state: GameState, key: string, value: boolean): GameState => {
   if (state.flags[key] === value) return state;
 

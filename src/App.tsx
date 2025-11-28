@@ -37,6 +37,7 @@ const App = () => {
     startNewGame,
     chooseOption,
     spendEnergy,
+    adjustMoney,
     setFlag,
     buyItem,
     useItem,
@@ -84,7 +85,14 @@ const App = () => {
     }
 
     if (currentEvent) {
-      return <EventView event={currentEvent} state={state} onChoose={chooseOption} />;
+      return (
+        <EventView
+          event={currentEvent}
+          state={state}
+          onChoose={chooseOption}
+          onAdjustMoney={adjustMoney}
+        />
+      );
     }
 
     return (
