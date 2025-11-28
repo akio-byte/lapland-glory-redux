@@ -21,6 +21,7 @@ const App = () => {
     startNewGame,
     chooseOption,
     spendEnergy,
+    setFlag,
     useItem,
     debug,
   } = useGameLoop();
@@ -112,6 +113,7 @@ const App = () => {
           energy={state.resources.energy}
           onClose={() => setTeletextOpen(false)}
           onNavigateCost={navigateTeletext}
+          onSetFlag={setFlag}
         />
       )}
     </div>
