@@ -2,7 +2,7 @@
 // - Fixed TypeScript/Vite/React wiring
 // - Restored CLI + UI entry points
 // - Preserved TASO 1–3 visual and narrative layers
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { EndingOverlay } from './ui/EndingOverlay.js';
 import { EventView } from './ui/EventView.js';
 import { StatsBar } from './ui/StatsBar.js';
@@ -13,6 +13,7 @@ import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
 import { WeatherType } from './types.js';
+import { useSound } from './hooks/useSound.js';
 
 const WEATHER_LABELS: Record<WeatherType, string> = {
   CLEAR: 'Kirkas',
@@ -49,12 +50,33 @@ const App = () => {
   const weatherLabel = WEATHER_LABELS[state.time.weather] ?? state.time.weather;
   const weatherIcon = WEATHER_ICONS[state.time.weather];
   const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
+  const { play } = useSound(state.flags.sound_muted ?? false);
+  const previousPhaseRef = useRef(state.time.phase);
 
   useEffect(() => {
     if (shopDisabled && shopOpen) {
       setShopOpen(false);
     }
   }, [shopDisabled, shopOpen]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('button')) {
+        play('click');
+      }
+    };
+
+    document.addEventListener('click', handleClick, true);
+    return () => document.removeEventListener('click', handleClick, true);
+  }, [play]);
+
+  useEffect(() => {
+    if (previousPhaseRef.current !== state.time.phase) {
+      play('wind');
+      previousPhaseRef.current = state.time.phase;
+    }
+  }, [play, state.time.phase]);
 
   const content = useMemo(() => {
     if (currentEnding) {
@@ -86,6 +108,13 @@ const App = () => {
 
   const navigateTeletext = (note?: string, exhaustedNote?: string) =>
     spendEnergy(1, note, exhaustedNote ?? 'Liian väsynyt selaamaan Teksti-TV:tä.');
+
+  const handleBuy = (itemId: string) => {
+    const success = buyItem(itemId);
+    if (success) {
+      play('cash');
+    }
+  };
 
   return (
     <div
@@ -137,6 +166,13 @@ const App = () => {
 
       <footer className="footer">
         <span className="muted">{lastMessage}</span>
+        <button
+          className="teletext-toggle"
+          onClick={() => setFlag('sound_muted', !state.flags.sound_muted)}
+          aria-pressed={state.flags.sound_muted}
+        >
+          {state.flags.sound_muted ? 'Unmute Audio' : 'Mute Audio'}
+        </button>
       </footer>
 
       <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
@@ -156,7 +192,7 @@ const App = () => {
         <ShopOverlay
           money={state.resources.money}
           inventory={state.inventory}
-          onBuy={(itemId) => buyItem(itemId)}
+          onBuy={(itemId) => handleBuy(itemId)}
           onClose={() => setShopOpen(false)}
         />
       )}

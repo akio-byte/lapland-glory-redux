@@ -25,7 +25,7 @@ export type GameLoopState = {
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
   setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
-  buyItem: (itemId: string) => void;
+  buyItem: (itemId: string) => boolean;
   debug: {
     addMoney: () => void;
     restoreSanity: () => void;
@@ -126,9 +126,14 @@ export const useGameLoop = (): GameLoopState => {
   useEffect(() => {
     const savedState = loadGame();
     if (savedState) {
-      setState(savedState);
-      setCurrentEvent(pickEventForPhase(savedState) ?? null);
-      setCurrentEnding(checkEnding(savedState));
+      const hydratedState: GameState = {
+        ...savedState,
+        flags: { sound_muted: false, ...(savedState.flags ?? {}) },
+      };
+
+      setState(hydratedState);
+      setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
+      setCurrentEnding(checkEnding(hydratedState));
       setLastMessage('Jatketaan aiempaa peliä.');
       setHasHydrated(true);
       return;
@@ -214,11 +219,15 @@ export const useGameLoop = (): GameLoopState => {
     spendEnergy,
     setFlag,
     buyItem: (itemId: string) => {
+      let purchaseSuccess = false;
       setState((prev) => {
-        const { nextState, message } = buyItemInternal(prev, itemId);
+        const { nextState, message, success } = buyItemInternal(prev, itemId);
         setLastMessage(message);
+        purchaseSuccess = success;
         return nextState;
       });
+
+      return purchaseSuccess;
     },
     useItem: (itemId: string) => {
       setState((prev) => {
