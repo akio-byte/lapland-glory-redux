@@ -20,6 +20,12 @@ const WEATHER_LABELS: Record<WeatherType, string> = {
   FOG: 'Sumu',
   MILD: 'Leuto',
 };
+const WEATHER_ICONS: Partial<Record<WeatherType, string>> = {
+  CLEAR: '☀️',
+  SNOWSTORM: '🌨️',
+  FOG: '🌫️',
+  MILD: '🌤️',
+};
 
 const App = () => {
   const {
@@ -41,6 +47,8 @@ const App = () => {
   const teletextDisabled = state.resources.energy <= 0;
   const shopDisabled = state.time.phase !== 'DAY';
   const weatherLabel = WEATHER_LABELS[state.time.weather] ?? state.time.weather;
+  const weatherIcon = WEATHER_ICONS[state.time.weather];
+  const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
 
   useEffect(() => {
     if (shopDisabled && shopOpen) {
@@ -93,7 +101,7 @@ const App = () => {
     >
       <header className="top-bar">
         <div>
-          <div className="eyebrow">Päivä {state.time.day} ({weatherLabel})</div>
+          <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
           <div className="phase">{state.time.phase}</div>
         </div>
         <div className="top-bar-actions">
