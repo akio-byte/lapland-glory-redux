@@ -4,9 +4,13 @@
     "phase": "DAY",
     "family": "paperwar",
     "title": "Kelan jono",
-    "description": "Virastolla on ruuhkaa ja odotus kuormittaa hermoja.",
-    "choices": [
-      { "text": "Täytät lomakkeen huolella", "effects": { "money": -10, "sanity": 5 } },
+      "description": "Virastolla on ruuhkaa ja odotus kuormittaa hermoja.",
+      "choices": [
+      {
+        "text": "Täytät lomakkeen huolella",
+        "effects": { "money": -10, "sanity": 5 },
+        "xp": { "bureaucrat": 10 }
+      },
       { "text": "Hoputat virkailijaa", "effects": { "sanity": 8, "energy": -5 } }
     ]
   },
@@ -35,12 +39,27 @@
   {
     "id": "night_side_job",
     "phase": "NIGHT",
-    "family": "nightlife",
-    "title": "Vaarallinen yökeikka",
-    "description": "Epämääräinen työkeikka tarjoaa nopeat rahat.",
-    "choices": [
-      { "text": "Otata työn", "effects": { "money": 35, "sanity": -12, "energy": -6 } },
+      "family": "nightlife",
+      "title": "Vaarallinen yökeikka",
+      "description": "Epämääräinen työkeikka tarjoaa nopeat rahat.",
+      "choices": [
+      {
+        "text": "Otata työn",
+        "effects": { "money": 35, "sanity": -12, "energy": -6 },
+        "xp": { "hustler": 15 }
+      },
       { "text": "Kieltäydyt kohteliaasti", "effects": { "sanity": 6 } }
+    ]
+  },
+  {
+    "id": "night_vip_entry",
+    "phase": "NIGHT",
+    "family": "nightlife",
+    "title": "VIP-sisäänpääsy",
+    "description": "Portsari nyökkää sinulle. 'Moro, pitkästä aikaa.' Pääset jonon ohi.",
+    "requirements": { "requiredPath": { "path": "hustler", "minLevel": 10 } },
+    "choices": [
+      { "text": "Astut sisään VIP-ovesta", "effects": { "sanity": 10 } }
     ]
   },
   {
@@ -53,6 +72,7 @@
       {
         "text": "Pysähdyt lepäämään",
         "effects": { "energy": 18, "sanity": -6, "heat": 5 },
+        "xp": { "drifter": 10 },
         "loot": "item_map"
       },
       { "text": "Jatkat vaellusta", "effects": { "energy": -10, "heat": -8 } }
@@ -67,6 +87,24 @@
     "choices": [
       { "text": "Tankkaat ja käynnistät", "effects": { "heat": 20, "money": -8, "sanity": 3 } },
       { "text": "Jätät rauhaan", "effects": { "sanity": -3, "energy": -5 } }
+    ]
+  },
+  {
+    "id": "forest_signal",
+    "phase": "DAY",
+    "family": "anomaly",
+    "title": "Kummallinen kuuluvuus",
+    "description": "Puhelimeen yritettiin soittaa äsken, vaikka kenttää ei ollut.",
+    "requirements": { "requiredFlag": "signal_checked" },
+    "choices": [
+      {
+        "text": "Kuuntelet viestin loppuun",
+        "effects": { "sanity": -2, "anomaly": 4 }
+      },
+      {
+        "text": "Katkaiset puhelun",
+        "effects": { "sanity": 2, "energy": -2 }
+      }
     ]
   },
   {
