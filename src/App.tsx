@@ -50,6 +50,7 @@ const App = () => {
     chooseOption,
     spendEnergy,
     adjustMoney,
+    adjustResources,
     setFlag,
     buyItem,
     useItem,
@@ -151,6 +152,7 @@ const App = () => {
           state={state}
           onChoose={chooseOption}
           onAdjustMoney={adjustMoney}
+          onAdjustResources={adjustResources}
         />
       );
     }

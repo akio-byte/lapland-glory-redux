@@ -50,6 +50,21 @@
     "imageSrc": "/assets/images/katunakyma.png"
   },
   {
+    "id": "day_teletext_hack",
+    "phase": "DAY",
+    "family": "anomaly",
+    "minigame": "hack",
+    "title": "Teksti-TV:n piilosivu",
+    "description": "Vuonna 1995 Rovaniemen teletextissä kiertää huhu salaisesta sivusta, joka sylkee ylimääräisiä markkoja. Löydät vanhan puhelinlinjan testiliittimen.",
+    "choices": [
+      {
+        "text": "Yrität murtautua sivulle",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.png"
+  },
+  {
     "id": "night_cold_streets",
     "phase": "NIGHT",
     "family": "nightlife",

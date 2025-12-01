@@ -27,6 +27,7 @@ export type GameLoopState = {
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
   adjustMoney: (delta: number, note?: string) => void;
+  adjustResources: (delta: Partial<Resources>, note?: string) => void;
   setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
   buyItem: (itemId: string) => boolean;
@@ -188,6 +189,27 @@ export const useGameLoop = ({
     }
   };
 
+  const adjustResources = (delta: Partial<Resources>, note?: string) => {
+    updateState((prev) => {
+      const next: GameState = {
+        ...prev,
+        resources: { ...prev.resources },
+      };
+
+      for (const [resource, amount] of Object.entries(delta)) {
+        const key = resource as keyof Resources;
+        next.resources[key] += amount ?? 0;
+      }
+
+      clampResources(next);
+      return next;
+    });
+
+    if (note) {
+      setLastMessage(note);
+    }
+  };
+
   const setFlag = (key: string, value: boolean) => {
     updateState((prev) => setFlagInternal(prev, key, value));
   };
@@ -280,6 +302,7 @@ export const useGameLoop = ({
     chooseOption,
     spendEnergy,
     adjustMoney,
+    adjustResources,
     setFlag,
     buyItem: (itemId: string) => {
       let purchaseSuccess = false;

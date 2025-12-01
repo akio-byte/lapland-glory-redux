@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { adaptChoiceLabel, decorateEventDescription, maybeDistortText } from '../narrative/narrativeUtils.js';
 import { Event, GameState } from '../types.js';
 import { SlotsGame } from './minigames/SlotsGame.js';
+import { HackGame } from './minigames/HackGame.js';
 import { TypewriterText } from './TypewriterText.js';
 
 type Props = {
@@ -9,14 +10,16 @@ type Props = {
   state: GameState;
   onChoose: (index: number) => void;
   onAdjustMoney: (delta: number, note?: string) => void;
+  onAdjustResources: (delta: Partial<GameState['resources']>, note?: string) => void;
 };
 
-export const EventView = ({ event, state, onChoose, onAdjustMoney }: Props) => {
+export const EventView = ({ event, state, onChoose, onAdjustMoney, onAdjustResources }: Props) => {
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
   const description = maybeDistortText(decorateEventDescription(event.description, state), anomaly);
   const slipperyBias = useMemo(() => anomaly / 100 > 0.5 && Math.random() < 0.35, [anomaly]);
   const isSlotsGame = event.minigame === 'slots';
+  const isHackGame = event.minigame === 'hack';
 
   return (
     <div className="panel event fade-in">
@@ -28,6 +31,13 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney }: Props) => {
         <SlotsGame
           money={state.resources.money}
           onAdjustMoney={onAdjustMoney}
+          onExit={() => onChoose(0)}
+        />
+      ) : isHackGame ? (
+        <HackGame
+          resources={state.resources}
+          onAdjustMoney={onAdjustMoney}
+          onAdjustResources={onAdjustResources}
           onExit={() => onChoose(0)}
         />
       ) : (
