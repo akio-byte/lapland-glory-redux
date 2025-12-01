@@ -19,6 +19,12 @@ import { SoundManager } from './engine/sound.js';
 import { loadGame, clearSavedGame } from './engine/storage.js';
 import { StartScreen } from './ui/StartScreen.js';
 
+const useDebugEnabled = () =>
+  useMemo(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return import.meta.env.DEV || searchParams.get('debug') === '1';
+  }, []);
+
 const WEATHER_LABELS: Record<WeatherType, string> = {
   CLEAR: 'Kirkas',
   SNOWSTORM: 'Lumimyrsky',
@@ -64,6 +70,7 @@ const App = () => {
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
+  const debugEnabled = useDebugEnabled();
 
   useEffect(() => {
     // On load, check for a saved game to decide whether to show the start screen.
@@ -270,7 +277,8 @@ const App = () => {
       </footer>
 
       <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
-      <DebugPanel state={state} actions={debug} />
+      {/* Enable with ?debug=1 in the URL or by running the dev server. */}
+      {debugEnabled && <DebugPanel state={state} actions={debug} />}
       {teletextOpen && (
         <TeletextOverlay
           day={state.time.day}
