@@ -7,3 +7,11 @@ export const assetPath = (relativePath: string): string => {
   const normalized = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
   return `${base}${normalized}`;
 };
+
+/**
+ * Resolve background image URLs so builds served from a subdirectory still work.
+ * BASE_URL is injected by Vite to prefix assets when the game isn't hosted at the root.
+ */
+export function bgPath(fileName: string) {
+  return `${import.meta.env.BASE_URL}assets/bg/${fileName}`;
+}
