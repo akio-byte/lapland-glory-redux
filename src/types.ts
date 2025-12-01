@@ -32,6 +32,21 @@ export type TimeState = {
   weather: WeatherType;
 };
 
+export type TaskCondition =
+  | { type: 'event_family'; value: Event['family'] }
+  | { type: 'purchase_heat_item' }
+  | { type: 'reach_phase'; value: Phase }
+  | { type: 'reach_day'; value: number };
+
+export type Task = {
+  id: string;
+  description: string;
+  condition: TaskCondition;
+  reward: Partial<Resources>;
+};
+
+export type CompletedTask = Task & { completedOnDay: number };
+
 export type LogEntry = {
   day: number;
   phase: Phase;
@@ -50,6 +65,8 @@ export type GameState = {
   meta: {
     difficulty: Difficulty;
     anomalyHighDays?: number;
+    activeTasks?: Task[];
+    completedTasks?: CompletedTask[];
   };
 };
 

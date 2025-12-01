@@ -24,6 +24,8 @@ import {
 } from './gameApi.js';
 import { clampResources } from './resources.js';
 import { loadGame, saveGame } from './storage.js';
+import { evaluateTasks, getDefaultTasks, TaskCheckContext } from './tasks.js';
+import { CompletedTask } from '../types.js';
 
 export type GameLoopState = {
   state: GameState;
@@ -46,6 +48,8 @@ export type GameLoopState = {
     triggerFreezeEnding: () => void;
     skipDay: () => void;
   };
+  taskToast: CompletedTask | null;
+  clearTaskToast: () => void;
 };
 
 const createEmptyDelta = (): ResourceDelta => ({
@@ -119,14 +123,24 @@ export const useGameLoop = ({
   const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [taskToast, setTaskToast] = useState<CompletedTask | null>(null);
 
   const updateState = (
     updater: GameState | ((prev: GameState) => GameState),
-    options: { trackDelta?: boolean } = {}
+    options: { trackDelta?: boolean; skipTasks?: boolean; context?: TaskCheckContext } = {}
   ) => {
-    const { trackDelta = true } = options;
+    const { trackDelta = true, skipTasks = false, context } = options;
     setState((prev) => {
-      const next = typeof updater === 'function' ? (updater as (state: GameState) => GameState)(prev) : updater;
+      const baseNext =
+        typeof updater === 'function' ? (updater as (state: GameState) => GameState)(prev) : updater;
+      const { state: next, completed } = skipTasks
+        ? { state: baseNext, completed: [] as CompletedTask[] }
+        : evaluateTasks(prev, baseNext, context);
+      if (completed.length > 0) {
+        const latest = completed[completed.length - 1];
+        setTaskToast(latest);
+        setLastMessage(`Tehtävä suoritettu: ${latest.description}`);
+      }
       const delta = trackDelta ? computeResourceDelta(prev.resources, next.resources) : createEmptyDelta();
       setLastResourceDelta(delta);
       return next;
@@ -140,10 +154,13 @@ export const useGameLoop = ({
       log: (savedState.log ?? []).slice(-MAX_LOG_ENTRIES),
       meta: {
         difficulty: savedState.meta?.difficulty ?? defaultDifficulty,
+        anomalyHighDays: savedState.meta?.anomalyHighDays ?? 0,
+        activeTasks: savedState.meta?.activeTasks ?? getDefaultTasks(),
+        completedTasks: savedState.meta?.completedTasks ?? [],
       },
     };
 
-    updateState(hydratedState, { trackDelta: false });
+    updateState(hydratedState, { trackDelta: false, skipTasks: true });
     setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
     setCurrentEnding(checkEnding(hydratedState));
     setLastMessage('Jatketaan aiempaa peliä.');
@@ -164,12 +181,13 @@ export const useGameLoop = ({
     const event = currentEvent;
     if (!event) return;
 
-    updateState((prev) => {
-      const { nextState, choice } = applyEvent(prev, event, optionIndex);
-      const choiceLabel = choice ? adaptChoiceLabel(choice.text, prev) : 'Ratkaisu';
-      const loggedState = appendLog(nextState, {
-        title: event.title,
-        outcome: choiceLabel,
+    updateState(
+      (prev) => {
+        const { nextState, choice } = applyEvent(prev, event, optionIndex);
+        const choiceLabel = choice ? adaptChoiceLabel(choice.text, prev) : 'Ratkaisu';
+        const loggedState = appendLog(nextState, {
+          title: event.title,
+          outcome: choiceLabel,
         time: prev.time,
       });
       const endingAfterEvent = checkEnding(loggedState);
@@ -182,20 +200,22 @@ export const useGameLoop = ({
       }
 
       const advancedState = advancePhase(loggedState);
-      const endingAfterAdvance = checkEnding(advancedState);
+        const endingAfterAdvance = checkEnding(advancedState);
 
-      if (endingAfterAdvance) {
-        setCurrentEnding(endingAfterAdvance);
-        setCurrentEvent(null);
+        if (endingAfterAdvance) {
+          setCurrentEnding(endingAfterAdvance);
+          setCurrentEvent(null);
         setLastMessage(describeChoice(event, choice, advancedState));
         return advancedState;
       }
 
       const nextEvent = pickEventForPhase(advancedState) ?? null;
-      setCurrentEvent(nextEvent);
-      setLastMessage(describeChoice(event, choice, advancedState));
-      return advancedState;
-    });
+        setCurrentEvent(nextEvent);
+        setLastMessage(describeChoice(event, choice, advancedState));
+        return advancedState;
+      },
+      { context: { lastEventFamily: event.family } }
+    );
   };
 
   const spendEnergy = (amount: number, note?: string, exhaustedNote?: string) => {
@@ -357,12 +377,15 @@ export const useGameLoop = ({
     setFlag,
     buyItem: (itemId: string) => {
       let purchaseSuccess = false;
-      updateState((prev) => {
-        const { nextState, message, success } = buyItemInternal(prev, itemId);
-        setLastMessage(message);
-        purchaseSuccess = success;
-        return nextState;
-      });
+      updateState(
+        (prev) => {
+          const { nextState, message, success } = buyItemInternal(prev, itemId);
+          setLastMessage(message);
+          purchaseSuccess = success;
+          return nextState;
+        },
+        { context: { purchasedItemId: itemId } }
+      );
 
       return purchaseSuccess;
     },
@@ -380,5 +403,7 @@ export const useGameLoop = ({
       triggerFreezeEnding,
       skipDay,
     },
+    taskToast,
+    clearTaskToast: () => setTaskToast(null),
   };
 };
