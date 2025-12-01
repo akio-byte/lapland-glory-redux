@@ -68,6 +68,7 @@ export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState
   },
   meta: {
     difficulty,
+    anomalyHighDays: 0,
   },
 });
 

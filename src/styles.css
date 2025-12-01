@@ -686,6 +686,32 @@ button.primary {
   text-shadow: none;
 }
 
+.ending-overlay[data-ending='ANOMALIA'] {
+  background: radial-gradient(circle at 40% 40%, rgba(155, 229, 255, 0.18), rgba(6, 8, 18, 0.95)),
+    linear-gradient(200deg, rgba(10, 14, 20, 0.9), rgba(3, 8, 18, 0.9));
+  color: #dff9ff;
+  filter: hue-rotate(12deg) saturate(1.1);
+}
+
+.ending-overlay[data-ending='ANOMALIA'] .ending-card {
+  background: linear-gradient(135deg, rgba(223, 249, 255, 0.1), rgba(8, 16, 28, 0.9));
+  border-color: rgba(115, 217, 255, 0.45);
+  box-shadow: 0 0 32px rgba(115, 217, 255, 0.35), inset 0 0 14px rgba(6, 194, 255, 0.15);
+  text-shadow: 0 0 14px rgba(67, 193, 255, 0.35);
+}
+
+.ending-overlay[data-ending='BUREAUCRAT'] {
+  background: linear-gradient(160deg, rgba(7, 10, 18, 0.9), rgba(22, 17, 8, 0.95)),
+    radial-gradient(circle at 20% 20%, rgba(255, 197, 56, 0.08), transparent 45%);
+  color: #e3d6c4;
+}
+
+.ending-overlay[data-ending='BUREAUCRAT'] .ending-card {
+  background: linear-gradient(135deg, rgba(255, 213, 117, 0.12), rgba(28, 18, 7, 0.9));
+  border-color: rgba(255, 213, 117, 0.35);
+  box-shadow: 0 12px 28px rgba(12, 8, 5, 0.6);
+}
+
 .crt-cursor {
   display: none;
 }
