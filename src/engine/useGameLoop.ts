@@ -423,20 +423,39 @@ export const useGameLoop = ({
   }, [autoStart, hasHydrated]);
 
   useEffect(() => {
+    const event = currentEvent;
+    const ending = currentEnding;
+
     console.log('GameLoop debug', {
       day: state.time.day,
       phase: state.time.phase,
-      currentEventId: currentEvent?.id,
-      currentEvent,
+      hasHydrated,
+      hasEvent: Boolean(event),
+      hasEnding: Boolean(ending),
+      currentEvent: event ?? null,
+      currentEnding: ending ?? null,
     });
-  }, [state.time.day, state.time.phase, currentEvent]);
+
+    if (!event && !ending) {
+      return;
+    }
+
+    const eventId = event ? event.id : undefined;
+    const endingId = ending ? ending.id : undefined;
+
+    console.log('GameLoop id debug', { eventId, endingId });
+  }, [state.time.day, state.time.phase, currentEvent, currentEnding, hasHydrated]);
 
   useEffect(() => {
-    if (!hasHydrated) return;
-    if (currentEnding?.id === ENDINGS.dataExhausted.id) return;
+    const ending = currentEnding;
 
-    const endingId = currentEnding?.id;
-    if (endingId && endingId === ENDINGS.dataExhausted.id) return;
+    if (!hasHydrated) return;
+    if (!ending) {
+      saveGame(state);
+      return;
+    }
+
+    if (ending.id === ENDINGS.dataExhausted.id) return;
 
     saveGame(state);
   }, [state, hasHydrated, currentEnding]);
