@@ -11,10 +11,25 @@ export const BUREAUCRAT_PATH_REQUIREMENT = 3;
 
 export const checkEnding = (state: GameState): EndingMeta | null => {
   const { money, sanity, heat, anomaly } = state.resources;
+  const sisu = state.sisu ?? { active: false, turnsLeft: 0, triggerReason: null, recovered: false };
 
-  if (heat <= 0) return ENDINGS.freeze;
+  if (sisu.active && sisu.turnsLeft <= 0) {
+    return sisu.triggerReason === 'heat' ? ENDINGS.freeze : ENDINGS.breakdown;
+  }
+
+  if (sisu.active) {
+    return null;
+  }
+
+  if (heat <= 0 || sanity <= 0) {
+    if (!sisu.recovered) {
+      return null;
+    }
+
+    return heat <= 0 ? ENDINGS.freeze : ENDINGS.breakdown;
+  }
+
   if (money <= 0) return ENDINGS.bankrupt;
-  if (sanity <= 0) return ENDINGS.breakdown;
 
   const anomalyStreak = state.meta?.anomalyHighDays ?? 0;
   const anomalyAwakened = state.flags['anomaly_awakening'] === true;

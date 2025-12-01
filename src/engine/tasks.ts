@@ -1,6 +1,7 @@
 import items from '../data/items.json' with { type: 'json' };
 import { clampResources } from './resources.js';
 import { CompletedTask, Event, GameState, Item, Phase, Task } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 
 export type TaskCheckContext = {
   lastEventFamily?: Event['family'];
@@ -29,8 +30,10 @@ const BASE_TASKS: Task[] = [
   },
 ];
 
+const safeItems = (items as Partial<Item>[]).filter((entry): entry is Item => isValidItem(entry));
+
 const isHeatItem = (itemId: string): boolean => {
-  const item = (items as Item[]).find((entry) => entry.id === itemId);
+  const item = safeItems.find((entry) => entry.id === itemId);
   if (!item) return false;
 
   const heatEffect = item.onUse?.effects?.heat ?? 0;

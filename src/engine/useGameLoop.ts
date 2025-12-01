@@ -8,6 +8,7 @@ import {
   GameState,
   ResourceDelta,
   Resources,
+  SisuState,
   TimeState,
 } from '../types.js';
 import {
@@ -69,7 +70,70 @@ const computeResourceDelta = (prev: Resources, next: Resources): ResourceDelta =
   anomaly: next.anomaly - prev.anomaly,
 });
 
-const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
+const defaultSisuState: SisuState = {
+  active: false,
+  turnsLeft: 0,
+  triggerReason: null,
+  recovered: false,
+};
+
+const normalizeSisu = (stateSisu: SisuState | undefined): SisuState => ({
+  ...defaultSisuState,
+  ...(stateSisu ?? {}),
+});
+
+const applySisu = (prev: GameState, candidate: GameState, spendTurn: boolean): GameState => {
+  const previousSisu = normalizeSisu(prev.sisu);
+  const currentSisu = normalizeSisu(candidate.sisu);
+  const updated: GameState = { ...candidate, sisu: { ...currentSisu } };
+
+  const heatCritical = updated.resources.heat <= 0;
+  const sanityCritical = updated.resources.sanity <= 0;
+
+  if (!previousSisu.active && !previousSisu.recovered && !updated.sisu.active && (heatCritical || sanityCritical)) {
+    return {
+      ...updated,
+      sisu: {
+        active: true,
+        turnsLeft: 3,
+        triggerReason: heatCritical ? 'heat' : 'sanity',
+        recovered: false,
+      },
+    };
+  }
+
+  if (updated.sisu.active) {
+    const relevantStat =
+      updated.sisu.triggerReason === 'heat' ? updated.resources.heat : updated.resources.sanity;
+
+    if (relevantStat > 0) {
+      return {
+        ...updated,
+        sisu: {
+          active: false,
+          turnsLeft: 0,
+          triggerReason: null,
+          recovered: true,
+        },
+      };
+    }
+
+    if (spendTurn) {
+      return {
+        ...updated,
+        sisu: {
+          ...updated.sisu,
+          turnsLeft: Math.max(0, updated.sisu.turnsLeft - 1),
+        },
+      };
+    }
+  }
+
+  return updated;
+};
+
+const describeChoice = (event: Event | null, choice: Choice | undefined, state: GameState) => {
+  if (!event) return 'Tuntematon tapahtuma';
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
 
@@ -161,15 +225,21 @@ export const useGameLoop = ({
 
   const updateState = (
     updater: GameState | ((prev: GameState) => GameState),
-    options: { trackDelta?: boolean; skipTasks?: boolean; context?: TaskCheckContext } = {}
+    options: {
+      trackDelta?: boolean;
+      skipTasks?: boolean;
+      spendSisuTurn?: boolean;
+      context?: TaskCheckContext;
+    } = {}
   ) => {
-    const { trackDelta = true, skipTasks = false, context } = options;
+    const { trackDelta = true, skipTasks = false, spendSisuTurn = true, context } = options;
     setState((prev) => {
       const baseNext =
         typeof updater === 'function' ? (updater as (state: GameState) => GameState)(prev) : updater;
+      const sisuAdjusted = applySisu(prev, baseNext, spendSisuTurn);
       const { state: next, completed } = skipTasks
-        ? { state: baseNext, completed: [] as CompletedTask[] }
-        : evaluateTasks(prev, baseNext, context);
+        ? { state: sisuAdjusted, completed: [] as CompletedTask[] }
+        : evaluateTasks(prev, sisuAdjusted, context);
       if (completed.length > 0) {
         const latest = completed[completed.length - 1];
         setTaskToast(latest);
@@ -192,13 +262,14 @@ export const useGameLoop = ({
         activeTasks: savedState.meta?.activeTasks ?? getDefaultTasks(),
         completedTasks: savedState.meta?.completedTasks ?? [],
       },
+      sisu: normalizeSisu(savedState.sisu),
     };
 
     const resolution = findNextEventOrAdvance(hydratedState);
     if (!resolution.event && !resolution.ending) {
       console.warn('No event found when continuing from save. Falling back to empty state.');
     }
-    updateState(resolution.state, { trackDelta: false, skipTasks: true });
+    updateState(resolution.state, { trackDelta: false, skipTasks: true, spendSisuTurn: false });
     setCurrentEvent(resolution.event);
     setCurrentEnding(resolution.ending);
     setLastMessage(resolution.exhausted ? 'Tallennus oli vanhentunut.' : 'Jatketaan aiempaa peliä.');
@@ -211,7 +282,7 @@ export const useGameLoop = ({
     if (!resolution.event && !resolution.ending) {
       console.warn('No starting event found. Continuing without initial event.');
     }
-    updateState(resolution.state, { trackDelta: false, skipTasks: true });
+    updateState(resolution.state, { trackDelta: false, skipTasks: true, spendSisuTurn: false });
     setCurrentEvent(resolution.event);
     setCurrentEnding(resolution.ending);
     setLastMessage('Talvi alkaa. Päätä selviytymisen suunta.');
@@ -234,17 +305,18 @@ export const useGameLoop = ({
           outcome: choiceLabel,
           time: prev.time,
         });
-        const endingAfterEvent = checkEnding(loggedState);
-        const describedChoice = describeChoice(event, choice, loggedState);
+        const sisuAdjusted = applySisu(prev, loggedState, true);
+        const endingAfterEvent = checkEnding(sisuAdjusted);
+        const describedChoice = describeChoice(event, choice, sisuAdjusted);
 
         if (endingAfterEvent) {
           setCurrentEnding(endingAfterEvent);
           setCurrentEvent(null);
           setLastMessage(describedChoice);
-          return loggedState;
+          return sisuAdjusted;
         }
 
-        const advancedState = advancePhase(loggedState);
+        const advancedState = advancePhase(sisuAdjusted);
         const resolution = findNextEventOrAdvance(advancedState);
 
         if (resolution.ending) {
@@ -352,20 +424,39 @@ export const useGameLoop = ({
   }, [autoStart, hasHydrated]);
 
   useEffect(() => {
+    const event = currentEvent;
+    const ending = currentEnding;
+
     console.log('GameLoop debug', {
       day: state.time.day,
       phase: state.time.phase,
-      currentEventId: currentEvent?.id,
-      currentEvent,
+      hasHydrated,
+      hasEvent: Boolean(event),
+      hasEnding: Boolean(ending),
+      currentEvent: event ?? null,
+      currentEnding: ending ?? null,
     });
-  }, [state.time.day, state.time.phase, currentEvent]);
+
+    if (!event && !ending) {
+      return;
+    }
+
+    const eventId = event?.id;
+    const endingId = ending?.id;
+
+    console.log('GameLoop id debug', { eventId, endingId });
+  }, [state.time.day, state.time.phase, currentEvent, currentEnding, hasHydrated]);
 
   useEffect(() => {
-    if (!hasHydrated) return;
-    if (currentEnding?.id === ENDINGS.dataExhausted.id) return;
+    const ending = currentEnding;
 
-    const endingId = currentEnding?.id;
-    if (endingId && endingId === ENDINGS.dataExhausted.id) return;
+    if (!hasHydrated) return;
+    if (!ending?.id) {
+      saveGame(state);
+      return;
+    }
+
+    if (ending.id === ENDINGS.dataExhausted.id) return;
 
     saveGame(state);
   }, [state, hasHydrated, currentEnding]);

@@ -256,6 +256,7 @@ const App = () => {
       <div
         className="app-shell"
         data-phase={theme.phase}
+        data-sisu={state.sisu.active}
         style={{
           '--entropy': theme.entropy,
           '--fatigue': theme.fatigue,

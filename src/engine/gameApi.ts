@@ -1,5 +1,6 @@
 import items from '../data/items.json' with { type: 'json' };
-import { Choice, Difficulty, Event, GameState, Item, Phase } from '../types.js';
+import { Choice, Difficulty, Event, GameState, Item, Phase, SisuState } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, EventPickResult, getEventForPhase } from './resolveEvent.js';
@@ -22,6 +23,7 @@ const cloneState = (state: GameState): GameState => ({
   log: [...state.log],
   paths: { ...state.paths },
   meta: { ...state.meta },
+  sisu: { ...state.sisu },
 });
 
 const DIFFICULTY_STARTING_RESOURCES: Record<Difficulty, GameState['resources']> = {
@@ -47,6 +49,15 @@ const DIFFICULTY_STARTING_RESOURCES: Record<Difficulty, GameState['resources']> 
     anomaly: 0,
   },
 };
+
+const createInitialSisu = (): SisuState => ({
+  active: false,
+  turnsLeft: 0,
+  triggerReason: null,
+  recovered: false,
+});
+
+const safeItems = (items as Partial<Item>[]).filter((entry): entry is Item => isValidItem(entry));
 
 export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState => ({
   resources: {
@@ -76,6 +87,7 @@ export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState
     activeTasks: getDefaultTasks(),
     completedTasks: [],
   },
+  sisu: createInitialSisu(),
 });
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;
@@ -110,7 +122,7 @@ export const buyItem = (
   state: GameState,
   itemId: string
 ): { nextState: GameState; success: boolean; message: string } => {
-  const item = (items as Item[]).find((entry) => entry.id === itemId);
+  const item = safeItems.find((entry) => entry.id === itemId);
   if (!item) {
     return { nextState: state, success: false, message: 'Kioski hämmentyy: tuntematon esine.' };
   }
@@ -151,7 +163,7 @@ export const setFlag = (state: GameState, key: string, value: boolean): GameStat
 };
 
 export const useItem = (state: GameState, itemId: string): { nextState: GameState; message: string } => {
-  const itemData = (items as Item[]).find((item) => item.id === itemId);
+  const itemData = safeItems.find((item) => item.id === itemId);
   if (!itemData) {
     return { nextState: state, message: 'Tuntematon esine.' };
   }
@@ -200,32 +212,13 @@ export const useItem = (state: GameState, itemId: string): { nextState: GameStat
     removeItemInternal(nextState, itemId);
   }
 
-  const resourceLabels: Partial<Record<keyof GameState['resources'], string>> = {
-    money: 'raha',
-    sanity: 'mieli',
-    energy: 'energia',
-    heat: 'lämpö',
-    anomaly: 'anomalia',
-  };
-  const effectSummary = Object.entries(effects)
-    .filter(([, value]) => (value ?? 0) !== 0)
-    .map(([resource, value]) => {
-      const label = resourceLabels[resource as keyof GameState['resources']] ?? resource;
-      const amount = value ?? 0;
-      const sign = amount > 0 ? '+' : '';
-      return `${label} ${sign}${amount}`;
-    })
-    .join(', ');
+  return { nextState, message: `${itemData.name} käytetty.` };
+};
 
-  const message =
-    itemData.onUse.message ??
-    (effectSummary ? `Käytit ${itemData.name}, ${effectSummary}.` : `Käytit esinettä: ${itemData.name}.`);
-
-  const loggedState = appendLog(nextState, {
-    title: `Käytit: ${itemData.name}`,
-    outcome: effectSummary ? effectSummary : message,
-    time: state.time,
-  });
-
-  return { nextState: loggedState, message };
+export const addLogEntry = (
+  state: GameState,
+  logEntry: Parameters<typeof appendLog>[1]
+): { nextState: GameState; entry: ReturnType<typeof appendLog>['log'][number] } => {
+  const nextState = appendLog(state, logEntry);
+  return { nextState, entry: nextState.log[nextState.log.length - 1] };
 };

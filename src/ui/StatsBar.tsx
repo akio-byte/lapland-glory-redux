@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import items from '../data/items.json' with { type: 'json' };
 import { INVENTORY_CAPACITY } from '../engine/resources.js';
 import { Item, Phase, ResourceDelta, Resources } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -142,10 +143,12 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
 
   const itemLookup = useMemo(
     () =>
-      (items as Item[]).reduce<Record<string, Item>>((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {}),
+      (items as Partial<Item>[]) // Defensive: imported JSON may include malformed entries.
+        .filter((item): item is Item => isValidItem(item))
+        .reduce<Record<string, Item>>((acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        }, {}),
     []
   );
 
