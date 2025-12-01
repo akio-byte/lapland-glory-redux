@@ -63,6 +63,12 @@ const App = () => {
   const weatherLabel = getWeatherLabel(state.time.weather);
   const weatherIcon = getWeatherIcon(state.time.weather);
   const weatherDisplay = getWeatherDisplay(state.time.weather);
+  const anomalyBand = useMemo(() => {
+    const anomaly = state.resources.anomaly;
+    if (anomaly >= 80) return 'rift';
+    if (anomaly >= 40) return 'odd';
+    return 'calm';
+  }, [state.resources.anomaly]);
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
@@ -209,15 +215,14 @@ const App = () => {
     : lastMessage;
 
   return (
-    // The outer stage keeps the video background anchored while centering the framed UI.
+    // The outer stage keeps the background scenes anchored while centering the framed UI.
     <div className="app-stage">
       <BackgroundSceneManager
         day={state.time.day}
         phase={state.time.phase}
-        anomaly={state.resources.anomaly}
-        weather={state.time.weather}
+        anomalyBand={anomalyBand}
       />
-      {/* The monitor frame holds the actual game UI so everything sits above the video. */}
+      {/* The monitor frame holds the actual game UI so everything sits above the background. */}
       <div
         className="app-shell"
         data-phase={theme.phase}
