@@ -2,11 +2,13 @@ type BackgroundVideoProps = {
   anomaly: number;
 };
 
+import { assetPath } from '../utils/assetPath.js';
+
 export const BackgroundVideo = ({ anomaly }: BackgroundVideoProps) => {
   const source =
     anomaly > 50
-      ? '/assets/videos/Glitchy_Northern_Lights_VHS_Loop.mp4'
-      : '/assets/videos/Lapland_Snow_Cinemagraph_VHS.mp4';
+      ? assetPath('assets/videos/Glitchy_Northern_Lights_VHS_Loop.mp4')
+      : assetPath('assets/videos/Lapland_Snow_Cinemagraph_VHS.mp4');
 
   return (
     <div className="background-video" aria-hidden>
