@@ -45,6 +45,7 @@ const App = () => {
     setFlag,
     buyItem,
     useItem,
+    resetForMenu,
     debug,
     taskToast,
     clearTaskToast,
@@ -97,6 +98,20 @@ const App = () => {
     startNewGame(selectedDifficulty);
   };
 
+  const handleReturnToMenu = () => {
+    clearSavedGame();
+    setPendingSavedGame(null);
+    resetForMenu();
+    setShowStartScreen(true);
+  };
+
+  const handleRestartFromEnding = () => {
+    clearSavedGame();
+    setPendingSavedGame(null);
+    setShowStartScreen(false);
+    startNewGame(selectedDifficulty);
+  };
+
   const handleContinueGame = () => {
     if (!pendingSavedGame) return;
 
@@ -142,7 +157,13 @@ const App = () => {
 
   const content = useMemo(() => {
     if (currentEnding) {
-      return <EndingOverlay ending={currentEnding} onRestart={startNewGame} />;
+      return (
+        <EndingOverlay
+          ending={currentEnding}
+          onRestart={handleRestartFromEnding}
+          onReturnToMenu={handleReturnToMenu}
+        />
+      );
     }
 
     if (currentEvent) {
@@ -163,7 +184,16 @@ const App = () => {
         <p className="muted">Ei tapahtumia tässä vaiheessa. Odota seuraavaa hetkeä.</p>
       </div>
     );
-  }, [chooseOption, currentEnding, currentEvent, startNewGame, state, adjustMoney, adjustResources]);
+  }, [
+    adjustMoney,
+    adjustResources,
+    chooseOption,
+    currentEnding,
+    currentEvent,
+    handleRestartFromEnding,
+    handleReturnToMenu,
+    state,
+  ]);
 
   const openTeletext = () => {
     if (teletextOpen) return;

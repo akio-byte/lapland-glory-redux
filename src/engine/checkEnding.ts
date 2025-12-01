@@ -34,6 +34,13 @@ export const checkEnding = (state: GameState): EndingMeta | null => {
     return ENDINGS.bureaucrat;
   }
 
+  const survivedTrial =
+    state.time.day > 3 && money > 0 && sanity > 0 && heat > 0 && anomaly < ANOMALIA_THRESHOLD;
+
+  if (survivedTrial) {
+    return ENDINGS.trial_victory;
+  }
+
   if (state.time.day > MAX_DAYS + SPRING_GRACE_DAYS) return ENDINGS.spring;
 
   return null;
