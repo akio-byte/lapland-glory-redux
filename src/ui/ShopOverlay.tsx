@@ -1,6 +1,7 @@
 import items from '../data/items.json' with { type: 'json' };
 import { INVENTORY_CAPACITY } from '../engine/resources.js';
 import { Item, Resources } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 
 type ShopOverlayProps = {
   money: number;
@@ -37,7 +38,9 @@ export const ShopOverlay = ({ money, inventory, onBuy, onClose }: ShopOverlayPro
         </div>
 
         <div className="shop-items" role="list">
-          {(items as Item[]).map((item) => {
+          {(items as Partial<Item>[])
+            .filter((item): item is Item => isValidItem(item))
+            .map((item) => {
             const affordable = money >= item.price;
             const disabled = !affordable || isInventoryFull;
             const effects = Object.entries(item.onUse?.effects ?? {});

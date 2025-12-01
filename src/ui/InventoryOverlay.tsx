@@ -1,6 +1,7 @@
 import items from '../data/items.json' with { type: 'json' };
 import { INVENTORY_CAPACITY } from '../engine/resources.js';
 import { Item, Resources } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 
 const RESOURCE_LABELS: Record<keyof Resources, string> = {
   money: 'Raha',
@@ -55,10 +56,12 @@ const groupInventory = (inventory: string[], lookup: Record<string, Item>) => {
 };
 
 export const InventoryOverlay = ({ inventory, onUseItem, onClose }: InventoryOverlayProps) => {
-  const lookup = (items as Item[]).reduce<Record<string, Item>>((acc, item) => {
-    acc[item.id] = item;
-    return acc;
-  }, {});
+  const lookup = (items as Partial<Item>[]) // Defensive mapping: skip malformed rows entirely.
+    .filter((item): item is Item => isValidItem(item))
+    .reduce<Record<string, Item>>((acc, item) => {
+      acc[item.id] = item;
+      return acc;
+    }, {});
 
   const grouped = groupInventory(inventory, lookup);
   const availableSlots = INVENTORY_CAPACITY - inventory.length;

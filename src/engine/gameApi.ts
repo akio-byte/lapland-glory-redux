@@ -1,5 +1,6 @@
 import items from '../data/items.json' with { type: 'json' };
 import { Choice, Difficulty, Event, GameState, Item, Phase, SisuState } from '../types.js';
+import { isValidItem } from '../utils/typeGuards.js';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, EventPickResult, getEventForPhase } from './resolveEvent.js';
@@ -55,6 +56,8 @@ const createInitialSisu = (): SisuState => ({
   triggerReason: null,
   recovered: false,
 });
+
+const safeItems = (items as Partial<Item>[]).filter((entry): entry is Item => isValidItem(entry));
 
 export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState => ({
   resources: {
@@ -119,7 +122,7 @@ export const buyItem = (
   state: GameState,
   itemId: string
 ): { nextState: GameState; success: boolean; message: string } => {
-  const item = (items as Item[]).find((entry) => entry.id === itemId);
+  const item = safeItems.find((entry) => entry.id === itemId);
   if (!item) {
     return { nextState: state, success: false, message: 'Kioski hämmentyy: tuntematon esine.' };
   }
@@ -160,7 +163,7 @@ export const setFlag = (state: GameState, key: string, value: boolean): GameStat
 };
 
 export const useItem = (state: GameState, itemId: string): { nextState: GameState; message: string } => {
-  const itemData = (items as Item[]).find((item) => item.id === itemId);
+  const itemData = safeItems.find((item) => item.id === itemId);
   if (!itemData) {
     return { nextState: state, message: 'Tuntematon esine.' };
   }

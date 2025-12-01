@@ -7,7 +7,7 @@ import { TypewriterText } from './TypewriterText.js';
 import { assetPath } from '../utils/assetPath.js';
 
 type Props = {
-  event: Event;
+  event?: Event | null;
   state: GameState;
   onChoose: (index: number) => void;
   onAdjustMoney: (delta: number, note?: string) => void;
@@ -15,6 +15,15 @@ type Props = {
 };
 
 export const EventView = ({ event, state, onChoose, onAdjustMoney, onAdjustResources }: Props) => {
+  if (!event) {
+    return (
+      <div className="panel event fade-in">
+        <div className="eyebrow">Tapahtuma puuttuu</div>
+        <p className="muted">Tapahtumadataa ei löytynyt. Odota seuraavaa vaihetta.</p>
+      </div>
+    );
+  }
+
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
   const description = maybeDistortText(decorateEventDescription(event.description, state), anomaly);

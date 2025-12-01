@@ -7,7 +7,11 @@ export const logPhaseHeader = (state: GameState) => {
   console.log(`\n=== Day ${day} :: ${phase} ===`);
 };
 
-export const logEvent = (state: GameState, event: Event, choice?: Choice) => {
+export const logEvent = (state: GameState, event?: Event | null, choice?: Choice) => {
+  if (!event) {
+    console.warn('logEvent called without an event. Skipping event log.');
+    return;
+  }
   const { anomaly } = state.resources;
   const decoratedDescription = decorateEventDescription(event.description, state);
   const distortedDescription = maybeDistortText(decoratedDescription, anomaly);
@@ -33,7 +37,11 @@ export const logResources = (state: GameState) => {
   );
 };
 
-export const logEnding = (ending: EndingMeta) => {
+export const logEnding = (ending?: EndingMeta | null) => {
+  if (!ending) {
+    console.warn('logEnding called without an ending.');
+    return;
+  }
   console.log(`\n*** ${ending.title} (${ending.id}) ***`);
   console.log(ending.description);
 };

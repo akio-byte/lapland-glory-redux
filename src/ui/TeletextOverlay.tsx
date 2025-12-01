@@ -70,19 +70,21 @@ const TeletextPageContent = ({
         <div className="teletext-line">MTV3 TYÖT 333</div>
         <div className="teletext-line highlight">TEHTÄVÄT</div>
         {hasTasks ? (
-          tasks.map((task) => (
-            <div key={task.id} className="teletext-line">
-              • {task.description}
-            </div>
-          ))
+          tasks
+            .filter(Boolean)
+            .map((task, index) => (
+              <div key={task.id ?? `task-${index}`} className="teletext-line">
+                • {task.description ?? 'Tuntematon tehtävä'}
+              </div>
+            ))
         ) : (
           <div className="teletext-line">Ei aktiivisia tehtäviä.</div>
         )}
         <div className="teletext-line highlight">VALMISTUNUT</div>
         {hasCompleted ? (
-          completedTasks.slice(-3).map((task) => (
-            <div key={task.id} className="teletext-line">
-              ✓ {task.description} (Päivä {task.completedOnDay})
+          completedTasks.slice(-3).map((task, index) => (
+            <div key={task.id ?? `completed-${index}`} className="teletext-line">
+              ✓ {task.description ?? 'Tehtävä'} (Päivä {task.completedOnDay ?? '?'})
             </div>
           ))
         ) : (

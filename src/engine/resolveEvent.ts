@@ -1,5 +1,6 @@
 import events from '../events.json' with { type: 'json' };
 import { Choice, Event, GameState, Phase } from '../types.js';
+import { isValidEvent } from '../utils/typeGuards.js';
 import { pickOne, randomInt } from '../utils/rng.js';
 import { INVENTORY_CAPACITY, addItem, clampResources } from './resources.js';
 
@@ -55,7 +56,8 @@ const meetsRequirements = (event: Event, state: GameState): boolean => {
 };
 
 export const getEventForPhase = (state: GameState, phase: Phase): EventPickResult => {
-  const allForPhase = (events as Event[]).filter((evt) => evt.phase === phase);
+  const allEvents = (events as unknown[]).filter((evt): evt is Event => isValidEvent(evt as Partial<Event>));
+  const allForPhase = allEvents.filter((evt) => evt.phase === phase);
   const pool = allForPhase.filter((evt) => meetsRequirements(evt, state));
   const flavorPool = pool.filter((evt) => evt.family === 'flavor' && !isFallback(evt));
   const fallbackPool = pool.filter((evt) => isFallback(evt));
@@ -103,7 +105,7 @@ export const getEventForPhase = (state: GameState, phase: Phase): EventPickResul
   };
 };
 
-export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?: number) => {
+export const applyChoiceEffects = (state: GameState, event: Event | null, choiceIndex?: number) => {
   if (!event) {
     console.warn('applyChoiceEffects called without an event. Skipping effect application.');
     return { choiceText: 'No event available', choice: undefined };

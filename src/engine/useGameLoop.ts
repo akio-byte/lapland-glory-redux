@@ -132,7 +132,8 @@ const applySisu = (prev: GameState, candidate: GameState, spendTurn: boolean): G
   return updated;
 };
 
-const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
+const describeChoice = (event: Event | null, choice: Choice | undefined, state: GameState) => {
+  if (!event) return 'Tuntematon tapahtuma';
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
 
@@ -440,8 +441,8 @@ export const useGameLoop = ({
       return;
     }
 
-    const eventId = event ? event.id : undefined;
-    const endingId = ending ? ending.id : undefined;
+    const eventId = event?.id;
+    const endingId = ending?.id;
 
     console.log('GameLoop id debug', { eventId, endingId });
   }, [state.time.day, state.time.phase, currentEvent, currentEnding, hasHydrated]);
@@ -450,7 +451,7 @@ export const useGameLoop = ({
     const ending = currentEnding;
 
     if (!hasHydrated) return;
-    if (!ending) {
+    if (!ending?.id) {
       saveGame(state);
       return;
     }
