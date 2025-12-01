@@ -6,7 +6,6 @@ import {
   Difficulty,
   Event,
   GameState,
-  LogEntry,
   ResourceDelta,
   Resources,
   TimeState,
@@ -23,6 +22,7 @@ import {
   useItem,
 } from './gameApi.js';
 import { clampResources } from './resources.js';
+import { MAX_LOG_ENTRIES, appendLog } from './log.js';
 import { loadGame, saveGame } from './storage.js';
 import { evaluateTasks, getDefaultTasks, TaskCheckContext } from './tasks.js';
 import { CompletedTask } from '../types.js';
@@ -67,28 +67,6 @@ const computeResourceDelta = (prev: Resources, next: Resources): ResourceDelta =
   heat: next.heat - prev.heat,
   anomaly: next.anomaly - prev.anomaly,
 });
-
-const MAX_LOG_ENTRIES = 20;
-
-const appendLog = (
-  state: GameState,
-  entry: { title: string; outcome: string; time?: TimeState }
-): GameState => {
-  const time = entry.time ?? state.time;
-  const logEntry: LogEntry = {
-    day: time.day,
-    phase: time.phase,
-    title: entry.title,
-    outcome: entry.outcome,
-  };
-
-  const nextLog = [...(state.log ?? []), logEntry];
-  if (nextLog.length > MAX_LOG_ENTRIES) {
-    nextLog.shift();
-  }
-
-  return { ...state, log: nextLog };
-};
 
 const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
   const { anomaly } = state.resources;

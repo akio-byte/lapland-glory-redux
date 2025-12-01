@@ -10,6 +10,7 @@ import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
 import { TeletextOverlay } from './ui/TeletextOverlay.js';
 import { ShopOverlay } from './ui/ShopOverlay.js';
 import { JournalOverlay } from './ui/JournalOverlay.js';
+import { InventoryOverlay } from './ui/InventoryOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
@@ -63,6 +64,7 @@ const App = () => {
   const [teletextOpen, setTeletextOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
+  const [inventoryOpen, setInventoryOpen] = useState(false);
   // Track whether we detected an existing save to gate the main UI behind the start screen.
   const [pendingSavedGame, setPendingSavedGame] = useState<GameState | null>(null);
   const [showStartScreen, setShowStartScreen] = useState(false);
@@ -238,6 +240,28 @@ const App = () => {
             <div className="action-with-help">
               <button
                 className="teletext-toggle primary-chip"
+                onClick={() => setInventoryOpen(true)}
+                aria-label="Avaa varasto"
+              >
+                🎒 VARASTO
+              </button>
+              <div className="inline-help">
+                <button
+                  type="button"
+                  className="tooltip-trigger"
+                  aria-describedby="tooltip-inventory-overlay"
+                  aria-label="Miten käyttää esineitä"
+                >
+                  ?
+                </button>
+                <span id="tooltip-inventory-overlay" className="tooltip-bubble" role="tooltip">
+                  Avaa varastolistan. Katso esineiden vaikutukset ja käytä niitä suoraan ilman vuoron kulumista.
+                </span>
+              </div>
+            </div>
+            <div className="action-with-help">
+              <button
+                className="teletext-toggle primary-chip"
                 onClick={() => setShopOpen(true)}
                 disabled={shopDisabled}
                 aria-label="Avaa kioski"
@@ -308,6 +332,13 @@ const App = () => {
         <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
         {/* Enable with ?debug=1 in the URL or by running the dev server. */}
         {debugEnabled && <DebugPanel state={state} actions={debug} />}
+        {inventoryOpen && (
+          <InventoryOverlay
+            inventory={state.inventory}
+            onUseItem={useItem}
+            onClose={() => setInventoryOpen(false)}
+          />
+        )}
         {teletextOpen && (
           <TeletextOverlay
             day={state.time.day}

@@ -697,6 +697,100 @@ button.primary {
   gap: 0.25rem;
 }
 
+.inventory-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 7, 10, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+.inventory-panel {
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.inventory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.inventory-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.inventory-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 0.95rem;
+  background: #0f131b;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inventory-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inventory-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+
+.inventory-card-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.inventory-card-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.inventory-card-effect {
+  padding: 0.25rem 0.5rem;
+  background: rgba(124, 224, 255, 0.08);
+  border: 1px solid rgba(124, 224, 255, 0.2);
+  border-radius: 8px;
+}
+
+.inventory-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.inventory-card-type {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.inventory-count {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+}
+
 .shop-item-name {
   font-weight: 700;
 }
