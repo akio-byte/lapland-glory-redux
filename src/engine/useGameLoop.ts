@@ -89,10 +89,14 @@ export const useGameLoop = ({
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
   const [hasHydrated, setHasHydrated] = useState(false);
 
-  const updateState = (updater: GameState | ((prev: GameState) => GameState)) => {
+  const updateState = (
+    updater: GameState | ((prev: GameState) => GameState),
+    options: { trackDelta?: boolean } = {}
+  ) => {
+    const { trackDelta = true } = options;
     setState((prev) => {
       const next = typeof updater === 'function' ? (updater as (state: GameState) => GameState)(prev) : updater;
-      const delta = computeResourceDelta(prev.resources, next.resources);
+      const delta = trackDelta ? computeResourceDelta(prev.resources, next.resources) : createEmptyDelta();
       setLastResourceDelta(delta);
       return next;
     });
@@ -107,7 +111,7 @@ export const useGameLoop = ({
       },
     };
 
-    updateState(hydratedState);
+    updateState(hydratedState, { trackDelta: false });
     setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
     setCurrentEnding(checkEnding(hydratedState));
     setLastMessage('Jatketaan aiempaa peliä.');
