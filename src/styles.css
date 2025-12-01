@@ -31,6 +31,37 @@ body {
   min-height: 100vh;
 }
 
+.background-video {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.background-video::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 5, 11, 0.6), rgba(2, 5, 11, 0.35));
+}
+
+.background-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 68%, rgba(2, 5, 11, 0.55) 88%, #02050b 100%);
+}
+
+.background-video__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.1);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 button {
   font: inherit;
   background: transparent;
