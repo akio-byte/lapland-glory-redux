@@ -203,103 +203,107 @@ const App = () => {
   }
 
   return (
-    <div
-      className="app-shell"
-      data-phase={theme.phase}
-      style={{
-        '--entropy': theme.entropy,
-        '--fatigue': theme.fatigue,
-        '--frost': theme.frost,
-        '--shiver': theme.shiver,
-        '--anomaly': theme.anomalyLevel,
-      }}
-    >
+    // The outer stage keeps the video background anchored while centering the framed UI.
+    <div className="app-stage">
       <BackgroundVideo anomaly={state.resources.anomaly} />
-      <header className="top-bar">
-        <div>
-          <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
-          <div className="phase">{state.time.phase}</div>
-        </div>
-        <div className="top-bar-actions">
-          <div className="action-with-help">
+      {/* The monitor frame holds the actual game UI so everything sits above the video. */}
+      <div
+        className="app-shell"
+        data-phase={theme.phase}
+        style={{
+          '--entropy': theme.entropy,
+          '--fatigue': theme.fatigue,
+          '--frost': theme.frost,
+          '--shiver': theme.shiver,
+          '--anomaly': theme.anomalyLevel,
+        }}
+      >
+        <header className="top-bar">
+          <div>
+            <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
+            <div className="phase">{state.time.phase}</div>
+          </div>
+          <div className="top-bar-actions">
+            <div className="action-with-help">
+              <button
+                className="teletext-toggle"
+                onClick={() => setShopOpen(true)}
+                disabled={shopDisabled}
+                aria-label="Avaa kioski"
+                title={shopDisabled ? 'Kioski kiinni' : undefined}
+              >
+                {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
+              </button>
+              <div className="inline-help">
+                <button
+                  type="button"
+                  className="tooltip-trigger"
+                  aria-describedby="tooltip-shop"
+                  aria-label="Mikä on kioski"
+                >
+                  ?
+                </button>
+                <span id="tooltip-shop" className="tooltip-bubble" role="tooltip">
+                  Kioski on kauppa: osta tavaroita rahalla ja täytä reppu.
+                </span>
+              </div>
+            </div>
             <button
               className="teletext-toggle"
-              onClick={() => setShopOpen(true)}
-              disabled={shopDisabled}
-              aria-label="Avaa kioski"
-              title={shopDisabled ? 'Kioski kiinni' : undefined}
+              onClick={openTeletext}
+              disabled={teletextDisabled}
+              aria-label="Avaa Teksti-TV"
+              title={teletextDisabled ? 'Liian väsynyt' : undefined}
             >
-              {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
+              {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
             </button>
-            <div className="inline-help">
-              <button
-                type="button"
-                className="tooltip-trigger"
-                aria-describedby="tooltip-shop"
-                aria-label="Mikä on kioski"
-              >
-                ?
-              </button>
-              <span id="tooltip-shop" className="tooltip-bubble" role="tooltip">
-                Kioski on kauppa: osta tavaroita rahalla ja täytä reppu.
-              </span>
-            </div>
           </div>
+          <StatsBar
+            resources={state.resources}
+            phase={state.time.phase}
+            anomaly={state.resources.anomaly}
+            inventory={state.inventory}
+            delta={resourceDelta}
+            onUseItem={useItem}
+          />
+        </header>
+
+        <main className="content">{content}</main>
+
+        <footer className="footer">
+          <span className="muted">{lastMessage}</span>
           <button
             className="teletext-toggle"
-            onClick={openTeletext}
-            disabled={teletextDisabled}
-            aria-label="Avaa Teksti-TV"
-            title={teletextDisabled ? 'Liian väsynyt' : undefined}
+            onClick={() => setFlag('sound_muted', !state.flags.sound_muted)}
+            aria-pressed={state.flags.sound_muted}
           >
-            {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
+            {state.flags.sound_muted ? 'Unmute Audio' : 'Mute Audio'}
           </button>
-        </div>
-        <StatsBar
-          resources={state.resources}
-          phase={state.time.phase}
-          anomaly={state.resources.anomaly}
-          inventory={state.inventory}
-          delta={resourceDelta}
-          onUseItem={useItem}
-        />
-      </header>
+        </footer>
 
-      <main className="content">{content}</main>
-
-      <footer className="footer">
-        <span className="muted">{lastMessage}</span>
-        <button
-          className="teletext-toggle"
-          onClick={() => setFlag('sound_muted', !state.flags.sound_muted)}
-          aria-pressed={state.flags.sound_muted}
-        >
-          {state.flags.sound_muted ? 'Unmute Audio' : 'Mute Audio'}
-        </button>
-      </footer>
-
-      <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
-      {/* Enable with ?debug=1 in the URL or by running the dev server. */}
-      {debugEnabled && <DebugPanel state={state} actions={debug} />}
-      {teletextOpen && (
-        <TeletextOverlay
-          day={state.time.day}
-          phase={state.time.phase}
-          anomaly={state.resources.anomaly}
-          energy={state.resources.energy}
-          onClose={() => setTeletextOpen(false)}
-          onNavigateCost={navigateTeletext}
-          onSetFlag={setFlag}
-        />
-      )}
-      {shopOpen && (
-        <ShopOverlay
-          money={state.resources.money}
-          inventory={state.inventory}
-          onBuy={(itemId) => handleBuy(itemId)}
-          onClose={() => setShopOpen(false)}
-        />
-      )}
+        <SubliminalWhisper anomaly={state.resources.anomaly} phase={state.time.phase} />
+        {/* Enable with ?debug=1 in the URL or by running the dev server. */}
+        {debugEnabled && <DebugPanel state={state} actions={debug} />}
+        {teletextOpen && (
+          <TeletextOverlay
+            day={state.time.day}
+            phase={state.time.phase}
+            anomaly={state.resources.anomaly}
+            energy={state.resources.energy}
+            onClose={() => setTeletextOpen(false)}
+            onNavigateCost={navigateTeletext}
+            onSetFlag={setFlag}
+          />
+        )}
+        {shopOpen && (
+          <ShopOverlay
+            money={state.resources.money}
+            inventory={state.inventory}
+            onBuy={(itemId) => handleBuy(itemId)}
+            onClose={() => setShopOpen(false)}
+          />
+        )}
+      </div>
     </div>
   );
 };
