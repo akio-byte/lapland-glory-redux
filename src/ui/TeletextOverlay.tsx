@@ -3,10 +3,6 @@ import { BASE_HEAT_LOSS } from '../engine/tick.js';
 import { ANOMALIA_THRESHOLD } from '../engine/checkEnding.js';
 import { CompletedTask, Phase, Task } from '../types.js';
 
-const START_DATE = new Date('1995-11-26T00:00:00Z');
-const AVAILABLE_PAGES = [100, 202, 333] as const;
-const ANOMALY_PAGE = 899;
-
 type TeletextOverlayProps = {
   day: number;
   phase: Phase;
@@ -18,6 +14,10 @@ type TeletextOverlayProps = {
   onNavigateCost: (note?: string, exhaustedNote?: string) => boolean;
   onSetFlag: (key: string, value: boolean) => void;
 };
+
+const START_DATE = new Date('1995-11-26T00:00:00Z');
+const AVAILABLE_PAGES = [100, 202, 333] as const;
+const ANOMALY_PAGE = 899;
 
 const formatDateForPage = (day: number) => {
   const date = new Date(START_DATE);
@@ -139,7 +139,7 @@ export const TeletextOverlay = ({
 }: TeletextOverlayProps) => {
   const [page, setPage] = useState<number>(100);
   const [pageInput, setPageInput] = useState<string>('100');
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>('Energia -1 per sivu');
 
   const dateString = useMemo(() => formatDateForPage(day), [day]);
   const header = useMemo(() => `P${page} 100 ALKU ${dateString}`, [dateString, page]);
@@ -155,7 +155,7 @@ export const TeletextOverlay = ({
 
     setPage(target);
     setPageInput(String(target));
-    setStatus(`SIVU ${target}`);
+    setStatus(`SIVU ${target} (-1 energia)`);
 
     if (target === 202) {
       onSetFlag('forecast_read', true);
@@ -189,6 +189,10 @@ export const TeletextOverlay = ({
           <button className="teletext-close" onClick={onClose} aria-label="Sulje Teksti-TV">
             ✕
           </button>
+        </div>
+
+        <div className="teletext-energy-hint">
+          📺 Teksti-TV kuluttaa 1 energiaa per sivu. Energia: {Math.max(0, energy)}
         </div>
 
         <TeletextPageContent

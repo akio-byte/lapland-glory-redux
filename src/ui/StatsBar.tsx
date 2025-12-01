@@ -5,6 +5,12 @@ import { Item, Phase, ResourceDelta, Resources } from '../types.js';
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
+const getDangerLevel = (value: number, warningThreshold = 20) => {
+  if (value <= 10) return 'critical' as const;
+  if (value <= warningThreshold) return 'warning' as const;
+  return undefined;
+};
+
 type Props = {
   resources: Resources;
   phase: Phase;
@@ -14,10 +20,12 @@ type Props = {
   onUseItem: (itemId: string) => void;
 };
 
+type DangerLevel = ReturnType<typeof getDangerLevel>;
+
 const ResourceBar = ({
   label,
   value,
-  danger,
+  dangerLevel,
   tooltip,
   tooltipId,
   deltaValue = 0,
@@ -27,7 +35,7 @@ const ResourceBar = ({
 }: {
   label: string;
   value: number;
-  danger?: boolean;
+  dangerLevel?: DangerLevel;
   tooltip: string;
   tooltipId: string;
   deltaValue?: number;
@@ -37,6 +45,7 @@ const ResourceBar = ({
 }) => {
   const changeClass = showDelta ? (deltaValue > 0 ? 'positive' : 'negative') : '';
   const deltaStateClass = showDelta ? `visible ${deltaFading ? 'fade-out' : ''}` : '';
+  const dangerClass = dangerLevel ? `danger danger-${dangerLevel}` : '';
   return (
     <div className={`resource ${changeClass ? `resource-${changeClass}` : ''}`}>
       <div className="resource-label">
@@ -56,6 +65,7 @@ const ResourceBar = ({
           <span id={tooltipId} className="tooltip-bubble" role="tooltip">
             {tooltip}
           </span>
+          {dangerLevel && <span className="danger-pill">⚠</span>}
         </div>
         <div className="resource-value-wrap">
           <span className="resource-value">{Math.round(value)}</span>
@@ -68,7 +78,7 @@ const ResourceBar = ({
         </div>
       </div>
       <div className="bar">
-        <div className={`bar-fill ${danger ? 'danger' : ''}`} style={{ width: `${Math.min(value, 100)}%` }} />
+        <div className={`bar-fill ${dangerClass}`} style={{ width: `${Math.min(value, 100)}%` }} />
       </div>
     </div>
   );
@@ -153,7 +163,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
         <ResourceBar
           label="Raha"
           value={pickValue('money')}
-          danger={resources.money <= 10}
+          dangerLevel={getDangerLevel(resources.money, 10)}
           tooltip="Raha kertoo, selviätkö vuokrasta ja arjen menoista."
           tooltipId="tooltip-raha"
           deltaValue={pickDelta('money')}
@@ -164,7 +174,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
         <ResourceBar
           label="Mieli"
           value={pickValue('sanity')}
-          danger={resources.sanity <= 20}
+          dangerLevel={getDangerLevel(resources.sanity)}
           tooltip="Mielenrauha. Jos se putoaa nollaan, romahdat."
           tooltipId="tooltip-mieli"
           deltaValue={pickDelta('sanity')}
@@ -175,7 +185,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
         <ResourceBar
           label="Energia"
           value={resources.energy}
-          danger={resources.energy <= 20}
+          dangerLevel={getDangerLevel(resources.energy)}
           tooltip="Jaksaminen. Päivän ja yön toiminnot kuluttavat energiaa."
           tooltipId="tooltip-energia"
           deltaValue={pickDelta('energy')}
@@ -186,7 +196,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
         <ResourceBar
           label="Lämpö"
           value={resources.heat}
-          danger={resources.heat <= 20}
+          dangerLevel={getDangerLevel(resources.heat)}
           tooltip="Keho lämpimänä. Nolla tarkoittaa jäätymistä."
           tooltipId="tooltip-lampo"
           deltaValue={pickDelta('heat')}
@@ -204,6 +214,27 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           deltaFading={visibleDelta.fading}
           icon="✦"
         />
+      </div>
+
+      <div className="stats-legend" aria-label="Selite muutoksille ja vaaralle">
+        <div className="legend-item">
+          <span className="legend-swatch positive" aria-hidden>
+            +
+          </span>
+          <span>vihreä = nousu</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-swatch negative" aria-hidden>
+            -
+          </span>
+          <span>punainen = lasku</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-swatch danger" aria-hidden>
+            ⚠
+          </span>
+          <span>⚠ näkyy, kun mieli/lämpö/energia uhkaavat loppua</span>
+        </div>
       </div>
 
       <div className="inventory">

@@ -15,30 +15,19 @@ import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
 import { BackgroundVideo } from './ui/BackgroundVideo.js';
-import { Difficulty, WeatherType, type GameState } from './types.js';
+import { Difficulty, type GameState } from './types.js';
 import { useSound } from './hooks/useSound.js';
 import { SoundManager } from './engine/sound.js';
 import { loadGame, clearSavedGame } from './engine/storage.js';
 import { StartScreen } from './ui/StartScreen.js';
+import { StatusStrip } from './ui/StatusStrip.js';
+import { getWeatherDisplay, getWeatherIcon, getWeatherLabel } from './utils/weatherDisplay.js';
 
 const useDebugEnabled = () =>
   useMemo(() => {
     const searchParams = new URLSearchParams(window.location.search);
     return import.meta.env.DEV || searchParams.get('debug') === '1';
   }, []);
-
-const WEATHER_LABELS: Record<WeatherType, string> = {
-  CLEAR: 'Kirkas',
-  SNOWSTORM: 'Lumimyrsky',
-  FOG: 'Sumu',
-  MILD: 'Leuto',
-};
-const WEATHER_ICONS: Partial<Record<WeatherType, string>> = {
-  CLEAR: '☀️',
-  SNOWSTORM: '🌨️',
-  FOG: '🌫️',
-  MILD: '🌤️',
-};
 
 const App = () => {
   const {
@@ -71,9 +60,9 @@ const App = () => {
   const [hasCheckedSave, setHasCheckedSave] = useState(false);
   const teletextDisabled = state.resources.energy <= 0;
   const shopDisabled = state.time.phase !== 'DAY';
-  const weatherLabel = WEATHER_LABELS[state.time.weather] ?? state.time.weather;
-  const weatherIcon = WEATHER_ICONS[state.time.weather];
-  const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
+  const weatherLabel = getWeatherLabel(state.time.weather);
+  const weatherIcon = getWeatherIcon(state.time.weather);
+  const weatherDisplay = getWeatherDisplay(state.time.weather);
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
@@ -127,13 +116,6 @@ const App = () => {
   }, [shopDisabled, shopOpen]);
 
   useEffect(() => {
-    if (!taskToast) return;
-
-    const timer = window.setTimeout(() => clearTaskToast(), 4000);
-    return () => window.clearTimeout(timer);
-  }, [clearTaskToast, taskToast]);
-
-  useEffect(() => {
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
       if (target?.closest('button')) {
@@ -175,7 +157,7 @@ const App = () => {
         <p className="muted">Ei tapahtumia tässä vaiheessa. Odota seuraavaa hetkeä.</p>
       </div>
     );
-  }, [chooseOption, currentEnding, currentEvent, startNewGame, state]);
+  }, [chooseOption, currentEnding, currentEvent, startNewGame, state, adjustMoney, adjustResources]);
 
   const openTeletext = () => {
     if (teletextOpen) return;
@@ -200,7 +182,14 @@ const App = () => {
   };
 
   if (!hasCheckedSave) {
-    return null;
+    return (
+      <div className="boot-screen">
+        <div className="boot-loader" aria-busy>
+          Ladataan tallennusta…
+        </div>
+        <p className="muted">Etsitään aiempaa runia. Tämä kestää vain hetken.</p>
+      </div>
+    );
   }
 
   if (showStartScreen) {
@@ -214,6 +203,10 @@ const App = () => {
       />
     );
   }
+
+  const statusMessage = taskToast
+    ? `Tehtävä valmis: ${taskToast.description}`
+    : lastMessage;
 
   return (
     // The outer stage keeps the video background anchored while centering the framed UI.
@@ -232,9 +225,17 @@ const App = () => {
         }}
       >
         <header className="top-bar">
-          <div>
-            <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
+          <div className="top-bar-left">
+            <div className="eyebrow">Päivä {state.time.day}</div>
             <div className="phase">{state.time.phase}</div>
+          </div>
+          <div className="top-bar-badge" aria-label="Päivä, vaihe ja sää">
+            <span aria-hidden>🗓</span>
+            <span>
+              Päivä {state.time.day} • {state.time.phase}
+            </span>
+            {weatherIcon && <span aria-hidden>{weatherIcon}</span>}
+            <span>{weatherLabel}</span>
           </div>
           <div className="top-bar-actions">
             <div className="action-with-help">
@@ -288,9 +289,9 @@ const App = () => {
               onClick={openTeletext}
               disabled={teletextDisabled}
               aria-label="Avaa Teksti-TV"
-              title={teletextDisabled ? 'Liian väsynyt' : undefined}
+              title={teletextDisabled ? 'Liian väsynyt' : 'Kulutus 1 energia/sivu'}
             >
-              {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
+              {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV (-1 energia)'}
             </button>
             <button
               className="teletext-toggle"
@@ -318,8 +319,15 @@ const App = () => {
 
         <main className="content">{content}</main>
 
+        <StatusStrip
+          day={state.time.day}
+          phase={state.time.phase}
+          message={statusMessage}
+          onDismissTask={taskToast ? clearTaskToast : undefined}
+        />
+
         <footer className="footer">
-          <span className="muted">{lastMessage}</span>
+          <span className="muted">{weatherDisplay}</span>
           <button
             className="teletext-toggle"
             onClick={() => setFlag('sound_muted', !state.flags.sound_muted)}

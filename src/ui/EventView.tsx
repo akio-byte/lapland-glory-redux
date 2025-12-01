@@ -4,6 +4,7 @@ import { Event, GameState } from '../types.js';
 import { SlotsGame } from './minigames/SlotsGame.js';
 import { HackGame } from './minigames/HackGame.js';
 import { TypewriterText } from './TypewriterText.js';
+import { assetPath } from '../utils/assetPath.js';
 
 type Props = {
   event: Event;
@@ -20,13 +21,14 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney, onAdjustResou
   const slipperyBias = useMemo(() => anomaly / 100 > 0.5 && Math.random() < 0.35, [anomaly]);
   const isSlotsGame = event.minigame === 'slots';
   const isHackGame = event.minigame === 'hack';
+  const imageSrc = event.imageSrc ? assetPath(event.imageSrc) : undefined;
 
   return (
     <div className="panel event fade-in">
       <div className="eyebrow">{event.family}</div>
       {event.visual && <pre className="ascii-art">{event.visual}</pre>}
       <h2>{title}</h2>
-      {event.imageSrc && <img className="event-image" src={event.imageSrc} alt={event.title} />}
+      {imageSrc && <img className="event-image" src={imageSrc} alt={event.title} />}
       {isSlotsGame ? (
         <SlotsGame
           money={state.resources.money}
