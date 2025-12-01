@@ -58,14 +58,24 @@
     "choices": [
       {
         "text": "Tienaat muutaman euron ja lämmität sormet",
-        "effects": { "money": 15, "heat": 5, "energy": -5 }
+        "effects": {
+          "money": 15,
+          "heat": 5,
+          "energy": -5
+        }
       },
       {
         "text": "Säästät energian, mutta palelet",
-        "effects": { "heat": -5, "energy": 5, "sanity": 2 }
+        "effects": {
+          "heat": -5,
+          "energy": 5,
+          "sanity": 2
+        }
       }
     ],
-    "tags": ["vertical_slice"]
+    "tags": [
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_day_market_noise",
@@ -76,14 +86,23 @@
     "choices": [
       {
         "text": "Myyt kerätyt rojut",
-        "effects": { "money": 10, "sanity": -2, "anomaly": 1 }
+        "effects": {
+          "money": 10,
+          "sanity": -2,
+          "anomaly": 1
+        }
       },
       {
         "text": "Jäät juttelemaan tuttujen kanssa",
-        "effects": { "sanity": 6, "energy": -3 }
+        "effects": {
+          "sanity": 6,
+          "energy": -3
+        }
       }
     ],
-    "tags": ["vertical_slice"]
+    "tags": [
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_day_fallback_idle",
@@ -94,10 +113,17 @@
     "choices": [
       {
         "text": "Hengähdä ja säästä voimia",
-        "effects": { "energy": 4, "sanity": 3, "heat": -2 }
+        "effects": {
+          "energy": 4,
+          "sanity": 3,
+          "heat": -2
+        }
       }
     ],
-    "tags": ["fallback", "vertical_slice"]
+    "tags": [
+      "fallback",
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_night_coldwatch",
@@ -108,14 +134,24 @@
     "choices": [
       {
         "text": "Valvot ja sytytät kynttilän",
-        "effects": { "heat": -4, "sanity": 4, "energy": -3 }
+        "effects": {
+          "heat": -4,
+          "sanity": 4,
+          "energy": -3
+        }
       },
       {
         "text": "Kääridyt makuupussiin",
-        "effects": { "heat": -2, "energy": 2, "sanity": -1 }
+        "effects": {
+          "heat": -2,
+          "energy": 2,
+          "sanity": -1
+        }
       }
     ],
-    "tags": ["vertical_slice"]
+    "tags": [
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_night_fallback_quiet",
@@ -126,10 +162,17 @@
     "choices": [
       {
         "text": "Kuuntelet tuulta",
-        "effects": { "sanity": 2, "energy": -1, "heat": -1 }
+        "effects": {
+          "sanity": 2,
+          "energy": -1,
+          "heat": -1
+        }
       }
     ],
-    "tags": ["fallback", "vertical_slice"]
+    "tags": [
+      "fallback",
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_sleep_dream",
@@ -140,10 +183,16 @@
     "choices": [
       {
         "text": "Anna unen virrata",
-        "effects": { "energy": 8, "heat": 2, "sanity": 3 }
+        "effects": {
+          "energy": 8,
+          "heat": 2,
+          "sanity": 3
+        }
       }
     ],
-    "tags": ["vertical_slice"]
+    "tags": [
+      "vertical_slice"
+    ]
   },
   {
     "id": "vs_sleep_fallback_still",
@@ -154,10 +203,17 @@
     "choices": [
       {
         "text": "Anna kehon lämmitä",
-        "effects": { "energy": 6, "heat": 3, "sanity": 1 }
+        "effects": {
+          "energy": 6,
+          "heat": 3,
+          "sanity": 1
+        }
       }
     ],
-    "tags": ["fallback", "vertical_slice"]
+    "tags": [
+      "fallback",
+      "vertical_slice"
+    ]
   },
   {
     "id": "day_teletext_hack",
@@ -1305,6 +1361,73 @@
         },
         "xp": {
           "drifter": 8
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
+  },
+  {
+    "id": "anomaly_kela_frozen",
+    "phase": "DAY",
+    "family": "paperwar",
+    "title": "Jäinen Kela-jono",
+    "description": "Kelan ovi jumittaa ja jono jäätyy paikoilleen.",
+    "choices": [
+      {
+        "text": "Kärsit ja odotat",
+        "effects": {
+          "heat": -6,
+          "sanity": 2
+        },
+        "xp": {
+          "bureaucrat": 8
+        }
+      },
+      {
+        "text": "Lähdet pois",
+        "effects": {
+          "sanity": -6
+        }
+      }
+    ],
+    "imageSrc": "/assets/images/katunakyma.png"
+  },
+  {
+    "id": "anomaly_aurora_broadcast",
+    "phase": "NIGHT",
+    "family": "anomaly",
+    "title": "Revontulilähetys",
+    "description": "Teletextin taustalle ilmestyy viestejä revontulista.",
+    "minigame": "hack",
+    "choices": [
+      {
+        "text": "Päädyt murtautumaan",
+        "effects": {}
+      }
+    ],
+    "imageSrc": "/assets/images/mystinenmetsa.jpg"
+  },
+  {
+    "id": "location_frozen_river",
+    "phase": "NIGHT",
+    "family": "survival",
+    "title": "Jäätynyt Ounasjoki",
+    "description": "Ylität Ounasjoen jääkannen. Se paukahtelee uhkaavasti.",
+    "choices": [
+      {
+        "text": "Juokset yli",
+        "effects": {
+          "energy": -10,
+          "heat": -2
+        }
+      },
+      {
+        "text": "Tutkit railoja",
+        "effects": {
+          "sanity": -8
+        },
+        "xp": {
+          "drifter": 10
         }
       }
     ],
