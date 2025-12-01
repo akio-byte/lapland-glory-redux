@@ -14,7 +14,7 @@ import { InventoryOverlay } from './ui/InventoryOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
-import { BackgroundVideo } from './ui/BackgroundVideo.js';
+import { BackgroundSceneManager } from './ui/BackgroundSceneManager.js';
 import { Difficulty, type GameState } from './types.js';
 import { useSound } from './hooks/useSound.js';
 import { SoundManager } from './engine/sound.js';
@@ -211,7 +211,12 @@ const App = () => {
   return (
     // The outer stage keeps the video background anchored while centering the framed UI.
     <div className="app-stage">
-      <BackgroundVideo anomaly={state.resources.anomaly} />
+      <BackgroundSceneManager
+        day={state.time.day}
+        phase={state.time.phase}
+        anomaly={state.resources.anomaly}
+        weather={state.time.weather}
+      />
       {/* The monitor frame holds the actual game UI so everything sits above the video. */}
       <div
         className="app-shell"
