@@ -3,6 +3,15 @@ import { Choice, Event, GameState, Phase } from '../types.js';
 import { pickOne, randomInt } from '../utils/rng.js';
 import { INVENTORY_CAPACITY, addItem, clampResources } from './resources.js';
 
+export type EventPickResult = {
+  event: Event | null;
+  reason: 'none' | 'no_events_for_phase' | 'requirements_blocked';
+  eligibleCount: number;
+  fallbackUsed: boolean;
+};
+
+const isFallback = (event: Event) => event.tags?.includes('fallback') ?? false;
+
 const meetsRequirements = (event: Event, state: GameState): boolean => {
   const reqs = event.requirements;
   if (!reqs) return true;
@@ -45,21 +54,53 @@ const meetsRequirements = (event: Event, state: GameState): boolean => {
   return true;
 };
 
-export const getEventForPhase = (state: GameState, phase: Phase): Event | undefined => {
-  const pool = (events as Event[]).filter(
-    (evt) => evt.phase === phase && meetsRequirements(evt, state)
-  );
-  const flavorPool = pool.filter((evt) => evt.family === 'flavor');
-  const mainPool = pool.filter((evt) => evt.family !== 'flavor');
+export const getEventForPhase = (state: GameState, phase: Phase): EventPickResult => {
+  const allForPhase = (events as Event[]).filter((evt) => evt.phase === phase);
+  const pool = allForPhase.filter((evt) => meetsRequirements(evt, state));
+  const flavorPool = pool.filter((evt) => evt.family === 'flavor' && !isFallback(evt));
+  const fallbackPool = pool.filter((evt) => isFallback(evt));
+  const mainPool = pool.filter((evt) => evt.family !== 'flavor' && !isFallback(evt));
 
-  if (mainPool.length === 0 && flavorPool.length === 0) return undefined;
+  let chosenPool: Event[] = [];
+  let fallbackUsed = false;
 
-  // Flavor events are integrated here with a lighter weight so they stay rare.
-  if (flavorPool.length > 0 && randomInt(100) < 20) {
-    return pickOne(flavorPool);
+  if (mainPool.length === 0 && flavorPool.length === 0 && fallbackPool.length === 0) {
+    return {
+      event: null,
+      reason: allForPhase.length === 0 ? 'no_events_for_phase' : 'requirements_blocked',
+      eligibleCount: pool.length,
+      fallbackUsed,
+    };
   }
 
-  return pickOne(mainPool.length > 0 ? mainPool : flavorPool);
+  if (flavorPool.length > 0 && randomInt(100) < 20) {
+    chosenPool = flavorPool;
+  } else if (mainPool.length > 0) {
+    chosenPool = mainPool;
+  } else if (flavorPool.length > 0) {
+    chosenPool = flavorPool;
+  }
+
+  if (chosenPool.length === 0 && fallbackPool.length > 0) {
+    chosenPool = fallbackPool;
+    fallbackUsed = true;
+  }
+
+  if (chosenPool.length === 0) {
+    return {
+      event: null,
+      reason: 'requirements_blocked',
+      eligibleCount: pool.length,
+      fallbackUsed,
+    };
+  }
+
+  return {
+    event: pickOne(chosenPool),
+    reason: 'none',
+    eligibleCount: pool.length,
+    fallbackUsed,
+  };
 };
 
 export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?: number) => {

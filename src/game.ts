@@ -31,13 +31,14 @@ while (true) {
 
   logPhaseHeader(state);
 
-  const event = pickEventForPhase(state);
+  const eventPick = pickEventForPhase(state);
+  const event = eventPick.event;
   if (event) {
     const { nextState, choice } = applyEvent(state, event);
     state = nextState;
     logEvent(state, event, choice);
   } else {
-    console.log('No event available for this phase.');
+    console.log(`No event available for this phase (reason: ${eventPick.reason}).`);
   }
 
   logResources(state);

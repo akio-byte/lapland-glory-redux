@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EndingMeta } from '../ending/endingMeta.js';
+import { ENDINGS, EndingMeta } from '../ending/endingMeta.js';
 import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
 import {
   Choice,
@@ -42,6 +42,7 @@ export type GameLoopState = {
   setFlag: (key: string, value: boolean) => void;
   useItem: (itemId: string) => void;
   buyItem: (itemId: string) => boolean;
+  resetForMenu: () => void;
   debug: {
     addMoney: () => void;
     restoreSanity: () => void;
@@ -103,6 +104,61 @@ export const useGameLoop = ({
   const [hasHydrated, setHasHydrated] = useState(false);
   const [taskToast, setTaskToast] = useState<CompletedTask | null>(null);
 
+  const MAX_PHASE_SKIPS = 4;
+
+  type Resolution = {
+    state: GameState;
+    event: Event | null;
+    ending: EndingMeta | null;
+    skippedPhases: number;
+    exhausted: boolean;
+  };
+
+  const findNextEventOrAdvance = (baseState: GameState): Resolution => {
+    let workingState = baseState;
+    let skipped = 0;
+    let lastPickReason: ReturnType<typeof pickEventForPhase> | null = null;
+
+    while (skipped <= MAX_PHASE_SKIPS) {
+      const ending = checkEnding(workingState);
+      if (ending) {
+        return { state: workingState, event: null, ending, skippedPhases: skipped, exhausted: false };
+      }
+
+      const pick = pickEventForPhase(workingState);
+      lastPickReason = pick;
+
+      if (pick.event) {
+        return {
+          state: workingState,
+          event: pick.event,
+          ending: null,
+          skippedPhases: skipped,
+          exhausted: false,
+        };
+      }
+
+      if (skipped === MAX_PHASE_SKIPS) break;
+
+      workingState = advancePhase(workingState);
+      skipped += 1;
+    }
+
+    if (lastPickReason) {
+      console.warn(
+        `No events available after ${MAX_PHASE_SKIPS} phase skips. Reason: ${lastPickReason.reason}.`
+      );
+    }
+
+    return {
+      state: workingState,
+      event: null,
+      ending: ENDINGS.dataExhausted,
+      skippedPhases: skipped,
+      exhausted: true,
+    };
+  };
+
   const updateState = (
     updater: GameState | ((prev: GameState) => GameState),
     options: { trackDelta?: boolean; skipTasks?: boolean; context?: TaskCheckContext } = {}
@@ -138,20 +194,24 @@ export const useGameLoop = ({
       },
     };
 
-    updateState(hydratedState, { trackDelta: false, skipTasks: true });
-    setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
-    setCurrentEnding(checkEnding(hydratedState));
-    setLastMessage('Jatketaan aiempaa peliä.');
+    const resolution = findNextEventOrAdvance(hydratedState);
+    updateState(resolution.state, { trackDelta: false, skipTasks: true });
+    setCurrentEvent(resolution.event);
+    setCurrentEnding(resolution.ending);
+    setLastMessage(resolution.exhausted ? 'Tallennus oli vanhentunut.' : 'Jatketaan aiempaa peliä.');
     setHasHydrated(true);
   };
 
   const startNewGame = (difficulty: Difficulty = defaultDifficulty) => {
     const initialState = createInitialState(difficulty);
-    updateState(initialState);
-    setCurrentEvent(pickEventForPhase(initialState) ?? null);
-    setCurrentEnding(null);
+    const resolution = findNextEventOrAdvance(initialState);
+    updateState(resolution.state, { trackDelta: false, skipTasks: true });
+    setCurrentEvent(resolution.event);
+    setCurrentEnding(resolution.ending);
     setLastMessage('Talvi alkaa. Päätä selviytymisen suunta.');
-    saveGame(initialState);
+    if (!resolution.exhausted) {
+      saveGame(resolution.state);
+    }
     setHasHydrated(true);
   };
 
@@ -166,31 +226,30 @@ export const useGameLoop = ({
         const loggedState = appendLog(nextState, {
           title: event.title,
           outcome: choiceLabel,
-        time: prev.time,
-      });
-      const endingAfterEvent = checkEnding(loggedState);
+          time: prev.time,
+        });
+        const endingAfterEvent = checkEnding(loggedState);
+        const describedChoice = describeChoice(event, choice, loggedState);
 
-      if (endingAfterEvent) {
-        setCurrentEnding(endingAfterEvent);
-        setCurrentEvent(null);
-        setLastMessage(describeChoice(event, choice, loggedState));
-        return loggedState;
-      }
-
-      const advancedState = advancePhase(loggedState);
-        const endingAfterAdvance = checkEnding(advancedState);
-
-        if (endingAfterAdvance) {
-          setCurrentEnding(endingAfterAdvance);
+        if (endingAfterEvent) {
+          setCurrentEnding(endingAfterEvent);
           setCurrentEvent(null);
-        setLastMessage(describeChoice(event, choice, advancedState));
-        return advancedState;
-      }
+          setLastMessage(describedChoice);
+          return loggedState;
+        }
 
-      const nextEvent = pickEventForPhase(advancedState) ?? null;
-        setCurrentEvent(nextEvent);
-        setLastMessage(describeChoice(event, choice, advancedState));
-        return advancedState;
+        const advancedState = advancePhase(loggedState);
+        const resolution = findNextEventOrAdvance(advancedState);
+
+        if (resolution.ending) {
+          setCurrentEnding(resolution.ending);
+          setCurrentEvent(null);
+        } else {
+          setCurrentEvent(resolution.event);
+        }
+
+        setLastMessage(describedChoice);
+        return resolution.state;
       },
       { context: { lastEventFamily: event.family } }
     );
@@ -263,6 +322,17 @@ export const useGameLoop = ({
     updateState((prev) => setFlagInternal(prev, key, value));
   };
 
+  const resetForMenu = () => {
+    const base = createInitialState(defaultDifficulty);
+    setState(base);
+    setCurrentEvent(null);
+    setCurrentEnding(null);
+    setLastResourceDelta(createEmptyDelta());
+    setTaskToast(null);
+    setLastMessage('Valmiina Lapin talveen.');
+    setHasHydrated(false);
+  };
+
   useEffect(() => {
     if (!autoStart || hasHydrated) return;
 
@@ -276,10 +346,21 @@ export const useGameLoop = ({
   }, [autoStart, hasHydrated]);
 
   useEffect(() => {
+    console.log('GameLoop state:', {
+      day: state.time.day,
+      phase: state.time.phase,
+      currentEvent,
+    });
+  }, [state.time.day, state.time.phase, currentEvent]);
+
+  useEffect(() => {
     if (!hasHydrated) return;
 
+    const endingId = currentEnding?.id;
+    if (endingId && endingId === ENDINGS.dataExhausted.id) return;
+
     saveGame(state);
-  }, [state, hasHydrated]);
+  }, [state, hasHydrated, currentEnding]);
 
   const addMoney = () => {
     updateState((prev) => {
@@ -327,16 +408,16 @@ export const useGameLoop = ({
         next = advancePhase(next);
       }
 
-      const ending = checkEnding(next);
-      if (ending) {
-        setCurrentEnding(ending);
+      const resolution = findNextEventOrAdvance(next);
+      if (resolution.ending) {
+        setCurrentEnding(resolution.ending);
         setCurrentEvent(null);
       } else {
         setCurrentEnding(null);
-        setCurrentEvent(pickEventForPhase(next) ?? null);
+        setCurrentEvent(resolution.event);
       }
 
-      return next;
+      return resolution.state;
     });
     setLastMessage('Debug: Hypättiin seuraavaan päivään.');
   };
@@ -353,6 +434,7 @@ export const useGameLoop = ({
     adjustMoney,
     adjustResources,
     setFlag,
+    resetForMenu,
     buyItem: (itemId: string) => {
       let purchaseSuccess = false;
       updateState(

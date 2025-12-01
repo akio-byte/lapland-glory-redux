@@ -50,6 +50,116 @@
     "imageSrc": "/assets/images/katunakyma.png"
   },
   {
+    "id": "vs_day_warmup",
+    "phase": "DAY",
+    "family": "survival",
+    "title": "Kevyt keikka",
+    "description": "Ensimmäisen päivän koejakso. Käyt kioskilla ja saat vähän käteistä lämpöön.",
+    "choices": [
+      {
+        "text": "Tienaat muutaman euron ja lämmität sormet",
+        "effects": { "money": 15, "heat": 5, "energy": -5 }
+      },
+      {
+        "text": "Säästät energian, mutta palelet",
+        "effects": { "heat": -5, "energy": 5, "sanity": 2 }
+      }
+    ],
+    "tags": ["vertical_slice"]
+  },
+  {
+    "id": "vs_day_market_noise",
+    "phase": "DAY",
+    "family": "nightlife",
+    "title": "Torin meteli",
+    "description": "Paikallinen tori kuhisee. Voit myydä pikkusälää tai seurata menoa.",
+    "choices": [
+      {
+        "text": "Myyt kerätyt rojut",
+        "effects": { "money": 10, "sanity": -2, "anomaly": 1 }
+      },
+      {
+        "text": "Jäät juttelemaan tuttujen kanssa",
+        "effects": { "sanity": 6, "energy": -3 }
+      }
+    ],
+    "tags": ["vertical_slice"]
+  },
+  {
+    "id": "vs_day_fallback_idle",
+    "phase": "DAY",
+    "family": "fallback",
+    "title": "Hiljainen konttori",
+    "description": "Paperit eivät liiku, mutta päivä kuluu. Voit hengähtää hetken ilman päätöksiä.",
+    "choices": [
+      {
+        "text": "Hengähdä ja säästä voimia",
+        "effects": { "energy": 4, "sanity": 3, "heat": -2 }
+      }
+    ],
+    "tags": ["fallback", "vertical_slice"]
+  },
+  {
+    "id": "vs_night_coldwatch",
+    "phase": "NIGHT",
+    "family": "survival",
+    "title": "Kylmä yö",
+    "description": "Yö vetää pakkasen ikkunasta sisään. Päätät valvotko vai säästätkö voimia.",
+    "choices": [
+      {
+        "text": "Valvot ja sytytät kynttilän",
+        "effects": { "heat": -4, "sanity": 4, "energy": -3 }
+      },
+      {
+        "text": "Kääridyt makuupussiin",
+        "effects": { "heat": -2, "energy": 2, "sanity": -1 }
+      }
+    ],
+    "tags": ["vertical_slice"]
+  },
+  {
+    "id": "vs_night_fallback_quiet",
+    "phase": "NIGHT",
+    "family": "fallback",
+    "title": "Hiljainen yö",
+    "description": "Ympärillä on vain lumen rahinaa. Mikään ei häiritse unta tai hereilläoloa.",
+    "choices": [
+      {
+        "text": "Kuuntelet tuulta",
+        "effects": { "sanity": 2, "energy": -1, "heat": -1 }
+      }
+    ],
+    "tags": ["fallback", "vertical_slice"]
+  },
+  {
+    "id": "vs_sleep_dream",
+    "phase": "SLEEP",
+    "family": "survival",
+    "title": "Lyhyt uni",
+    "description": "Nukahtaminen onnistuu nopeasti. Näet unta revontulista ja heräät hieman tasapainoisempana.",
+    "choices": [
+      {
+        "text": "Anna unen virrata",
+        "effects": { "energy": 8, "heat": 2, "sanity": 3 }
+      }
+    ],
+    "tags": ["vertical_slice"]
+  },
+  {
+    "id": "vs_sleep_fallback_still",
+    "phase": "SLEEP",
+    "family": "fallback",
+    "title": "Raukea lepo",
+    "description": "Mitään erityistä ei tapahdu, mutta kehosi palautuu yön aikana.",
+    "choices": [
+      {
+        "text": "Anna kehon lämmitä",
+        "effects": { "energy": 6, "heat": 3, "sanity": 1 }
+      }
+    ],
+    "tags": ["fallback", "vertical_slice"]
+  },
+  {
     "id": "day_teletext_hack",
     "phase": "DAY",
     "family": "anomaly",
