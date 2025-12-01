@@ -22,6 +22,7 @@ const ResourceBar = ({
   tooltipId,
   deltaValue = 0,
   showDelta = false,
+  deltaFading = false,
   icon,
 }: {
   label: string;
@@ -31,9 +32,11 @@ const ResourceBar = ({
   tooltipId: string;
   deltaValue?: number;
   showDelta?: boolean;
+  deltaFading?: boolean;
   icon: ReactNode;
 }) => {
   const changeClass = showDelta ? (deltaValue > 0 ? 'positive' : 'negative') : '';
+  const deltaStateClass = showDelta ? `visible ${deltaFading ? 'fade-out' : ''}` : '';
   return (
     <div className={`resource ${changeClass ? `resource-${changeClass}` : ''}`}>
       <div className="resource-label">
@@ -57,7 +60,7 @@ const ResourceBar = ({
         <div className="resource-value-wrap">
           <span className="resource-value">{Math.round(value)}</span>
           {showDelta && deltaValue !== 0 && (
-            <span className={`resource-delta-bubble ${changeClass}`}>
+            <span className={`resource-delta-bubble ${changeClass} ${deltaStateClass}`}>
               {deltaValue > 0 ? '+' : ''}
               {Math.round(deltaValue)}
             </span>
@@ -73,7 +76,12 @@ const ResourceBar = ({
 
 export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseItem }: Props) => {
   const [fakeStat, setFakeStat] = useState<{ field: keyof Resources; value: number } | null>(null);
-  const [visibleDelta, setVisibleDelta] = useState<ResourceDelta | null>(null);
+  const [visibleDelta, setVisibleDelta] = useState<{ value: ResourceDelta | null; fading: boolean }>(
+    {
+      value: null,
+      fading: false,
+    }
+  );
   const prevPhase = useRef<string | null>(null);
 
   const anomalyLevel = useMemo(() => clamp(anomaly / 100, 0, 1), [anomaly]);
@@ -97,19 +105,27 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
 
   useEffect(() => {
     if (!delta) {
-      setVisibleDelta(null);
+      setVisibleDelta({ value: null, fading: false });
       return undefined;
     }
 
     const hasChange = Object.values(delta).some((value) => value !== 0);
     if (!hasChange) {
-      setVisibleDelta(null);
+      setVisibleDelta({ value: null, fading: false });
       return undefined;
     }
 
-    setVisibleDelta(delta);
-    const timer = setTimeout(() => setVisibleDelta(null), 1700);
-    return () => clearTimeout(timer);
+    setVisibleDelta({ value: delta, fading: false });
+
+    const fadeTimer = setTimeout(
+      () => setVisibleDelta((prev) => (prev.value ? { ...prev, fading: true } : prev)),
+      1200
+    );
+    const clearTimer = setTimeout(() => setVisibleDelta({ value: null, fading: false }), 1700);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(clearTimer);
+    };
   }, [delta]);
 
   const pickValue = (field: keyof Resources) => (fakeStat?.field === field ? fakeStat.value : resources[field]);
@@ -128,7 +144,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
     [inventory]
   );
 
-  const pickDelta = (field: keyof Resources) => visibleDelta?.[field] ?? 0;
+  const pickDelta = (field: keyof Resources) => visibleDelta.value?.[field] ?? 0;
+  const showDeltaFor = (field: keyof Resources) => Boolean(visibleDelta.value) && pickDelta(field) !== 0;
 
   return (
     <div className="stats-area">
@@ -140,7 +157,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltip="Raha kertoo, selviätkö vuokrasta ja arjen menoista."
           tooltipId="tooltip-raha"
           deltaValue={pickDelta('money')}
-          showDelta={Boolean(visibleDelta) && pickDelta('money') !== 0}
+          showDelta={showDeltaFor('money')}
+          deltaFading={visibleDelta.fading}
           icon="💶"
         />
         <ResourceBar
@@ -150,7 +168,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltip="Mielenrauha. Jos se putoaa nollaan, romahdat."
           tooltipId="tooltip-mieli"
           deltaValue={pickDelta('sanity')}
-          showDelta={Boolean(visibleDelta) && pickDelta('sanity') !== 0}
+          showDelta={showDeltaFor('sanity')}
+          deltaFading={visibleDelta.fading}
           icon="🧠"
         />
         <ResourceBar
@@ -160,7 +179,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltip="Jaksaminen. Päivän ja yön toiminnot kuluttavat energiaa."
           tooltipId="tooltip-energia"
           deltaValue={pickDelta('energy')}
-          showDelta={Boolean(visibleDelta) && pickDelta('energy') !== 0}
+          showDelta={showDeltaFor('energy')}
+          deltaFading={visibleDelta.fading}
           icon="⚡"
         />
         <ResourceBar
@@ -170,7 +190,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltip="Keho lämpimänä. Nolla tarkoittaa jäätymistä."
           tooltipId="tooltip-lampo"
           deltaValue={pickDelta('heat')}
-          showDelta={Boolean(visibleDelta) && pickDelta('heat') !== 0}
+          showDelta={showDeltaFor('heat')}
+          deltaFading={visibleDelta.fading}
           icon="🔥"
         />
         <ResourceBar
@@ -179,7 +200,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltip="Lapin anomalian taso. Mitä korkeampi, sitä oudommaksi maailma käy."
           tooltipId="tooltip-anomalia"
           deltaValue={pickDelta('anomaly')}
-          showDelta={Boolean(visibleDelta) && pickDelta('anomaly') !== 0}
+          showDelta={showDeltaFor('anomaly')}
+          deltaFading={visibleDelta.fading}
           icon="✦"
         />
       </div>
