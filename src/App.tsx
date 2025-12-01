@@ -223,15 +223,15 @@ const App = () => {
             <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
             <div className="phase">{state.time.phase}</div>
           </div>
-          <div className="top-bar-actions">
-            <div className="action-with-help">
-              <button
-                className="teletext-toggle"
-                onClick={() => setShopOpen(true)}
-                disabled={shopDisabled}
-                aria-label="Avaa kioski"
-                title={shopDisabled ? 'Kioski kiinni' : undefined}
-              >
+            <div className="top-bar-actions">
+              <div className="action-with-help">
+                <button
+                  className="teletext-toggle primary-chip"
+                  onClick={() => setShopOpen(true)}
+                  disabled={shopDisabled}
+                  aria-label="Avaa kioski"
+                  title={shopDisabled ? 'Kioski kiinni' : undefined}
+                >
                 {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
               </button>
               <div className="inline-help">
@@ -247,14 +247,14 @@ const App = () => {
                   Kioski on kauppa: osta tavaroita rahalla ja täytä reppu.
                 </span>
               </div>
-            </div>
-            <button
-              className="teletext-toggle"
-              onClick={openTeletext}
-              disabled={teletextDisabled}
-              aria-label="Avaa Teksti-TV"
-              title={teletextDisabled ? 'Liian väsynyt' : undefined}
-            >
+              </div>
+              <button
+                className="teletext-toggle primary-chip"
+                onClick={openTeletext}
+                disabled={teletextDisabled}
+                aria-label="Avaa Teksti-TV"
+                title={teletextDisabled ? 'Liian väsynyt' : undefined}
+              >
               {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
             </button>
           </div>

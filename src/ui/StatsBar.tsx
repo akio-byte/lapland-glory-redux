@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import items from '../data/items.json' with { type: 'json' };
 import { INVENTORY_CAPACITY } from '../engine/resources.js';
 import { Item, Phase, ResourceDelta, Resources } from '../types.js';
@@ -22,6 +22,7 @@ const ResourceBar = ({
   tooltipId,
   deltaValue = 0,
   showDelta = false,
+  icon,
 }: {
   label: string;
   value: number;
@@ -30,13 +31,17 @@ const ResourceBar = ({
   tooltipId: string;
   deltaValue?: number;
   showDelta?: boolean;
+  icon: ReactNode;
 }) => {
   const changeClass = showDelta ? (deltaValue > 0 ? 'positive' : 'negative') : '';
   return (
     <div className={`resource ${changeClass ? `resource-${changeClass}` : ''}`}>
       <div className="resource-label">
         <div className="resource-label-text">
-          <span>{label}</span>
+          <span className="resource-icon" aria-hidden="true">
+            {icon}
+          </span>
+          <span className="resource-name">{label}</span>
           <button
             type="button"
             className="tooltip-trigger"
@@ -136,6 +141,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltipId="tooltip-raha"
           deltaValue={pickDelta('money')}
           showDelta={Boolean(visibleDelta) && pickDelta('money') !== 0}
+          icon="💶"
         />
         <ResourceBar
           label="Mieli"
@@ -145,6 +151,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltipId="tooltip-mieli"
           deltaValue={pickDelta('sanity')}
           showDelta={Boolean(visibleDelta) && pickDelta('sanity') !== 0}
+          icon="🧠"
         />
         <ResourceBar
           label="Energia"
@@ -154,6 +161,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltipId="tooltip-energia"
           deltaValue={pickDelta('energy')}
           showDelta={Boolean(visibleDelta) && pickDelta('energy') !== 0}
+          icon="⚡"
         />
         <ResourceBar
           label="Lämpö"
@@ -163,6 +171,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltipId="tooltip-lampo"
           deltaValue={pickDelta('heat')}
           showDelta={Boolean(visibleDelta) && pickDelta('heat') !== 0}
+          icon="🔥"
         />
         <ResourceBar
           label="Anomalia"
@@ -171,6 +180,7 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
           tooltipId="tooltip-anomalia"
           deltaValue={pickDelta('anomaly')}
           showDelta={Boolean(visibleDelta) && pickDelta('anomaly') !== 0}
+          icon="✦"
         />
       </div>
 
