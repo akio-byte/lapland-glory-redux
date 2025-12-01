@@ -17,6 +17,7 @@ const cloneState = (state: GameState): GameState => ({
   flags: { ...state.flags },
   history: [...state.history],
   inventory: [...state.inventory],
+  log: [...state.log],
   paths: { ...state.paths },
   meta: { ...state.meta },
 });
@@ -59,6 +60,7 @@ export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState
   },
   history: [],
   inventory: [],
+  log: [],
   paths: {
     bureaucrat: 0,
     hustler: 0,

@@ -1025,6 +1025,46 @@ button.primary {
   color: #0ff;
 }
 
+.journal-panel {
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.journal-entry {
+  border: 1px solid #0ff;
+  padding: 0.65rem 0.75rem;
+  background: rgba(0, 255, 255, 0.04);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.journal-meta {
+  color: #ff0;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+
+.journal-title {
+  font-weight: 700;
+}
+
+.journal-outcome {
+  color: #b5f5ff;
+}
+
+.journal-empty {
+  color: #aaa;
+  font-style: italic;
+}
+
 @keyframes glitchPulse {
   0% {
     filter: hue-rotate(0deg);

@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
-import { Choice, Difficulty, Event, GameState, ResourceDelta, Resources } from '../types.js';
+import {
+  Choice,
+  Difficulty,
+  Event,
+  GameState,
+  LogEntry,
+  ResourceDelta,
+  Resources,
+  TimeState,
+} from '../types.js';
 import {
   advancePhase,
   applyEvent,
@@ -55,6 +64,28 @@ const computeResourceDelta = (prev: Resources, next: Resources): ResourceDelta =
   anomaly: next.anomaly - prev.anomaly,
 });
 
+const MAX_LOG_ENTRIES = 20;
+
+const appendLog = (
+  state: GameState,
+  entry: { title: string; outcome: string; time?: TimeState }
+): GameState => {
+  const time = entry.time ?? state.time;
+  const logEntry: LogEntry = {
+    day: time.day,
+    phase: time.phase,
+    title: entry.title,
+    outcome: entry.outcome,
+  };
+
+  const nextLog = [...(state.log ?? []), logEntry];
+  if (nextLog.length > MAX_LOG_ENTRIES) {
+    nextLog.shift();
+  }
+
+  return { ...state, log: nextLog };
+};
+
 const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
   const { anomaly } = state.resources;
   const title = maybeDistortText(event.title, anomaly);
@@ -106,6 +137,7 @@ export const useGameLoop = ({
     const hydratedState: GameState = {
       ...savedState,
       flags: { sound_muted: false, ...(savedState.flags ?? {}) },
+      log: (savedState.log ?? []).slice(-MAX_LOG_ENTRIES),
       meta: {
         difficulty: savedState.meta?.difficulty ?? defaultDifficulty,
       },
@@ -134,16 +166,22 @@ export const useGameLoop = ({
 
     updateState((prev) => {
       const { nextState, choice } = applyEvent(prev, event, optionIndex);
-      const endingAfterEvent = checkEnding(nextState);
+      const choiceLabel = choice ? adaptChoiceLabel(choice.text, prev) : 'Ratkaisu';
+      const loggedState = appendLog(nextState, {
+        title: event.title,
+        outcome: choiceLabel,
+        time: prev.time,
+      });
+      const endingAfterEvent = checkEnding(loggedState);
 
       if (endingAfterEvent) {
         setCurrentEnding(endingAfterEvent);
         setCurrentEvent(null);
-        setLastMessage(describeChoice(event, choice, nextState));
-        return nextState;
+        setLastMessage(describeChoice(event, choice, loggedState));
+        return loggedState;
       }
 
-      const advancedState = advancePhase(nextState);
+      const advancedState = advancePhase(loggedState);
       const endingAfterAdvance = checkEnding(advancedState);
 
       if (endingAfterAdvance) {
@@ -187,7 +225,13 @@ export const useGameLoop = ({
   };
 
   const adjustMoney = (delta: number, note?: string) => {
-    updateState((prev) => updateMoney(prev, delta));
+    updateState((prev) => {
+      const updated = updateMoney(prev, delta);
+      if (!note) return updated;
+
+      const title = currentEvent?.title ?? 'Toiminta';
+      return appendLog(updated, { title, outcome: note, time: prev.time });
+    });
     if (note) {
       setLastMessage(note);
     }
@@ -206,7 +250,10 @@ export const useGameLoop = ({
       }
 
       clampResources(next);
-      return next;
+      if (!note) return next;
+
+      const title = currentEvent?.title ?? 'Toiminta';
+      return appendLog(next, { title, outcome: note, time: prev.time });
     });
 
     if (note) {
