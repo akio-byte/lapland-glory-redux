@@ -21,6 +21,7 @@ export type GameLoopState = {
   currentEvent: Event | null;
   currentEnding: EndingMeta | null;
   lastMessage: string;
+  continueFromSave: (savedState: GameState) => void;
   startNewGame: () => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
@@ -47,12 +48,33 @@ const describeChoice = (event: Event, choice: Choice | undefined, state: GameSta
   return `${title}: ${distortedChoice}`;
 };
 
-export const useGameLoop = (): GameLoopState => {
+type UseGameLoopOptions = {
+  /**
+   * When false, the hook skips the automatic hydration on mount.
+   * Consumers can call `startNewGame` or `continueFromSave` manually to begin play.
+   */
+  autoStart?: boolean;
+};
+
+export const useGameLoop = ({ autoStart = true }: UseGameLoopOptions = {}): GameLoopState => {
   const [state, setState] = useState<GameState>(createInitialState);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
   const [hasHydrated, setHasHydrated] = useState(false);
+
+  const continueFromSave = (savedState: GameState) => {
+    const hydratedState: GameState = {
+      ...savedState,
+      flags: { sound_muted: false, ...(savedState.flags ?? {}) },
+    };
+
+    setState(hydratedState);
+    setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
+    setCurrentEnding(checkEnding(hydratedState));
+    setLastMessage('Jatketaan aiempaa peliä.');
+    setHasHydrated(true);
+  };
 
   const startNewGame = () => {
     const initialState = createInitialState();
@@ -61,6 +83,7 @@ export const useGameLoop = (): GameLoopState => {
     setCurrentEnding(null);
     setLastMessage('Talvi alkaa. Päätä selviytymisen suunta.');
     saveGame(initialState);
+    setHasHydrated(true);
   };
 
   const chooseOption = (optionIndex: number) => {
@@ -133,24 +156,16 @@ export const useGameLoop = (): GameLoopState => {
   };
 
   useEffect(() => {
+    if (!autoStart || hasHydrated) return;
+
     const savedState = loadGame();
     if (savedState) {
-      const hydratedState: GameState = {
-        ...savedState,
-        flags: { sound_muted: false, ...(savedState.flags ?? {}) },
-      };
-
-      setState(hydratedState);
-      setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
-      setCurrentEnding(checkEnding(hydratedState));
-      setLastMessage('Jatketaan aiempaa peliä.');
-      setHasHydrated(true);
+      continueFromSave(savedState);
       return;
     }
 
     startNewGame();
-    setHasHydrated(true);
-  }, []);
+  }, [autoStart, hasHydrated]);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -246,6 +261,7 @@ export const useGameLoop = (): GameLoopState => {
         return nextState;
       });
     },
+    continueFromSave,
     debug: {
       addMoney,
       restoreSanity,

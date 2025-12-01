@@ -13,9 +13,11 @@ import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
 import { BackgroundVideo } from './ui/BackgroundVideo.js';
-import { WeatherType } from './types.js';
+import { WeatherType, type GameState } from './types.js';
 import { useSound } from './hooks/useSound.js';
 import { SoundManager } from './engine/sound.js';
+import { loadGame, clearSavedGame } from './engine/storage.js';
+import { StartScreen } from './ui/StartScreen.js';
 
 const WEATHER_LABELS: Record<WeatherType, string> = {
   CLEAR: 'Kirkas',
@@ -36,6 +38,7 @@ const App = () => {
     currentEvent,
     currentEnding,
     lastMessage,
+    continueFromSave,
     startNewGame,
     chooseOption,
     spendEnergy,
@@ -44,10 +47,14 @@ const App = () => {
     buyItem,
     useItem,
     debug,
-  } = useGameLoop();
+  } = useGameLoop({ autoStart: false });
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  // Track whether we detected an existing save to gate the main UI behind the start screen.
+  const [pendingSavedGame, setPendingSavedGame] = useState<GameState | null>(null);
+  const [showStartScreen, setShowStartScreen] = useState(false);
+  const [hasCheckedSave, setHasCheckedSave] = useState(false);
   const teletextDisabled = state.resources.energy <= 0;
   const shopDisabled = state.time.phase !== 'DAY';
   const weatherLabel = WEATHER_LABELS[state.time.weather] ?? state.time.weather;
@@ -55,6 +62,35 @@ const App = () => {
   const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
+
+  useEffect(() => {
+    // On load, check for a saved game to decide whether to show the start screen.
+    const savedState = loadGame();
+    if (savedState) {
+      setPendingSavedGame(savedState);
+      setShowStartScreen(true);
+    } else {
+      startNewGame();
+    }
+
+    setHasCheckedSave(true);
+    // We intentionally skip the hook dependencies to keep this boot check one-off.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleStartNewGame = () => {
+    clearSavedGame();
+    setPendingSavedGame(null);
+    setShowStartScreen(false);
+    startNewGame();
+  };
+
+  const handleContinueGame = () => {
+    if (!pendingSavedGame) return;
+
+    setShowStartScreen(false);
+    continueFromSave(pendingSavedGame);
+  };
 
   useEffect(() => {
     const handleFirstClick = () => {
@@ -137,6 +173,20 @@ const App = () => {
       play('cash');
     }
   };
+
+  if (!hasCheckedSave) {
+    return null;
+  }
+
+  if (showStartScreen) {
+    return (
+      <StartScreen
+        hasSave={Boolean(pendingSavedGame)}
+        onStartNew={handleStartNewGame}
+        onContinue={handleContinueGame}
+      />
+    );
+  }
 
   return (
     <div
