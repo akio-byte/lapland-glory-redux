@@ -262,14 +262,74 @@ button.primary {
   font-weight: 600;
 }
 
+.resource-label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  position: relative;
+}
+
 .resource-value {
   color: var(--accent-strong);
+}
+
+.tooltip-trigger {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #0f131b;
+  color: var(--accent-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0;
+}
+
+.inline-help {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltip-bubble {
+  position: absolute;
+  left: 0;
+  top: 125%;
+  background: #0f131b;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  color: var(--text);
+  width: 230px;
+  max-width: min(240px, 70vw);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease, visibility 150ms ease;
+  z-index: 5;
+}
+
+.tooltip-trigger:focus + .tooltip-bubble,
+.tooltip-trigger:hover + .tooltip-bubble {
+  opacity: 1;
+  visibility: visible;
 }
 
 .inventory {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.inventory-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .inventory-label {
@@ -344,6 +404,12 @@ button.primary {
 
 .bar-fill.danger {
   background: linear-gradient(90deg, rgba(226, 85, 85, 0.9), rgba(255, 132, 132, 0.9));
+}
+
+.action-with-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .event .choices {

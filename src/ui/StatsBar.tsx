@@ -13,10 +13,35 @@ type Props = {
   onUseItem: (itemId: string) => void;
 };
 
-const ResourceBar = ({ label, value, danger }: { label: string; value: number; danger?: boolean }) => (
+const ResourceBar = ({
+  label,
+  value,
+  danger,
+  tooltip,
+  tooltipId,
+}: {
+  label: string;
+  value: number;
+  danger?: boolean;
+  tooltip: string;
+  tooltipId: string;
+}) => (
   <div className="resource">
     <div className="resource-label">
-      <span>{label}</span>
+      <div className="resource-label-text">
+        <span>{label}</span>
+        <button
+          type="button"
+          className="tooltip-trigger"
+          aria-label={`${label} selite`}
+          aria-describedby={tooltipId}
+        >
+          ?
+        </button>
+        <span id={tooltipId} className="tooltip-bubble" role="tooltip">
+          {tooltip}
+        </span>
+      </div>
       <span className="resource-value">{Math.round(value)}</span>
     </div>
     <div className="bar">
@@ -67,14 +92,59 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
   return (
     <div className="stats-area">
       <div className="stats">
-        <ResourceBar label="Raha" value={pickValue('money')} danger={resources.money <= 10} />
-        <ResourceBar label="Mieli" value={pickValue('sanity')} danger={resources.sanity <= 20} />
-        <ResourceBar label="Energia" value={resources.energy} danger={resources.energy <= 20} />
-        <ResourceBar label="Lämpö" value={resources.heat} danger={resources.heat <= 20} />
+        <ResourceBar
+          label="Raha"
+          value={pickValue('money')}
+          danger={resources.money <= 10}
+          tooltip="Raha kertoo, selviätkö vuokrasta ja arjen menoista."
+          tooltipId="tooltip-raha"
+        />
+        <ResourceBar
+          label="Mieli"
+          value={pickValue('sanity')}
+          danger={resources.sanity <= 20}
+          tooltip="Mielenrauha. Jos se putoaa nollaan, romahdat."
+          tooltipId="tooltip-mieli"
+        />
+        <ResourceBar
+          label="Energia"
+          value={resources.energy}
+          danger={resources.energy <= 20}
+          tooltip="Jaksaminen. Päivän ja yön toiminnot kuluttavat energiaa."
+          tooltipId="tooltip-energia"
+        />
+        <ResourceBar
+          label="Lämpö"
+          value={resources.heat}
+          danger={resources.heat <= 20}
+          tooltip="Keho lämpimänä. Nolla tarkoittaa jäätymistä."
+          tooltipId="tooltip-lampo"
+        />
+        <ResourceBar
+          label="Anomalia"
+          value={pickValue('anomaly')}
+          tooltip="Lapin anomalian taso. Mitä korkeampi, sitä oudommaksi maailma käy."
+          tooltipId="tooltip-anomalia"
+        />
       </div>
 
       <div className="inventory">
-        <div className="inventory-label">Varasto</div>
+        <div className="inventory-header">
+          <div className="inventory-label">Varasto</div>
+          <div className="inline-help">
+            <button
+              type="button"
+              className="tooltip-trigger"
+              aria-describedby="tooltip-inventory"
+              aria-label="Mikä on varasto"
+            >
+              ?
+            </button>
+            <span id="tooltip-inventory" className="tooltip-bubble" role="tooltip">
+              Varasto pitää taskussa olevat esineet. Käytä nappia hyödyntääksesi niitä.
+            </span>
+          </div>
+        </div>
         <div className="inventory-slots" aria-label="Varaston sisältö">
           {slots.map((itemId, idx) => {
             const item = itemId ? itemLookup[itemId] : undefined;

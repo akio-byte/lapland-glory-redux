@@ -207,15 +207,30 @@ const App = () => {
           <div className="phase">{state.time.phase}</div>
         </div>
         <div className="top-bar-actions">
-          <button
-            className="teletext-toggle"
-            onClick={() => setShopOpen(true)}
-            disabled={shopDisabled}
-            aria-label="Avaa kioski"
-            title={shopDisabled ? 'Kioski kiinni' : undefined}
-          >
-            {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
-          </button>
+          <div className="action-with-help">
+            <button
+              className="teletext-toggle"
+              onClick={() => setShopOpen(true)}
+              disabled={shopDisabled}
+              aria-label="Avaa kioski"
+              title={shopDisabled ? 'Kioski kiinni' : undefined}
+            >
+              {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
+            </button>
+            <div className="inline-help">
+              <button
+                type="button"
+                className="tooltip-trigger"
+                aria-describedby="tooltip-shop"
+                aria-label="Mikä on kioski"
+              >
+                ?
+              </button>
+              <span id="tooltip-shop" className="tooltip-bubble" role="tooltip">
+                Kioski on kauppa: osta tavaroita rahalla ja täytä reppu.
+              </span>
+            </div>
+          </div>
           <button
             className="teletext-toggle"
             onClick={openTeletext}
