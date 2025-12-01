@@ -104,9 +104,15 @@ export const getEventForPhase = (state: GameState, phase: Phase): EventPickResul
 };
 
 export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?: number) => {
+  if (!event) {
+    console.warn('applyChoiceEffects called without an event. Skipping effect application.');
+    return { choiceText: 'No event available', choice: undefined };
+  }
+
+  const choicePool = (event.choices ?? []).filter(Boolean);
   const explicitChoice =
-    choiceIndex !== undefined ? (event.choices[choiceIndex] as Choice | undefined) : undefined;
-  const choice = explicitChoice ?? pickOne(event.choices) ?? event.choices[0];
+    choiceIndex !== undefined ? (choicePool[choiceIndex] as Choice | undefined) : undefined;
+  const choice = explicitChoice ?? pickOne(choicePool) ?? choicePool[0];
   if (!choice) return { choiceText: 'No choice available', choice: undefined };
 
   // Apply effects to the game state resources
@@ -130,6 +136,12 @@ export const applyChoiceEffects = (state: GameState, event: Event, choiceIndex?:
     addItem(state, choice.loot, INVENTORY_CAPACITY);
   }
 
-  state.history.push(event.id);
+  const eventId = event.id;
+  if (!eventId) {
+    console.warn('applyChoiceEffects received event without id. Skipping history update.');
+    return { choiceText: choice.text, choice };
+  }
+
+  state.history.push(eventId);
   return { choiceText: choice.text, choice };
 };
