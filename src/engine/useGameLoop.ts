@@ -346,8 +346,19 @@ export const useGameLoop = ({
   }, [autoStart, hasHydrated]);
 
   useEffect(() => {
+    console.log('GameLoop state:', {
+      day: state.time.day,
+      phase: state.time.phase,
+      currentEvent,
+    });
+  }, [state.time.day, state.time.phase, currentEvent]);
+
+  useEffect(() => {
     if (!hasHydrated) return;
     if (currentEnding?.id === ENDINGS.dataExhausted.id) return;
+
+    const endingId = currentEnding?.id;
+    if (endingId && endingId === ENDINGS.dataExhausted.id) return;
 
     saveGame(state);
   }, [state, hasHydrated, currentEnding]);
