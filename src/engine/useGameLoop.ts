@@ -195,6 +195,9 @@ export const useGameLoop = ({
     };
 
     const resolution = findNextEventOrAdvance(hydratedState);
+    if (!resolution.event && !resolution.ending) {
+      console.warn('No event found when continuing from save. Falling back to empty state.');
+    }
     updateState(resolution.state, { trackDelta: false, skipTasks: true });
     setCurrentEvent(resolution.event);
     setCurrentEnding(resolution.ending);
@@ -205,6 +208,9 @@ export const useGameLoop = ({
   const startNewGame = (difficulty: Difficulty = defaultDifficulty) => {
     const initialState = createInitialState(difficulty);
     const resolution = findNextEventOrAdvance(initialState);
+    if (!resolution.event && !resolution.ending) {
+      console.warn('No starting event found. Continuing without initial event.');
+    }
     updateState(resolution.state, { trackDelta: false, skipTasks: true });
     setCurrentEvent(resolution.event);
     setCurrentEnding(resolution.ending);
@@ -346,9 +352,10 @@ export const useGameLoop = ({
   }, [autoStart, hasHydrated]);
 
   useEffect(() => {
-    console.log('GameLoop state:', {
+    console.log('GameLoop debug', {
       day: state.time.day,
       phase: state.time.phase,
+      currentEventId: currentEvent?.id,
       currentEvent,
     });
   }, [state.time.day, state.time.phase, currentEvent]);

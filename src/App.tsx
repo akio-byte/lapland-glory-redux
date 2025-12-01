@@ -169,7 +169,7 @@ const App = () => {
     if (currentEvent) {
       return (
         <EventView
-          key={currentEvent.id}
+          key={currentEvent.id ?? `event-${state.time.day}-${state.time.phase}`}
           event={currentEvent}
           state={state}
           onChoose={chooseOption}

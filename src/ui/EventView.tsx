@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { adaptChoiceLabel, decorateEventDescription, maybeDistortText } from '../narrative/narrativeUtils.js';
-import { Event, GameState } from '../types.js';
+import { Choice, Event, GameState } from '../types.js';
 import { SlotsGame } from './minigames/SlotsGame.js';
 import { HackGame } from './minigames/HackGame.js';
 import { TypewriterText } from './TypewriterText.js';
@@ -22,6 +22,7 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney, onAdjustResou
   const isSlotsGame = event.minigame === 'slots';
   const isHackGame = event.minigame === 'hack';
   const imageSrc = event.imageSrc ? assetPath(event.imageSrc) : undefined;
+  const safeChoices = (event.choices ?? []).filter(Boolean) as Choice[];
 
   return (
     <div className="panel event fade-in">
@@ -50,7 +51,7 @@ export const EventView = ({ event, state, onChoose, onAdjustMoney, onAdjustResou
           </p>
 
           <div className="choices">
-            {event.choices.map((choice, idx) => {
+            {safeChoices.map((choice, idx) => {
               const adapted = maybeDistortText(adaptChoiceLabel(choice.text, state), anomaly);
               const effects = Object.entries(choice.effects);
               const xpGains = Object.entries(choice.xp ?? {});
