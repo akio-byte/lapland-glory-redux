@@ -10,6 +10,8 @@ export type Resources = {
   anomaly: number;
 };
 
+export type ResourceDelta = Record<keyof Resources, number>;
+
 export type Item = {
   id: string;
   name: string;

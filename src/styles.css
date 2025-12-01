@@ -253,6 +253,19 @@ button.primary {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  padding: 0.1rem 0.25rem;
+  border-radius: 10px;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
+}
+
+.resource-positive {
+  background: rgba(99, 187, 116, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(124, 224, 155, 0.35);
+}
+
+.resource-negative {
+  background: rgba(226, 85, 85, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(226, 85, 85, 0.32);
 }
 
 .resource-label {
@@ -269,8 +282,66 @@ button.primary {
   position: relative;
 }
 
+.resource-value-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+}
+
 .resource-value {
   color: var(--accent-strong);
+}
+
+.resource-positive .resource-value {
+  color: #b7f7c8;
+  text-shadow: 0 0 8px rgba(124, 224, 155, 0.35);
+}
+
+.resource-negative .resource-value {
+  color: #ffb2b2;
+  text-shadow: 0 0 8px rgba(226, 85, 85, 0.35);
+}
+
+.resource-delta-bubble {
+  font-size: 0.8rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: deltaPop 1.6s ease forwards;
+}
+
+.resource-delta-bubble.positive {
+  color: #b5fbd0;
+  background: rgba(99, 187, 116, 0.2);
+  border: 1px solid rgba(124, 224, 155, 0.55);
+}
+
+.resource-delta-bubble.negative {
+  color: #ffc1c1;
+  background: rgba(226, 85, 85, 0.2);
+  border: 1px solid rgba(226, 85, 85, 0.55);
+}
+
+@keyframes deltaPop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 .tooltip-trigger {

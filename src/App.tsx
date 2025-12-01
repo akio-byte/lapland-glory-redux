@@ -38,6 +38,7 @@ const App = () => {
     currentEvent,
     currentEnding,
     lastMessage,
+    resourceDelta,
     continueFromSave,
     startNewGame,
     chooseOption,
@@ -250,6 +251,7 @@ const App = () => {
           phase={state.time.phase}
           anomaly={state.resources.anomaly}
           inventory={state.inventory}
+          delta={resourceDelta}
           onUseItem={useItem}
         />
       </header>

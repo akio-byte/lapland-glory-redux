@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import items from '../data/items.json' with { type: 'json' };
 import { INVENTORY_CAPACITY } from '../engine/resources.js';
-import { Item, Phase, Resources } from '../types.js';
+import { Item, Phase, ResourceDelta, Resources } from '../types.js';
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -10,6 +10,7 @@ type Props = {
   phase: Phase;
   anomaly: number;
   inventory: string[];
+  delta?: ResourceDelta;
   onUseItem: (itemId: string) => void;
 };
 
@@ -19,39 +20,55 @@ const ResourceBar = ({
   danger,
   tooltip,
   tooltipId,
+  deltaValue = 0,
+  showDelta = false,
 }: {
   label: string;
   value: number;
   danger?: boolean;
   tooltip: string;
   tooltipId: string;
-}) => (
-  <div className="resource">
-    <div className="resource-label">
-      <div className="resource-label-text">
-        <span>{label}</span>
-        <button
-          type="button"
-          className="tooltip-trigger"
-          aria-label={`${label} selite`}
-          aria-describedby={tooltipId}
-        >
-          ?
-        </button>
-        <span id={tooltipId} className="tooltip-bubble" role="tooltip">
-          {tooltip}
-        </span>
+  deltaValue?: number;
+  showDelta?: boolean;
+}) => {
+  const changeClass = showDelta ? (deltaValue > 0 ? 'positive' : 'negative') : '';
+  return (
+    <div className={`resource ${changeClass ? `resource-${changeClass}` : ''}`}>
+      <div className="resource-label">
+        <div className="resource-label-text">
+          <span>{label}</span>
+          <button
+            type="button"
+            className="tooltip-trigger"
+            aria-label={`${label} selite`}
+            aria-describedby={tooltipId}
+          >
+            ?
+          </button>
+          <span id={tooltipId} className="tooltip-bubble" role="tooltip">
+            {tooltip}
+          </span>
+        </div>
+        <div className="resource-value-wrap">
+          <span className="resource-value">{Math.round(value)}</span>
+          {showDelta && deltaValue !== 0 && (
+            <span className={`resource-delta-bubble ${changeClass}`}>
+              {deltaValue > 0 ? '+' : ''}
+              {Math.round(deltaValue)}
+            </span>
+          )}
+        </div>
       </div>
-      <span className="resource-value">{Math.round(value)}</span>
+      <div className="bar">
+        <div className={`bar-fill ${danger ? 'danger' : ''}`} style={{ width: `${Math.min(value, 100)}%` }} />
+      </div>
     </div>
-    <div className="bar">
-      <div className={`bar-fill ${danger ? 'danger' : ''}`} style={{ width: `${Math.min(value, 100)}%` }} />
-    </div>
-  </div>
-);
+  );
+};
 
-export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Props) => {
+export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseItem }: Props) => {
   const [fakeStat, setFakeStat] = useState<{ field: keyof Resources; value: number } | null>(null);
+  const [visibleDelta, setVisibleDelta] = useState<ResourceDelta | null>(null);
   const prevPhase = useRef<string | null>(null);
 
   const anomalyLevel = useMemo(() => clamp(anomaly / 100, 0, 1), [anomaly]);
@@ -73,6 +90,23 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
     return undefined;
   }, [phase, anomalyLevel]);
 
+  useEffect(() => {
+    if (!delta) {
+      setVisibleDelta(null);
+      return undefined;
+    }
+
+    const hasChange = Object.values(delta).some((value) => value !== 0);
+    if (!hasChange) {
+      setVisibleDelta(null);
+      return undefined;
+    }
+
+    setVisibleDelta(delta);
+    const timer = setTimeout(() => setVisibleDelta(null), 1700);
+    return () => clearTimeout(timer);
+  }, [delta]);
+
   const pickValue = (field: keyof Resources) => (fakeStat?.field === field ? fakeStat.value : resources[field]);
 
   const itemLookup = useMemo(
@@ -89,6 +123,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
     [inventory]
   );
 
+  const pickDelta = (field: keyof Resources) => visibleDelta?.[field] ?? 0;
+
   return (
     <div className="stats-area">
       <div className="stats">
@@ -98,6 +134,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
           danger={resources.money <= 10}
           tooltip="Raha kertoo, selviätkö vuokrasta ja arjen menoista."
           tooltipId="tooltip-raha"
+          deltaValue={pickDelta('money')}
+          showDelta={Boolean(visibleDelta) && pickDelta('money') !== 0}
         />
         <ResourceBar
           label="Mieli"
@@ -105,6 +143,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
           danger={resources.sanity <= 20}
           tooltip="Mielenrauha. Jos se putoaa nollaan, romahdat."
           tooltipId="tooltip-mieli"
+          deltaValue={pickDelta('sanity')}
+          showDelta={Boolean(visibleDelta) && pickDelta('sanity') !== 0}
         />
         <ResourceBar
           label="Energia"
@@ -112,6 +152,8 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
           danger={resources.energy <= 20}
           tooltip="Jaksaminen. Päivän ja yön toiminnot kuluttavat energiaa."
           tooltipId="tooltip-energia"
+          deltaValue={pickDelta('energy')}
+          showDelta={Boolean(visibleDelta) && pickDelta('energy') !== 0}
         />
         <ResourceBar
           label="Lämpö"
@@ -119,12 +161,16 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, onUseItem }: Pr
           danger={resources.heat <= 20}
           tooltip="Keho lämpimänä. Nolla tarkoittaa jäätymistä."
           tooltipId="tooltip-lampo"
+          deltaValue={pickDelta('heat')}
+          showDelta={Boolean(visibleDelta) && pickDelta('heat') !== 0}
         />
         <ResourceBar
           label="Anomalia"
           value={pickValue('anomaly')}
           tooltip="Lapin anomalian taso. Mitä korkeampi, sitä oudommaksi maailma käy."
           tooltipId="tooltip-anomalia"
+          deltaValue={pickDelta('anomaly')}
+          showDelta={Boolean(visibleDelta) && pickDelta('anomaly') !== 0}
         />
       </div>
 
