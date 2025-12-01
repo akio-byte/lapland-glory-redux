@@ -11,6 +11,7 @@ import {
   removeItem as removeItemInternal,
 } from './resources.js';
 import { getDefaultTasks } from './tasks.js';
+import { appendLog } from './log.js';
 
 const cloneState = (state: GameState): GameState => ({
   resources: { ...state.resources },
@@ -199,7 +200,32 @@ export const useItem = (state: GameState, itemId: string): { nextState: GameStat
     removeItemInternal(nextState, itemId);
   }
 
-  const message = itemData.onUse.message ?? `Käytit esinettä: ${itemData.name}.`;
+  const resourceLabels: Partial<Record<keyof GameState['resources'], string>> = {
+    money: 'raha',
+    sanity: 'mieli',
+    energy: 'energia',
+    heat: 'lämpö',
+    anomaly: 'anomalia',
+  };
+  const effectSummary = Object.entries(effects)
+    .filter(([, value]) => (value ?? 0) !== 0)
+    .map(([resource, value]) => {
+      const label = resourceLabels[resource as keyof GameState['resources']] ?? resource;
+      const amount = value ?? 0;
+      const sign = amount > 0 ? '+' : '';
+      return `${label} ${sign}${amount}`;
+    })
+    .join(', ');
 
-  return { nextState, message };
+  const message =
+    itemData.onUse.message ??
+    (effectSummary ? `Käytit ${itemData.name}, ${effectSummary}.` : `Käytit esinettä: ${itemData.name}.`);
+
+  const loggedState = appendLog(nextState, {
+    title: `Käytit: ${itemData.name}`,
+    outcome: effectSummary ? effectSummary : message,
+    time: state.time,
+  });
+
+  return { nextState: loggedState, message };
 };
