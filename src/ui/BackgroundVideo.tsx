@@ -9,22 +9,15 @@ export const BackgroundVideo = ({ anomaly }: BackgroundVideoProps) => {
       : '/assets/videos/Lapland_Snow_Cinemagraph_VHS.mp4';
 
   return (
-    <video
-      className="background-video"
-      src={source}
-      autoPlay
-      loop
-      muted
-      playsInline
-      style={{
-        position: 'fixed',
-        zIndex: -1,
-        objectFit: 'cover',
-        width: '100vw',
-        height: '100vh',
-        opacity: 0.6,
-        filter: 'contrast(1.1)',
-      }}
-    />
+    <div className="background-video" aria-hidden>
+      <video
+        className="background-video__media"
+        src={source}
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+    </div>
   );
 };
