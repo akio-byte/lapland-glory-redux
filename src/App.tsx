@@ -56,6 +56,8 @@ const App = () => {
     buyItem,
     useItem,
     debug,
+    taskToast,
+    clearTaskToast,
   } = useGameLoop({ autoStart: false });
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
@@ -121,6 +123,13 @@ const App = () => {
       setShopOpen(false);
     }
   }, [shopDisabled, shopOpen]);
+
+  useEffect(() => {
+    if (!taskToast) return;
+
+    const timer = window.setTimeout(() => clearTaskToast(), 4000);
+    return () => window.clearTimeout(timer);
+  }, [clearTaskToast, taskToast]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -276,6 +285,11 @@ const App = () => {
             delta={resourceDelta}
             onUseItem={useItem}
           />
+          {taskToast && (
+            <div className="task-toast" role="status">
+              ✅ Tehtävä valmis: {taskToast.description}
+            </div>
+          )}
         </header>
 
         <main className="content">{content}</main>
@@ -300,6 +314,8 @@ const App = () => {
             phase={state.time.phase}
             anomaly={state.resources.anomaly}
             energy={state.resources.energy}
+            tasks={state.meta.activeTasks ?? []}
+            completedTasks={state.meta.completedTasks ?? []}
             onClose={() => setTeletextOpen(false)}
             onNavigateCost={navigateTeletext}
             onSetFlag={setFlag}

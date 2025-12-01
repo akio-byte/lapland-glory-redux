@@ -165,6 +165,17 @@ button.primary {
   box-shadow: var(--shadow);
 }
 
+.task-toast {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(124, 224, 255, 0.08);
+  border: 1px solid rgba(124, 224, 255, 0.4);
+  border-radius: 10px;
+  color: #c9ffe2;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(124, 224, 255, 0.3);
+}
+
 .top-bar-actions {
   display: flex;
   align-items: center;

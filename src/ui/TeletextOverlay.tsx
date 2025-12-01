@@ -1,7 +1,7 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { BASE_HEAT_LOSS } from '../engine/tick.js';
 import { ANOMALIA_THRESHOLD } from '../engine/checkEnding.js';
-import { Phase } from '../types.js';
+import { CompletedTask, Phase, Task } from '../types.js';
 
 const START_DATE = new Date('1995-11-26T00:00:00Z');
 const AVAILABLE_PAGES = [100, 202, 333] as const;
@@ -12,6 +12,8 @@ type TeletextOverlayProps = {
   phase: Phase;
   anomaly: number;
   energy: number;
+  tasks: Task[];
+  completedTasks: CompletedTask[];
   onClose: () => void;
   onNavigateCost: (note?: string, exhaustedNote?: string) => boolean;
   onSetFlag: (key: string, value: boolean) => void;
@@ -36,7 +38,19 @@ const predictTemperature = (phase: Phase) => {
   return `LEUTOA HÄMYÄ ${predicted}C`;
 };
 
-const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: number; phase: Phase }) => {
+const TeletextPageContent = ({
+  page,
+  anomaly,
+  phase,
+  tasks,
+  completedTasks,
+}: {
+  page: number;
+  anomaly: number;
+  phase: Phase;
+  tasks: Task[];
+  completedTasks: CompletedTask[];
+}) => {
   if (page === 202) {
     return (
       <div className="teletext-body">
@@ -48,12 +62,32 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
   }
 
   if (page === 333) {
+    const hasTasks = tasks.length > 0;
+    const hasCompleted = completedTasks.length > 0;
+
     return (
       <div className="teletext-body">
         <div className="teletext-line">MTV3 TYÖT 333</div>
-        <div className="teletext-line highlight">EI AVOIMIA PAIKKOJA.</div>
-        <div className="teletext-line">PUHELINLANGAT HILJAISET.</div>
-        <div className="teletext-line">Huhu: KELA-NINJA kerää lomakkeita öisin.</div>
+        <div className="teletext-line highlight">TEHTÄVÄT</div>
+        {hasTasks ? (
+          tasks.map((task) => (
+            <div key={task.id} className="teletext-line">
+              • {task.description}
+            </div>
+          ))
+        ) : (
+          <div className="teletext-line">Ei aktiivisia tehtäviä.</div>
+        )}
+        <div className="teletext-line highlight">VALMISTUNUT</div>
+        {hasCompleted ? (
+          completedTasks.slice(-3).map((task) => (
+            <div key={task.id} className="teletext-line">
+              ✓ {task.description} (Päivä {task.completedOnDay})
+            </div>
+          ))
+        ) : (
+          <div className="teletext-line">Odottaa ensimmäistä suoritusta.</div>
+        )}
       </div>
     );
   }
@@ -82,13 +116,13 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
 
   // Default index
   return (
-    <div className="teletext-body">
-      <div className="teletext-line">P100 ALKU</div>
-      <div className="teletext-line highlight">[100] ALKU</div>
-      <div className="teletext-line">[202] SÄÄ</div>
-      <div className="teletext-line">[333] TYÖT (KELA-NINJA?)</div>
-      <div className="teletext-line">[899] ANOMALIA (HERÄÄMINEN?)</div>
-    </div>
+      <div className="teletext-body">
+        <div className="teletext-line">P100 ALKU</div>
+        <div className="teletext-line highlight">[100] ALKU</div>
+        <div className="teletext-line">[202] SÄÄ</div>
+        <div className="teletext-line">[333] TYÖT &amp; TEHTÄVÄT</div>
+        <div className="teletext-line">[899] ANOMALIA (HERÄÄMINEN?)</div>
+      </div>
   );
 };
 
@@ -97,6 +131,8 @@ export const TeletextOverlay = ({
   phase,
   anomaly,
   energy,
+  tasks,
+  completedTasks,
   onClose,
   onNavigateCost,
   onSetFlag,
@@ -155,7 +191,13 @@ export const TeletextOverlay = ({
           </button>
         </div>
 
-        <TeletextPageContent page={page} anomaly={anomaly} phase={phase} />
+        <TeletextPageContent
+          page={page}
+          anomaly={anomaly}
+          phase={phase}
+          tasks={tasks}
+          completedTasks={completedTasks}
+        />
 
         <form className="teletext-nav" onSubmit={handleSubmit}>
           <label className="teletext-line" htmlFor="teletext-page-input">

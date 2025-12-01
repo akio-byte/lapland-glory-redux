@@ -10,6 +10,7 @@ import {
   clampResources,
   removeItem as removeItemInternal,
 } from './resources.js';
+import { getDefaultTasks } from './tasks.js';
 
 const cloneState = (state: GameState): GameState => ({
   resources: { ...state.resources },
@@ -71,6 +72,8 @@ export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState
   meta: {
     difficulty,
     anomalyHighDays: 0,
+    activeTasks: getDefaultTasks(),
+    completedTasks: [],
   },
 });
 
