@@ -19,7 +19,7 @@ const parseDayLimit = (): number | null => {
 
 const dayLimit = parseDayLimit();
 
-let state = createInitialState();
+let state = createInitialState('NORMAL');
 
 // Core simulation loop: DAY → NIGHT → SLEEP until an ending is met
 while (true) {

@@ -1,5 +1,6 @@
 export type Phase = 'DAY' | 'NIGHT' | 'SLEEP';
 export type WeatherType = 'CLEAR' | 'SNOWSTORM' | 'FOG' | 'MILD';
+export type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
 
 export type Resources = {
   money: number;
@@ -36,6 +37,9 @@ export type GameState = {
   history: string[];
   inventory: string[];
   paths: Record<'bureaucrat' | 'hustler' | 'shaman' | 'tech' | 'drifter', number>;
+  meta: {
+    difficulty: Difficulty;
+  };
 };
 
 export type Choice = {
