@@ -1,10 +1,10 @@
-export type EndingId = 'freeze' | 'bankrupt' | 'breakdown' | 'spring';
+export type EndingId = 'freeze' | 'bankrupt' | 'breakdown' | 'spring' | 'anomalia' | 'bureaucrat';
 
 export interface EndingMeta {
   id: EndingId;
   title: string;
   description: string;
-  visualKey: 'FREEZE' | 'BANKRUPT' | 'BREAKDOWN' | 'SPRING';
+  visualKey: 'FREEZE' | 'BANKRUPT' | 'BREAKDOWN' | 'SPRING' | 'ANOMALIA' | 'BUREAUCRAT';
 }
 
 export const ENDINGS: Record<EndingId, EndingMeta> = {
@@ -31,5 +31,17 @@ export const ENDINGS: Record<EndingId, EndingMeta> = {
     title: 'Keväänkoitto',
     description: 'Selvisit Lapin talvesta. Ensimmäinen lämmin valo murtaa jään.',
     visualKey: 'SPRING',
+  },
+  anomalia: {
+    id: 'anomalia',
+    title: 'Anomalian herääminen',
+    description: 'Kaupunki repeää hiljalleen. Ruutu sulaa, lumessa liikkuu jokin ääniisi vastaava.',
+    visualKey: 'ANOMALIA',
+  },
+  bureaucrat: {
+    id: 'bureaucrat',
+    title: 'Byrokratian kruunu',
+    description: 'Selvisit papereiden läpi ja keräsit kaiken. Kela-ninja katoaa arkistojen halki.',
+    visualKey: 'BUREAUCRAT',
   },
 };

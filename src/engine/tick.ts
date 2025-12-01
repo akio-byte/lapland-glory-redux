@@ -1,5 +1,6 @@
 import { Difficulty, GameState, WeatherType } from '../types.js';
 import { clampResources } from './resources.js';
+import { ANOMALIA_THRESHOLD } from './checkEnding.js';
 
 // Minimal base upkeep to mirror the harsh winter: warmth declines over time
 export const BASE_HEAT_LOSS = -2;
@@ -107,6 +108,9 @@ export const advancePhase = (state: GameState): GameState => {
       nextState.resources.energy += sleepRecovery.energy;
       nextState.resources.heat += sleepRecovery.heat;
       nextState.resources.sanity += sleepRecovery.sanity;
+      const anomalyHighDays = nextState.meta?.anomalyHighDays ?? 0;
+      const isAnomalyHigh = nextState.resources.anomaly >= ANOMALIA_THRESHOLD;
+      nextState.meta.anomalyHighDays = isAnomalyHigh ? anomalyHighDays + 1 : 0;
       nextState.flags['forecast_read'] = false;
       clampResources(nextState); // Clamp after nightly recovery to keep refreshed values in range.
       nextState.time.day += 1;

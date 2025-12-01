@@ -1,5 +1,6 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { BASE_HEAT_LOSS } from '../engine/tick.js';
+import { ANOMALIA_THRESHOLD } from '../engine/checkEnding.js';
 import { Phase } from '../types.js';
 
 const START_DATE = new Date('1995-11-26T00:00:00Z');
@@ -52,6 +53,7 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
         <div className="teletext-line">MTV3 TYÖT 333</div>
         <div className="teletext-line highlight">EI AVOIMIA PAIKKOJA.</div>
         <div className="teletext-line">PUHELINLANGAT HILJAISET.</div>
+        <div className="teletext-line">Huhu: KELA-NINJA kerää lomakkeita öisin.</div>
       </div>
     );
   }
@@ -63,6 +65,7 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
           <div className="teletext-line">P{ANOMALY_PAGE} ANOMALIA</div>
           <div className="teletext-line highlight">----</div>
           <div className="teletext-line">SIGNaALI PUUTTUU.</div>
+          <div className="teletext-line">Huhu anomalian heräämisestä pysyy toistaiseksi hiljaa.</div>
         </div>
       );
     }
@@ -72,7 +75,7 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
         <div className="teletext-line">P{ANOMALY_PAGE} ANOMALIA</div>
         <div className="teletext-line highlight">SILMÄT RUUDUN TAKANA.</div>
         <div className="teletext-line">LUMI HUUTAA NIMESI.</div>
-        <div className="teletext-line">TÄMÄ EI OLE UUTINEN.</div>
+        <div className="teletext-line">ANOMALIAN HERÄÄMINEN ON JO ALKANUT.</div>
       </div>
     );
   }
@@ -83,8 +86,8 @@ const TeletextPageContent = ({ page, anomaly, phase }: { page: number; anomaly: 
       <div className="teletext-line">P100 ALKU</div>
       <div className="teletext-line highlight">[100] ALKU</div>
       <div className="teletext-line">[202] SÄÄ</div>
-      <div className="teletext-line">[333] TYÖT</div>
-      <div className="teletext-line">[899] ANOMALIA</div>
+      <div className="teletext-line">[333] TYÖT (KELA-NINJA?)</div>
+      <div className="teletext-line">[899] ANOMALIA (HERÄÄMINEN?)</div>
     </div>
   );
 };
@@ -122,6 +125,9 @@ export const TeletextOverlay = ({
       onSetFlag('forecast_read', true);
     } else if (target === 333) {
       onSetFlag('job_market_checked', true);
+      onSetFlag('paperwar_rumor', true);
+    } else if (target === ANOMALY_PAGE && anomaly >= ANOMALIA_THRESHOLD - 5) {
+      onSetFlag('anomaly_awakening', true);
     }
   };
 

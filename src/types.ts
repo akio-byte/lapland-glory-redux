@@ -41,6 +41,7 @@ export type GameState = {
   paths: Record<'bureaucrat' | 'hustler' | 'shaman' | 'tech' | 'drifter', number>;
   meta: {
     difficulty: Difficulty;
+    anomalyHighDays?: number;
   };
 };
 
