@@ -13,7 +13,7 @@ import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
 import { BackgroundVideo } from './ui/BackgroundVideo.js';
-import { WeatherType, type GameState } from './types.js';
+import { Difficulty, WeatherType, type GameState } from './types.js';
 import { useSound } from './hooks/useSound.js';
 import { SoundManager } from './engine/sound.js';
 import { loadGame, clearSavedGame } from './engine/storage.js';
@@ -62,6 +62,7 @@ const App = () => {
   const weatherDisplay = weatherIcon ? `${weatherIcon} ${weatherLabel}` : weatherLabel;
   const { play } = useSound(state.flags.sound_muted ?? false);
   const previousPhaseRef = useRef(state.time.phase);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
 
   useEffect(() => {
     // On load, check for a saved game to decide whether to show the start screen.
@@ -69,6 +70,7 @@ const App = () => {
     if (savedState) {
       setPendingSavedGame(savedState);
       setShowStartScreen(true);
+      setSelectedDifficulty(savedState.meta?.difficulty ?? 'NORMAL');
     } else {
       startNewGame();
     }
@@ -82,7 +84,7 @@ const App = () => {
     clearSavedGame();
     setPendingSavedGame(null);
     setShowStartScreen(false);
-    startNewGame();
+    startNewGame(selectedDifficulty);
   };
 
   const handleContinueGame = () => {
@@ -182,6 +184,8 @@ const App = () => {
     return (
       <StartScreen
         hasSave={Boolean(pendingSavedGame)}
+        difficulty={selectedDifficulty}
+        onDifficultyChange={setSelectedDifficulty}
         onStartNew={handleStartNewGame}
         onContinue={handleContinueGame}
       />

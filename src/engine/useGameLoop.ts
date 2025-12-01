@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
-import { Choice, Event, GameState } from '../types.js';
+import { Choice, Difficulty, Event, GameState } from '../types.js';
 import {
   advancePhase,
   applyEvent,
@@ -22,7 +22,7 @@ export type GameLoopState = {
   currentEnding: EndingMeta | null;
   lastMessage: string;
   continueFromSave: (savedState: GameState) => void;
-  startNewGame: () => void;
+  startNewGame: (difficulty?: Difficulty) => void;
   chooseOption: (optionIndex: number) => void;
   spendEnergy: (amount: number, note?: string, exhaustedNote?: string) => boolean;
   adjustMoney: (delta: number, note?: string) => void;
@@ -54,10 +54,17 @@ type UseGameLoopOptions = {
    * Consumers can call `startNewGame` or `continueFromSave` manually to begin play.
    */
   autoStart?: boolean;
+  /**
+   * Default difficulty used when starting a new run without an explicit selection.
+   */
+  defaultDifficulty?: Difficulty;
 };
 
-export const useGameLoop = ({ autoStart = true }: UseGameLoopOptions = {}): GameLoopState => {
-  const [state, setState] = useState<GameState>(createInitialState);
+export const useGameLoop = ({
+  autoStart = true,
+  defaultDifficulty = 'NORMAL',
+}: UseGameLoopOptions = {}): GameLoopState => {
+  const [state, setState] = useState<GameState>(() => createInitialState(defaultDifficulty));
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
@@ -67,6 +74,9 @@ export const useGameLoop = ({ autoStart = true }: UseGameLoopOptions = {}): Game
     const hydratedState: GameState = {
       ...savedState,
       flags: { sound_muted: false, ...(savedState.flags ?? {}) },
+      meta: {
+        difficulty: savedState.meta?.difficulty ?? defaultDifficulty,
+      },
     };
 
     setState(hydratedState);
@@ -76,8 +86,8 @@ export const useGameLoop = ({ autoStart = true }: UseGameLoopOptions = {}): Game
     setHasHydrated(true);
   };
 
-  const startNewGame = () => {
-    const initialState = createInitialState();
+  const startNewGame = (difficulty: Difficulty = defaultDifficulty) => {
+    const initialState = createInitialState(difficulty);
     setState(initialState);
     setCurrentEvent(pickEventForPhase(initialState) ?? null);
     setCurrentEnding(null);

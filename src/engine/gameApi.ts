@@ -1,5 +1,5 @@
 import items from '../data/items.json' with { type: 'json' };
-import { Choice, Event, GameState, Item, Phase } from '../types.js';
+import { Choice, Difficulty, Event, GameState, Item, Phase } from '../types.js';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
 import { applyChoiceEffects, getEventForPhase } from './resolveEvent.js';
@@ -18,15 +18,36 @@ const cloneState = (state: GameState): GameState => ({
   history: [...state.history],
   inventory: [...state.inventory],
   paths: { ...state.paths },
+  meta: { ...state.meta },
 });
 
-export const createInitialState = (): GameState => ({
-  resources: {
+const DIFFICULTY_STARTING_RESOURCES: Record<Difficulty, GameState['resources']> = {
+  EASY: {
+    money: 110,
+    sanity: 60,
+    energy: 55,
+    heat: 55,
+    anomaly: 0,
+  },
+  NORMAL: {
     money: 80,
     sanity: 50,
     energy: 45,
     heat: 40,
     anomaly: 0,
+  },
+  HARD: {
+    money: 65,
+    sanity: 45,
+    energy: 45,
+    heat: 35,
+    anomaly: 0,
+  },
+};
+
+export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState => ({
+  resources: {
+    ...DIFFICULTY_STARTING_RESOURCES[difficulty],
   },
   time: {
     day: 1,
@@ -44,6 +65,9 @@ export const createInitialState = (): GameState => ({
     shaman: 0,
     tech: 0,
     drifter: 0,
+  },
+  meta: {
+    difficulty,
   },
 });
 
