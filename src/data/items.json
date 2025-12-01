@@ -47,5 +47,56 @@
     "description": "Suksien mukana taiteltu, vuodelta -95.",
     "type": "tool",
     "price": 10
+  },
+  {
+    "id": "item_salmiakkikossu",
+    "name": "Salmiakkikossu",
+    "description": "50cl nestemäistä rohkeutta.",
+    "type": "consumable",
+    "price": 65,
+    "onUse": {
+      "effects": { "sanity": 15, "heat": -10, "energy": -5 },
+      "consume": true
+    }
+  },
+  {
+    "id": "item_seutulippu",
+    "name": "Seutulippu (Deep Freeze)",
+    "description": "Voimassa Rovaniemen liikenteessä.",
+    "type": "tool",
+    "price": 120
+  },
+  {
+    "id": "item_hessu_hopo",
+    "name": "Hessu Hopo",
+    "description": "Erikoisnumero vuodelta '94.",
+    "type": "consumable",
+    "price": 20,
+    "onUse": {
+      "effects": { "sanity": 10 },
+      "consume": true
+    }
+  },
+  {
+    "id": "item_akkuhappo",
+    "name": "Akkuhappo",
+    "description": "Epäilyttävä energiajuoma.",
+    "type": "consumable",
+    "price": 15,
+    "onUse": {
+      "effects": { "energy": 40, "sanity": -15, "heat": 5 },
+      "consume": true
+    }
+  },
+  {
+    "id": "item_kela_form",
+    "name": "Kelan lomake",
+    "description": "Monimutkainen selvitys.",
+    "type": "consumable",
+    "price": 0,
+    "onUse": {
+      "effects": { "money": 200, "sanity": -10 },
+      "consume": true
+    }
   }
 ]
