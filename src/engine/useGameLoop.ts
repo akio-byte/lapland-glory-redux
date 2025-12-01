@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { adaptChoiceLabel, maybeDistortText } from '../narrative/narrativeUtils.js';
-import { Choice, Difficulty, Event, GameState } from '../types.js';
+import { Choice, Difficulty, Event, GameState, ResourceDelta, Resources } from '../types.js';
 import {
   advancePhase,
   applyEvent,
@@ -21,6 +21,7 @@ export type GameLoopState = {
   currentEvent: Event | null;
   currentEnding: EndingMeta | null;
   lastMessage: string;
+  resourceDelta: ResourceDelta;
   continueFromSave: (savedState: GameState) => void;
   startNewGame: (difficulty?: Difficulty) => void;
   chooseOption: (optionIndex: number) => void;
@@ -36,6 +37,22 @@ export type GameLoopState = {
     skipDay: () => void;
   };
 };
+
+const createEmptyDelta = (): ResourceDelta => ({
+  money: 0,
+  sanity: 0,
+  energy: 0,
+  heat: 0,
+  anomaly: 0,
+});
+
+const computeResourceDelta = (prev: Resources, next: Resources): ResourceDelta => ({
+  money: next.money - prev.money,
+  sanity: next.sanity - prev.sanity,
+  energy: next.energy - prev.energy,
+  heat: next.heat - prev.heat,
+  anomaly: next.anomaly - prev.anomaly,
+});
 
 const describeChoice = (event: Event, choice: Choice | undefined, state: GameState) => {
   const { anomaly } = state.resources;
@@ -65,10 +82,20 @@ export const useGameLoop = ({
   defaultDifficulty = 'NORMAL',
 }: UseGameLoopOptions = {}): GameLoopState => {
   const [state, setState] = useState<GameState>(() => createInitialState(defaultDifficulty));
+  const [lastResourceDelta, setLastResourceDelta] = useState<ResourceDelta>(() => createEmptyDelta());
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   const [currentEnding, setCurrentEnding] = useState<EndingMeta | null>(null);
   const [lastMessage, setLastMessage] = useState<string>('Valmiina Lapin talveen.');
   const [hasHydrated, setHasHydrated] = useState(false);
+
+  const updateState = (updater: GameState | ((prev: GameState) => GameState)) => {
+    setState((prev) => {
+      const next = typeof updater === 'function' ? (updater as (state: GameState) => GameState)(prev) : updater;
+      const delta = computeResourceDelta(prev.resources, next.resources);
+      setLastResourceDelta(delta);
+      return next;
+    });
+  };
 
   const continueFromSave = (savedState: GameState) => {
     const hydratedState: GameState = {
@@ -79,7 +106,7 @@ export const useGameLoop = ({
       },
     };
 
-    setState(hydratedState);
+    updateState(hydratedState);
     setCurrentEvent(pickEventForPhase(hydratedState) ?? null);
     setCurrentEnding(checkEnding(hydratedState));
     setLastMessage('Jatketaan aiempaa peliä.');
@@ -88,7 +115,7 @@ export const useGameLoop = ({
 
   const startNewGame = (difficulty: Difficulty = defaultDifficulty) => {
     const initialState = createInitialState(difficulty);
-    setState(initialState);
+    updateState(initialState);
     setCurrentEvent(pickEventForPhase(initialState) ?? null);
     setCurrentEnding(null);
     setLastMessage('Talvi alkaa. Päätä selviytymisen suunta.');
@@ -100,7 +127,7 @@ export const useGameLoop = ({
     const event = currentEvent;
     if (!event) return;
 
-    setState((prev) => {
+    updateState((prev) => {
       const { nextState, choice } = applyEvent(prev, event, optionIndex);
       const endingAfterEvent = checkEnding(nextState);
 
@@ -130,7 +157,7 @@ export const useGameLoop = ({
 
   const spendEnergy = (amount: number, note?: string, exhaustedNote?: string) => {
     let allowed = false;
-    setState((prev) => {
+    updateState((prev) => {
       if (prev.resources.energy < amount) {
         return prev;
       }
@@ -155,14 +182,14 @@ export const useGameLoop = ({
   };
 
   const adjustMoney = (delta: number, note?: string) => {
-    setState((prev) => updateMoney(prev, delta));
+    updateState((prev) => updateMoney(prev, delta));
     if (note) {
       setLastMessage(note);
     }
   };
 
   const setFlag = (key: string, value: boolean) => {
-    setState((prev) => setFlagInternal(prev, key, value));
+    updateState((prev) => setFlagInternal(prev, key, value));
   };
 
   useEffect(() => {
@@ -184,7 +211,7 @@ export const useGameLoop = ({
   }, [state, hasHydrated]);
 
   const addMoney = () => {
-    setState((prev) => {
+    updateState((prev) => {
       const next: GameState = {
         ...prev,
         resources: { ...prev.resources, money: prev.resources.money + 50 },
@@ -196,7 +223,7 @@ export const useGameLoop = ({
   };
 
   const restoreSanity = () => {
-    setState((prev) => {
+    updateState((prev) => {
       const next: GameState = {
         ...prev,
         resources: { ...prev.resources, sanity: 100 },
@@ -208,7 +235,7 @@ export const useGameLoop = ({
   };
 
   const triggerFreezeEnding = () => {
-    setState((prev) => {
+    updateState((prev) => {
       const next: GameState = {
         ...prev,
         resources: { ...prev.resources, heat: 0 },
@@ -223,7 +250,7 @@ export const useGameLoop = ({
   };
 
   const skipDay = () => {
-    setState((prev) => {
+    updateState((prev) => {
       let next = prev;
       for (let i = 0; i < 3; i += 1) {
         next = advancePhase(next);
@@ -248,6 +275,7 @@ export const useGameLoop = ({
     currentEvent,
     currentEnding,
     lastMessage,
+    resourceDelta: lastResourceDelta,
     startNewGame,
     chooseOption,
     spendEnergy,
@@ -255,7 +283,7 @@ export const useGameLoop = ({
     setFlag,
     buyItem: (itemId: string) => {
       let purchaseSuccess = false;
-      setState((prev) => {
+      updateState((prev) => {
         const { nextState, message, success } = buyItemInternal(prev, itemId);
         setLastMessage(message);
         purchaseSuccess = success;
@@ -265,7 +293,7 @@ export const useGameLoop = ({
       return purchaseSuccess;
     },
     useItem: (itemId: string) => {
-      setState((prev) => {
+      updateState((prev) => {
         const { nextState, message } = useItem(prev, itemId);
         setLastMessage(message);
         return nextState;
