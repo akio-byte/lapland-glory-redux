@@ -142,10 +142,12 @@ export const StatsBar = ({ resources, phase, anomaly, inventory, delta, onUseIte
 
   const itemLookup = useMemo(
     () =>
-      (items as Item[]).reduce<Record<string, Item>>((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {}),
+      (items as Item[])
+        .filter((item) => item && item.id)
+        .reduce<Record<string, Item>>((acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        }, {}),
     []
   );
 

@@ -32,6 +32,13 @@ export type TimeState = {
   weather: WeatherType;
 };
 
+export type SisuState = {
+  active: boolean;
+  turnsLeft: number;
+  triggerReason: 'heat' | 'sanity' | null;
+  recovered: boolean;
+};
+
 export type TaskCondition =
   | { type: 'event_family'; value: Event['family'] }
   | { type: 'purchase_heat_item' }
@@ -68,6 +75,7 @@ export type GameState = {
     activeTasks?: Task[];
     completedTasks?: CompletedTask[];
   };
+  sisu: SisuState;
 };
 
 export type Choice = {
