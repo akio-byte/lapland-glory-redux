@@ -9,6 +9,7 @@ import { StatsBar } from './ui/StatsBar.js';
 import { SubliminalWhisper } from './ui/SubliminalWhisper.js';
 import { TeletextOverlay } from './ui/TeletextOverlay.js';
 import { ShopOverlay } from './ui/ShopOverlay.js';
+import { JournalOverlay } from './ui/JournalOverlay.js';
 import { useThemeVars } from './ui/useThemeVars.js';
 import { useGameLoop } from './engine/useGameLoop.js';
 import { DebugPanel } from './ui/DebugPanel.js';
@@ -59,6 +60,7 @@ const App = () => {
   const theme = useThemeVars(state);
   const [teletextOpen, setTeletextOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
   // Track whether we detected an existing save to gate the main UI behind the start screen.
   const [pendingSavedGame, setPendingSavedGame] = useState<GameState | null>(null);
   const [showStartScreen, setShowStartScreen] = useState(false);
@@ -223,15 +225,15 @@ const App = () => {
             <div className="eyebrow">Päivä {state.time.day} ({weatherDisplay})</div>
             <div className="phase">{state.time.phase}</div>
           </div>
-            <div className="top-bar-actions">
-              <div className="action-with-help">
-                <button
-                  className="teletext-toggle primary-chip"
-                  onClick={() => setShopOpen(true)}
-                  disabled={shopDisabled}
-                  aria-label="Avaa kioski"
-                  title={shopDisabled ? 'Kioski kiinni' : undefined}
-                >
+          <div className="top-bar-actions">
+            <div className="action-with-help">
+              <button
+                className="teletext-toggle primary-chip"
+                onClick={() => setShopOpen(true)}
+                disabled={shopDisabled}
+                aria-label="Avaa kioski"
+                title={shopDisabled ? 'Kioski kiinni' : undefined}
+              >
                 {shopDisabled ? '🥶 KIOSKI KIINNI' : '🧺 KIOSKI'}
               </button>
               <div className="inline-help">
@@ -247,15 +249,23 @@ const App = () => {
                   Kioski on kauppa: osta tavaroita rahalla ja täytä reppu.
                 </span>
               </div>
-              </div>
-              <button
-                className="teletext-toggle primary-chip"
-                onClick={openTeletext}
-                disabled={teletextDisabled}
-                aria-label="Avaa Teksti-TV"
-                title={teletextDisabled ? 'Liian väsynyt' : undefined}
-              >
+            </div>
+            <button
+              className="teletext-toggle primary-chip"
+              onClick={openTeletext}
+              disabled={teletextDisabled}
+              aria-label="Avaa Teksti-TV"
+              title={teletextDisabled ? 'Liian väsynyt' : undefined}
+            >
               {teletextDisabled ? '📺 TEKSTI-TV (Liian väsynyt)' : '📺 TEKSTI-TV'}
+            </button>
+            <button
+              className="teletext-toggle"
+              onClick={() => setJournalOpen((open) => !open)}
+              aria-pressed={journalOpen}
+              aria-label="Avaa loki"
+            >
+              📓 LOGI
             </button>
           </div>
           <StatsBar
@@ -295,6 +305,7 @@ const App = () => {
             onSetFlag={setFlag}
           />
         )}
+        {journalOpen && <JournalOverlay log={state.log} onClose={() => setJournalOpen(false)} />}
         {shopOpen && (
           <ShopOverlay
             money={state.resources.money}

@@ -32,12 +32,20 @@ export type TimeState = {
   weather: WeatherType;
 };
 
+export type LogEntry = {
+  day: number;
+  phase: Phase;
+  title: string;
+  outcome: string;
+};
+
 export type GameState = {
   resources: Resources;
   time: TimeState;
   flags: Record<string, boolean>;
   history: string[];
   inventory: string[];
+  log: LogEntry[];
   paths: Record<'bureaucrat' | 'hustler' | 'shaman' | 'tech' | 'drifter', number>;
   meta: {
     difficulty: Difficulty;
