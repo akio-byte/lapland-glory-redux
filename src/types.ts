@@ -81,7 +81,7 @@ export type Choice = {
 export type Event = {
   id: string;
   phase: Phase;
-  family: 'paperwar' | 'nightlife' | 'survival' | 'flavor' | 'anomaly';
+  family: 'paperwar' | 'nightlife' | 'survival' | 'flavor' | 'anomaly' | 'fallback';
   title: string;
   description: string;
   imageSrc?: string;
@@ -96,4 +96,5 @@ export type Event = {
     requiredItem?: string;
     weather?: WeatherType | WeatherType[];
   };
+  tags?: string[];
 };

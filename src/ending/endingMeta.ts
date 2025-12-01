@@ -1,10 +1,24 @@
-export type EndingId = 'freeze' | 'bankrupt' | 'breakdown' | 'spring' | 'anomalia' | 'bureaucrat';
+export type EndingId =
+  | 'freeze'
+  | 'bankrupt'
+  | 'breakdown'
+  | 'spring'
+  | 'anomalia'
+  | 'bureaucrat'
+  | 'trial_victory'
+  | 'data_exhausted';
 
 export interface EndingMeta {
   id: EndingId;
   title: string;
   description: string;
-  visualKey: 'FREEZE' | 'BANKRUPT' | 'BREAKDOWN' | 'SPRING' | 'ANOMALIA' | 'BUREAUCRAT';
+  visualKey:
+    | 'FREEZE'
+    | 'BANKRUPT'
+    | 'BREAKDOWN'
+    | 'SPRING'
+    | 'ANOMALIA'
+    | 'BUREAUCRAT';
 }
 
 export const ENDINGS: Record<EndingId, EndingMeta> = {
@@ -43,5 +57,17 @@ export const ENDINGS: Record<EndingId, EndingMeta> = {
     title: 'Byrokratian kruunu',
     description: 'Selvisit papereiden läpi ja keräsit kaiken. Kela-ninja katoaa arkistojen halki.',
     visualKey: 'BUREAUCRAT',
+  },
+  trial_victory: {
+    id: 'trial_victory',
+    title: 'Koeajo selvitetty',
+    description: 'Kolme päivää Lapin anomaliassa ilman romahdusta. Ovi seuraavaan versioon avautuu.',
+    visualKey: 'SPRING',
+  },
+  data_exhausted: {
+    id: 'data_exhausted',
+    title: 'Hiljaisuus linjoilla',
+    description: 'Tapahtumia ei löytynyt tälle vaiheelle. Palaa päävalikkoon ja aloita uusi runi.',
+    visualKey: 'BREAKDOWN',
   },
 };

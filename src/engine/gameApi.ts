@@ -2,7 +2,7 @@ import items from '../data/items.json' with { type: 'json' };
 import { Choice, Difficulty, Event, GameState, Item, Phase } from '../types.js';
 import { EndingMeta } from '../ending/endingMeta.js';
 import { checkEnding as checkEndingInternal } from './checkEnding.js';
-import { applyChoiceEffects, getEventForPhase } from './resolveEvent.js';
+import { applyChoiceEffects, EventPickResult, getEventForPhase } from './resolveEvent.js';
 import { advancePhase as advancePhaseInternal } from './tick.js';
 import {
   INVENTORY_CAPACITY,
@@ -80,7 +80,7 @@ export const createInitialState = (difficulty: Difficulty = 'NORMAL'): GameState
 
 export const getCurrentPhase = (state: GameState): Phase => state.time.phase;
 
-export const pickEventForPhase = (state: GameState): Event | undefined =>
+export const pickEventForPhase = (state: GameState): EventPickResult =>
   getEventForPhase(state, getCurrentPhase(state));
 
 export const applyEvent = (
